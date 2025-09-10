@@ -142,17 +142,17 @@ public class HomeController {
 			if(role.equals("Admin") || role.equals("Management")) {
 				 model = new ModelAndView(PageConstants.dashboardAdmin2);
 				 model.addObject("rewardsList", rewardsList);
-				 model.addObject("reward_points", userDetails.getReward_points());
+				// model.addObject("reward_points", userDetails.getReward_points());
 				 
 			}else if(role.equals("User")) {
 				 model = new ModelAndView(PageConstants.dashboard);
 				 model.addObject("rewardsList", rewardsList);
-				 model.addObject("reward_points", userDetails.getReward_points());
+				// model.addObject("reward_points", userDetails.getReward_points());
 				 
 			}else {
 				model = new ModelAndView(PageConstants.dashboard);
 				model.addObject("rewardsList", rewardsList);
-				 model.addObject("reward_points", userDetails.getReward_points());
+				// model.addObject("reward_points", userDetails.getReward_points());
 				
 			}
 			//List <User> deptList = service.getDeptList(user);

@@ -21,7 +21,7 @@
                       http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
   version="3.1">
 
-  <!-- ======================== Introduction ============================== -->
+  <!-- === Introduction == -->
   <!-- This document defines default values for *all* web applications      -->
   <!-- loaded into this instance of Tomcat.  As each application is         -->
   <!-- deployed, this file is processed, followed by the                    -->
@@ -32,7 +32,7 @@
   <!-- They should go in the "/WEB-INF/web.xml" file in your application.   -->
 
 
-  <!-- ================== Built In Servlet Definitions ==================== -->
+  <!-- ==== Built In Servlet Definitions ====== -->
 
 
   <!-- The default servlet for all web applications, that serves static     -->
@@ -419,7 +419,7 @@
 -->
 
 
-  <!-- ================ Built In Servlet Mappings ========================= -->
+  <!-- == Built In Servlet Mappings ==== -->
 
 
   <!-- The servlet mappings for the built in servlets defined above.  Note  -->
@@ -458,7 +458,7 @@
 -->
 
 
-  <!-- ================== Built In Filter Definitions ===================== -->
+  <!-- ==== Built In Filter Definitions  -->
 
   <!-- A filter that sets various security related HTTP Response headers.   -->
   <!-- This filter supports the following initialization parameters         -->
@@ -586,7 +586,7 @@
 -->
 
 
-  <!-- ==================== Built In Filter Mappings ====================== -->
+  <!-- ====== Built In Filter Mappings = -->
 
   <!-- The mapping for the HTTP header security Filter -->
 <!--
@@ -622,7 +622,7 @@
 -->
 
 
-  <!-- ==================== Default Session Configuration ================= -->
+  <!-- ====== Default Session Configuration === -->
   <!-- You can set the default session timeout (in minutes) for all newly   -->
   <!-- created sessions by modifying the value below.                       -->
 
@@ -631,7 +631,7 @@
     </session-config>
 
 
-  <!-- ===================== Default MIME Type Mappings =================== -->
+  <!--  Default MIME Type Mappings ===== -->
   <!-- When serving static resources, Tomcat will automatically generate    -->
   <!-- a "Content-Type" header based on the resource's filename extension,  -->
   <!-- based on these mappings.  Additional mappings can be added here (to  -->
@@ -4722,7 +4722,7 @@
         <mime-type>application/vnd.handheld-entertainment+xml</mime-type>
     </mime-mapping>
 
-  <!-- ==================== Default Welcome File List ===================== -->
+  <!-- ====== Default Welcome File List  -->
   <!-- When a request URI refers to a directory, the default servlet looks  -->
   <!-- for a "welcome file" within that directory and, if present, to the   -->
   <!-- corresponding resource URI for display.                              -->

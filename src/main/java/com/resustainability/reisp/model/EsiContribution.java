@@ -4,7 +4,6 @@ public class EsiContribution {
 
 private String id,Entity_code,pt,pts,profit_center_code,profit_center_name,month_year,employee_contribution,employer_contribution,total_amount,amount_paid,
 difference,due_date,actual_payment_date,delay_days,challan_no,no_of_emp,status,employee_contributions,employer_contributions,total_amounts,amount_paids,differences,due_dates,actual_payment_dates,delay_dayss,challan_nos,no_of_emps
-<<<<<<< HEAD
 ,created_date,modified_date,created_by,modified_by,atatchment,remarks,atatchments,remarkss;
 
 public String getAtatchment() {
@@ -38,20 +37,13 @@ public String getRemarkss() {
 public void setRemarkss(String remarkss) {
 	this.remarkss = remarkss;
 }
-=======
-,created_date,modified_date,created_by,modified_by;
->>>>>>> 0be22774be56f74f236fbb15502732a798d923a4
 
 public String getCreated_date() {
 	return created_date;
 }
 
 public void setCreated_date(String created_date) {
-<<<<<<< HEAD
 	this.created_date = created_date; 
-=======
-	this.created_date = created_date;
->>>>>>> 0be22774be56f74f236fbb15502732a798d923a4
 }
 
 public String getModified_date() {

@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// ============================================================================
+// ======
 // catalina.policy - Security Policy Permissions for Tomcat
 //
 // This file contains a default set of security policies to be enforced (by the
@@ -23,10 +23,10 @@
 //
 // * Read access to the web application's document root directory
 // * Read, write and delete access to the web application's working directory
-// ============================================================================
+// ======
 
 
-// ========== SYSTEM CODE PERMISSIONS =========================================
+// === SYSTEM CODE PERMISSIONS ======
 
 
 // These permissions apply to javac
@@ -57,7 +57,7 @@ grant codeBase "file:${java.home}/lib/ext/-" {
 //};
 
 
-// ========== CATALINA CODE PERMISSIONS =======================================
+// === CATALINA CODE PERMISSIONS ====
 
 // These permissions apply to the daemon code
 grant codeBase "file:${catalina.home}/bin/commons-daemon.jar" {
@@ -124,7 +124,7 @@ grant codeBase "file:${catalina.home}/lib/-" {
 // };
 
 
-// ========== WEB APPLICATION PERMISSIONS =====================================
+// === WEB APPLICATION PERMISSIONS ==
 
 
 // These permissions are granted by default to all web applications

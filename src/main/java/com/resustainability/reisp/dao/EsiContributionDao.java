@@ -51,7 +51,6 @@ public class EsiContributionDao {
 
 	        		+ "WHERE 1=1 ";
 	        List<Object> params = new ArrayList<>();
-<<<<<<< HEAD
 	        if (!usr.getRole().equals("Admin") && !usr.getRole().equals("SA")) {
 	            String pcCodes = usr.getProfit_center_code();
 
@@ -74,12 +73,10 @@ public class EsiContributionDao {
 	            }
 	        }
 
-=======
     		if(!usr.getRole().equals("Admin") && !usr.getRole().equals("SA")) {
     			sql += "and pf.status <> 'Inactive' and pf.[profit_center_code] = ? ";
     			 params.add(usr.getProfit_center_code());
     		}
->>>>>>> 0be22774be56f74f236fbb15502732a798d923a4
 
 	        if (monthYear != null) {
 	            sql += " AND month_year = ?";

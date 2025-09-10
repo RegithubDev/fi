@@ -2,15 +2,15 @@ eclipse.preferences.version=1
 encoding//src/main/java=UTF-8
 encoding//src/main/resources=UTF-8
 encoding//src/main/webapp/views/dashboardAdmin.jsp=UTF-8
-<<<<<<< HEAD
-<<<<<<< HEAD
+
+
 encoding//src/main/webapp/views/fragments/leaveModal.jsp=UTF-8
-=======
+
 encoding//src/main/webapp/views/pf.jsp=UTF-8
 >>>>>>> 0be2277 (Initial commit)
-=======
+
 encoding//src/main/webapp/views/pf.jsp=UTF-8
->>>>>>> 0be22774be56f74f236fbb15502732a798d923a4
+
 encoding//src/test/java=UTF-8
 encoding//src/test/resources=UTF-8
 encoding/<project>=UTF-8
