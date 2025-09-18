@@ -236,8 +236,8 @@
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="mastersDropdown">
                                 <li><a class="dropdown-item" href="<%=request.getContextPath()%>/user">Users</a></li>
-<%--                                 <li><a class="dropdown-item" href="<%=request.getContextPath()%>/pc">Profit Centers</a></li>
- --%>                            </ul>
+<!--  <li><a class="dropdown-item" href="<%=request.getContextPath()%>/sbu">SBU</a></li>  -->
+                        </ul>
                         </li>
                     </c:if>
                     <li class="nav-item">
@@ -283,6 +283,16 @@
                 </div>
                 <div class="card-subtitle">Handle all aspects of Professional Tax, including calculations, payments, and filings.</div>
             </a>
+            
+               <a href="<%=request.getContextPath()%>/inventory" class="compliance-card pt animate__animated animate__fadeInUp animate__delay-0_6s">
+                <div class="card-header">
+                    <div class="card-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                    <h2 class="card-title">Inventory</h2>
+                </div>
+                <div class="card-subtitle"></div>
+            </a>
+            
+            
         </div>
     </div>
 

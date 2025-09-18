@@ -18,8 +18,8 @@ public class UserPaginationObject {
 	public List<User> getAaData() {
 		return aaData;
 	}
-	public void setAaData(List<User> aaData) {
-		this.aaData = aaData;
+	public void setAaData(List<User> sbuList) {
+		this.aaData = sbuList;
 	}
 	public int getiTotalDisplayRecords() {
 		return iTotalDisplayRecords;
