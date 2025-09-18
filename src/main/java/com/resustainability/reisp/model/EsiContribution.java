@@ -1,10 +1,23 @@
 package com.resustainability.reisp.model;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public class EsiContribution {
 
 private String id,Entity_code,pt,pts,profit_center_code,profit_center_name,month_year,employee_contribution,employer_contribution,total_amount,amount_paid,
 difference,due_date,actual_payment_date,delay_days,challan_no,no_of_emp,status,employee_contributions,employer_contributions,total_amounts,amount_paids,differences,due_dates,actual_payment_dates,delay_dayss,challan_nos,no_of_emps
 ,created_date,modified_date,created_by,modified_by,atatchment,remarks,atatchments,remarkss,entity_name;
+
+private MultipartFile mediaList;
+
+
+public MultipartFile getMediaList() {
+	return mediaList;
+}
+
+public void setMediaList(MultipartFile mediaList) {
+	this.mediaList = mediaList;
+}
 
 public String getAtatchment() {
 	return atatchment;
@@ -301,6 +314,13 @@ public String getEntity_name() {
 public void setEntity_name(String entity_name) {
 	this.entity_name = entity_name;
 }
+
+public static void setUpload_file(String fileName) {
+	// TODO Auto-generated method stub
+	
+}
+
+
 
 
 
