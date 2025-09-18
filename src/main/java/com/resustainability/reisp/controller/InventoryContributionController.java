@@ -1,5 +1,6 @@
 package com.resustainability.reisp.controller;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -11,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -19,10 +21,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.resustainability.reisp.common.DateForUser;
+import com.resustainability.reisp.common.FileUploads;
+import com.resustainability.reisp.constants.CommonConstants;
 import com.resustainability.reisp.constants.PageConstants;
 import com.resustainability.reisp.model.inventoryContribution;
 import com.resustainability.reisp.model.EsiContribution;
@@ -70,7 +75,7 @@ public class InventoryContributionController {
 	
 
 		@RequestMapping(value = "/inventory/add", method = {RequestMethod.GET,RequestMethod.POST})
-		public ModelAndView addinventoryContribution(@ModelAttribute inventoryContribution inventoryContribution,RedirectAttributes attributes,HttpSession session) {
+		public ModelAndView addinventoryContribution(@ModelAttribute inventoryContribution inventoryContribution, MultipartFile file, RedirectAttributes attributes,HttpSession session) {
 			boolean flag = false;
 			String userId = null;
 			String userName = null;
@@ -83,9 +88,23 @@ public class InventoryContributionController {
 			    String dt = formatter.format(new Date());
 				String endDate = DateForUser.date();
 				inventoryContribution.setCreated_by(userId);
+				if(!StringUtils.isEmpty(inventoryContribution.getMediaList())) {
+					MultipartFile multipartFile = inventoryContribution.getMediaList();
+					if (null != multipartFile && !multipartFile.isEmpty()) {
+						String saveDirectory = CommonConstants.SAFETY_FILE_SAVING_PATH + "inventory" + File.separator;
+						String fileName = multipartFile.getOriginalFilename();
+						inventoryContribution.setUpload_file(fileName);
+						//obj.setCreated_date(DateParser.parse(date));
+						if (null != multipartFile && !multipartFile.isEmpty()) {
+							FileUploads.singleFileSaving(multipartFile, saveDirectory, fileName);
+						}
+					}
+				
+				}
 				flag = contributionService.addinventoryContribution(inventoryContribution);
 				if(flag == true) {
 					attributes.addFlashAttribute("success", "PF Contribution Added Succesfully.");
+
 				}
 				else {
 					attributes.addFlashAttribute("error","Adding PF Contribution is failed. Try again.");

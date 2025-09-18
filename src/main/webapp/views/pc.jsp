@@ -1,11 +1,11 @@
-```jsp
+
 <!DOCTYPE html>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <html lang="en">
 <head>
-    <title>Profit Center Management</title>
+    <title>SBU Management</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -222,7 +222,7 @@
         <div class="header-bar animate-fade-in">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <h2 class="mb-1"><i class="fas fa-building me-2"></i>Profit Center Management</h2>
+                    <h2 class="mb-1"><i class="fas fa-building me-2"></i>SBU Management</h2>
                     <p class="mb-0">Manage profit centers and their details</p>
                 </div>
                 <div>
@@ -240,7 +240,7 @@
 
         <div class="card animate-fade-in">
             <div class="card-header">
-                <i class="fas fa-list me-2"></i>Profit Center List
+                <i class="fas fa-list me-2"></i>SBU List
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -310,7 +310,7 @@
             <div class="modal-content">
                 <form action="<%=request.getContextPath()%>/addPc" method="post" id="addPcForm">
                     <div class="modal-header bg-primary text-white">
-                        <h5 class="modal-title"><i class="fas fa-building-plus me-2"></i>Add New Profit Center</h5>
+                        <h5 class="modal-title"><i class="fas fa-building-plus me-2"></i>Add New SBU</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -385,7 +385,7 @@
                     </div>
                     <div class="modal-footer submit-buttons">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" id="addPcBtn">Add Profit Center</button>
+                        <button type="submit" class="btn btn-primary" id="addPcBtn">Add SBU</button>
                     </div>
                 </form>
             </div>
@@ -399,7 +399,7 @@
                 <div class="modal-content">
                     <form action="<%=request.getContextPath()%>/updatePc" method="post" class="editPcForm" data-original-email="${pc.emailId}">
                         <div class="modal-header bg-primary text-white">
-                            <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Edit Profit Center</h5>
+                            <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Edit SBU</h5>
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">

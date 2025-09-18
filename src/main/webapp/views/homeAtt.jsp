@@ -236,7 +236,7 @@
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="mastersDropdown">
                                 <li><a class="dropdown-item" href="<%=request.getContextPath()%>/user">Users</a></li>
-<!--  <li><a class="dropdown-item" href="<%=request.getContextPath()%>/sbu">SBU</a></li>  -->
+<li><a class="dropdown-item" href="<%=request.getContextPath()%>/pc">SBU</a></li> 
                         </ul>
                         </li>
                     </c:if>

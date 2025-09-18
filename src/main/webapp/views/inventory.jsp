@@ -671,7 +671,7 @@
                         </div>
                         <div class="col-md-6">
                             <label for="uploadFile" class="form-label">Upload File</label>
-                            <input type="file" class="form-control" id="uploadFile" name="uploadFile">
+                            <input type="file" class="form-control" id="uploadFile" name="mediaList">
                         </div>
                     </div>
                 </div>

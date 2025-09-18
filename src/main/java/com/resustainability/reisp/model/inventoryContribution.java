@@ -1,10 +1,22 @@
 package com.resustainability.reisp.model;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public class inventoryContribution {
 
 private String id
 	      ,entity_code ,entity_name,profit_center_code,profit_center_name,sbu,month_year,book_value,reported_value,tb_adjustment_gl
 ,tb_system_gl,varience,remarks ,upload_file ,created_by ,created_date ,modified_by ,modified_date,status;
+private MultipartFile mediaList;
+
+
+public MultipartFile getMediaList() {
+	return mediaList;
+}
+
+public void setMediaList(MultipartFile mediaList) {
+	this.mediaList = mediaList;
+}
 
 public String getId() {
 	return id;

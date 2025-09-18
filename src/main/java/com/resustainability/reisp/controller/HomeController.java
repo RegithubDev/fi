@@ -68,7 +68,7 @@ public class HomeController {
 		try {   
 			userId = (String) session.getAttribute("USER_ID");
 			userName = (String) session.getAttribute("USER_NAME");
-			role = (String) session.getAttribute("BASE_ROLE");
+			role = (String) session.getAttribute("ROLE");
 			String email = (String) session.getAttribute("USER_EMAIL");
 			obj.setRole(role);
 			obj.setUser(userId);
