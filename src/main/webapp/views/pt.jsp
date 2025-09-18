@@ -489,6 +489,21 @@
                                 </select>
                             </div>
                         </div>
+                        
+                        <h5 class="mt-4"><i class="fas fa-file-alt me-2"></i>Additional Details</h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Remarks</label>
+                                <textarea class="form-control" name="remarks" rows="3" placeholder="Enter remarks here...">${pf.remarks}</textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Upload File</label>
+                                <input type="file" class="form-control" name="uploadFile">
+                            </div>
+                          
+                        </div>
+                        
+                        
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -600,6 +615,22 @@
                             <input type="number" min="0" class="form-control" id="no_of_emp" name="no_of_emp" placeholder="e.g., 17">
                         </div>
                     </div>
+                    
+                    <h5 class="mt-4"><i class="fas fa-file-alt me-2"></i>Additional Details</h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Remarks</label>
+                                <textarea class="form-control" name="remarks" rows="3" placeholder="Enter remarks here...">${pt.remarks}</textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Upload File</label>
+                                <input type="file" class="form-control" name="uploadFile">
+                            </div>
+                          
+                        </div>
+                    
+                    
+                    
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

@@ -45,7 +45,7 @@ import com.google.gson.GsonBuilder;
 import com.resustainability.reisp.common.DateForUser;
 import com.resustainability.reisp.constants.PageConstants;
 import com.resustainability.reisp.model.Pc;
-import com.resustainability.reisp.model.UserPaginationObject;
+import com.resustainability.reisp.model.PcPaginationObject;
 import com.resustainability.reisp.service.PcService;
 
 @Controller
@@ -82,11 +82,15 @@ public class PcController {
         try {
             String userId = (String) session.getAttribute("USER_ID");
             String userName = (String) session.getAttribute("USER_NAME");
+            if (userId == null || userName == null) {
+                throw new Exception("User session expired or invalid.");
+            }
             List<Pc> pcList = service.getPcList(null);
             model.addObject("pcList", pcList);
         } catch (Exception e) {
             logger.error("pc : User Id - " + session.getAttribute("USER_ID") + " - User Name - " + session.getAttribute("USER_NAME") + " - " + e.getMessage());
             e.printStackTrace();
+            model.addObject("error", "Access denied or session expired.");
         }
         return model;
     }
@@ -98,6 +102,9 @@ public class PcController {
             model.setViewName("redirect:/done-pc");
             String userId = (String) session.getAttribute("USER_ID");
             String userName = (String) session.getAttribute("USER_NAME");
+            if (userId == null || userName == null) {
+                throw new Exception("User session expired or invalid.");
+            }
             DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             String dt = formatter.format(new Date());
             obj.setCreatedDate(dt);
@@ -122,6 +129,9 @@ public class PcController {
             model.setViewName("redirect:/done-pc");
             String userId = (String) session.getAttribute("USER_ID");
             String userName = (String) session.getAttribute("USER_NAME");
+            if (userId == null || userName == null) {
+                throw new Exception("User session expired or invalid.");
+            }
             DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             String dt = formatter.format(new Date());
             obj.setModifiedDate(dt);
@@ -146,6 +156,9 @@ public class PcController {
             model.setViewName("redirect:/done-pc");
             String userId = (String) session.getAttribute("USER_ID");
             String userName = (String) session.getAttribute("USER_NAME");
+            if (userId == null || userName == null) {
+                throw new Exception("User session expired or invalid.");
+            }
             boolean flag = service.deletePc(obj);
             if (flag) {
                 attributes.addFlashAttribute("success", "Profit Center Deleted Successfully.");
@@ -167,6 +180,9 @@ public class PcController {
         try {
             String userId = (String) session.getAttribute("USER_ID");
             String userName = (String) session.getAttribute("USER_NAME");
+            if (userId == null || userName == null) {
+                throw new Exception("User session expired or invalid.");
+            }
             pw = response.getWriter();
             Integer pageNumber = 0;
             Integer pageDisplayLength = 0;
@@ -193,7 +209,7 @@ public class PcController {
 
             int totalRecords = getTotalRecords(obj, searchParameter);
 
-            UserPaginationObject pcJsonObject = new UserPaginationObject();
+            PcPaginationObject pcJsonObject = new PcPaginationObject();
             pcJsonObject.setiTotalDisplayRecords(totalRecords);
             pcJsonObject.setiTotalRecords(totalRecords);
             pcJsonObject.setAaData(pcList);
@@ -203,6 +219,8 @@ public class PcController {
         } catch (Exception e) {
             logger.error("getPcList : User Id - " + session.getAttribute("USER_ID") + " - User Name - " + session.getAttribute("USER_NAME") + " - " + e.getMessage());
             e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            json2 = "{\"error\": \"Access denied or session expired.\"}";
         }
         pw.println(json2);
     }
@@ -224,16 +242,16 @@ public class PcController {
             pcList = service.getPcList(obj);
             if (!StringUtils.isEmpty(searchParameter)) {
                 pcList = pcList.stream()
-                        .filter(pc -> pc.getId().contains(searchParameter) ||
-                                pc.getEntityCode().contains(searchParameter) ||
-                                pc.getEntityName().contains(searchParameter) ||
-                                pc.getProfitCenterCode().contains(searchParameter) ||
-                                pc.getProfitCenterName().contains(searchParameter) ||
-                                pc.getSbu().contains(searchParameter) ||
-                                pc.getEmpId().contains(searchParameter) ||
-                                pc.getEmpName().contains(searchParameter) ||
-                                pc.getEmailId().contains(searchParameter) ||
-                                pc.getStatus().contains(searchParameter))
+                        .filter(pc -> (pc.getId() != null && pc.getId().contains(searchParameter)) ||
+                                (pc.getEntityCode() != null && pc.getEntityCode().contains(searchParameter)) ||
+                                (pc.getEntityName() != null && pc.getEntityName().contains(searchParameter)) ||
+                                (pc.getProfitCenterCode() != null && pc.getProfitCenterCode().contains(searchParameter)) ||
+                                (pc.getProfitCenterName() != null && pc.getProfitCenterName().contains(searchParameter)) ||
+                                (pc.getSbu() != null && pc.getSbu().contains(searchParameter)) ||
+                                (pc.getEmpId() != null && pc.getEmpId().contains(searchParameter)) ||
+                                (pc.getEmpName() != null && pc.getEmpName().contains(searchParameter)) ||
+                                (pc.getEmailId() != null && pc.getEmailId().contains(searchParameter)) ||
+                                (pc.getStatus() != null && pc.getStatus().contains(searchParameter)))
                         .toList();
             }
             int endIndex = Math.min(startIndex + offset, pcList.size());
@@ -249,6 +267,9 @@ public class PcController {
         try {
             String userId = (String) session.getAttribute("USER_ID");
             String userName = (String) session.getAttribute("USER_NAME");
+            if (userId == null || userName == null) {
+                throw new Exception("User session expired or invalid.");
+            }
             List<Pc> dataList = service.getPcList(obj);
             if (dataList != null && !dataList.isEmpty()) {
                 XSSFWorkbook workBook = new XSSFWorkbook();

@@ -514,6 +514,21 @@
                           </select>
                       </div>
                   </div>
+                  <h5 class="mt-4"><i class="fas fa-file-alt me-2"></i>Additional Details</h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Remarks</label>
+                                <textarea class="form-control" name="remarks" rows="3" placeholder="Enter remarks here...">${pf.remarks}</textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Upload File</label>
+                                <input type="file" class="form-control" name="uploadFile">
+                            </div>
+                          
+                        </div>
+                  
+                  
+                  
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -602,6 +617,19 @@
                          <div class="col-md-4 col-lg-3"><label class="form-label">Challan Number</label><input type="text" class="form-control" name="challan_no" id="challan_no" placeholder="Enter challan number" required></div>
                          <div class="col-md-4 col-lg-3"><label class="form-label">Employee Count</label><input type="number" min="0" class="form-control" name="no_of_emp" id="no_of_emp" placeholder="e.g., 17" required></div>
                     </div>
+                    <h5 class="mt-4"><i class="fas fa-file-alt me-2"></i>Additional Details</h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Remarks</label>
+                                <textarea class="form-control" name="remarks" rows="3" placeholder="Enter remarks here...">${inventory.remarks}</textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Upload File</label>
+                                <input type="file" class="form-control" name="uploadFile">
+                            </div>
+                          
+                        </div>
+                    
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
