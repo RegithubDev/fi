@@ -126,6 +126,22 @@ public class PTContributionController {
 			    String dt = formatter.format(new Date());
 				String endDate = DateForUser.date();
 				
+				
+				if(!StringUtils.isEmpty(esiContribution.getMediaList())) {
+					MultipartFile multipartFile = esiContribution.getMediaList();
+					if (null != multipartFile && !multipartFile.isEmpty()) {
+						String saveDirectory = CommonConstants.SAFETY_FILE_SAVING_PATH + "pt" + File.separator;
+						String fileName = multipartFile.getOriginalFilename();
+						EsiContribution.setUpload_file(fileName);
+						//obj.setCreated_date(DateParser.parse(date));
+						if (null != multipartFile && !multipartFile.isEmpty()) {
+							FileUploads.singleFileSaving(multipartFile, saveDirectory, fileName);
+						}
+					}
+				
+				}
+				
+				
 				flag = contributionService.updatePtContribution(esiContribution);
 				if(flag == true) {
 					attributes.addFlashAttribute("success", "PF Contribution updated Succesfully.");

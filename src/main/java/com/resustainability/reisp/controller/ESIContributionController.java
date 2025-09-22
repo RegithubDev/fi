@@ -98,13 +98,13 @@ public class ESIContributionController {
 				
 				flag = contributionService.addEsiContribution(esiContribution);
 				if(flag == true) {
-					attributes.addFlashAttribute("success", "PF Contribution Added Succesfully.");
+					attributes.addFlashAttribute("success", "Esi Contribution Added Succesfully.");
 				}
 				else {
-					attributes.addFlashAttribute("error","Adding PF Contribution is failed. Try again.");
+					attributes.addFlashAttribute("error","Adding Esi Contribution is failed. Try again.");
 				}
 			} catch (Exception e) {
-				attributes.addFlashAttribute("error","Adding PF Contribution is failed. Try again.");
+				attributes.addFlashAttribute("error","Adding Esi Contribution is failed. Try again.");
 				e.printStackTrace();
 			}
 			return model;
@@ -123,15 +123,31 @@ public class ESIContributionController {
 			    String dt = formatter.format(new Date());
 				String endDate = DateForUser.date();
 				
+				if(!StringUtils.isEmpty(esiContribution.getMediaList())) {
+					MultipartFile multipartFile = esiContribution.getMediaList();
+					if (null != multipartFile && !multipartFile.isEmpty()) {
+						String saveDirectory = CommonConstants.SAFETY_FILE_SAVING_PATH + "esi" + File.separator;
+						String fileName = multipartFile.getOriginalFilename();
+						EsiContribution.setUpload_file(fileName);
+						//obj.setCreated_date(DateParser.parse(date));
+						if (null != multipartFile && !multipartFile.isEmpty()) {
+							FileUploads.singleFileSaving(multipartFile, saveDirectory, fileName);
+						}
+					}
+				
+				}
+				
+				
+				
 				flag = contributionService.updateEsiContribution(esiContribution);
 				if(flag == true) {
-					attributes.addFlashAttribute("success", "PF Contribution updated Succesfully.");
+					attributes.addFlashAttribute("success", "Esi Contribution updated Succesfully.");
 				}
 				else {
-					attributes.addFlashAttribute("error","updating PF Contribution is failed. Try again.");
+					attributes.addFlashAttribute("error","updating Esi Contribution is failed. Try again.");
 				}
 			} catch (Exception e) {
-				attributes.addFlashAttribute("error","updating PF Contribution is failed. Try again.");
+				attributes.addFlashAttribute("error","updating Esi Contribution is failed. Try again.");
 				e.printStackTrace();
 			}
 			return model;

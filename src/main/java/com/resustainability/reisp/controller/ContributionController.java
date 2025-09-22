@@ -104,8 +104,6 @@ public class ContributionController {
 				
 				
 				
-				
-				
 				flag = contributionService.addPfContribution(pfContribution);
 				if(flag == true) {
 					attributes.addFlashAttribute("success", "PF Contribution Added Succesfully.");
@@ -132,6 +130,22 @@ public class ContributionController {
 				DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd"); 
 			    String dt = formatter.format(new Date());
 				String endDate = DateForUser.date();
+				if(!StringUtils.isEmpty(pfContribution.getMediaList())) {
+					MultipartFile multipartFile = pfContribution.getMediaList();
+					if (null != multipartFile && !multipartFile.isEmpty()) {
+						String saveDirectory = CommonConstants.SAFETY_FILE_SAVING_PATH + "pf" + File.separator;
+						String fileName = multipartFile.getOriginalFilename();
+						PfContribution.setUpload_file(fileName);
+						//obj.setCreated_date(DateParser.parse(date));
+						if (null != multipartFile && !multipartFile.isEmpty()) {
+							FileUploads.singleFileSaving(multipartFile, saveDirectory, fileName);
+						}
+					}
+				
+				}
+				
+				
+				
 				
 				flag = contributionService.updatePfContribution(pfContribution);
 				if(flag == true) {

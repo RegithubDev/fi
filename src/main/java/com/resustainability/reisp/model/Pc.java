@@ -110,4 +110,14 @@ public class Pc {
     public void setStatus(String status) {
         this.status = status;
     }
+
+	public void setModifiedBy(String userId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setCreatedBy(String userId) {
+		// TODO Auto-generated method stub
+		
+	}
 }

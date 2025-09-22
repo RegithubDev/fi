@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@page import="com.resustainability.reisp.constants.CommonConstants"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -530,7 +532,14 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Upload File</label>
-                                <input type="file" class="form-control" name="uploadFile">
+                                <input type="file" class="form-control" name="mediaList">
+								    <c:if test="${inventory.upload_file ne 'null'}"> <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>inventory/${inventory.upload_file }" 
+								   class="filevalue" 
+								   target="_blank">
+								   <i class="fa fa-eye"></i> ${inventory.upload_file}
+								</a></c:if>
+       
+
                             </div>
                           
                         </div>

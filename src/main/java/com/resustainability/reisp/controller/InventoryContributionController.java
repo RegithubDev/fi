@@ -103,14 +103,14 @@ public class InventoryContributionController {
 				}
 				flag = contributionService.addinventoryContribution(inventoryContribution);
 				if(flag == true) {
-					attributes.addFlashAttribute("success", "PF Contribution Added Succesfully.");
+					attributes.addFlashAttribute("success", "inventory Contribution Added Succesfully.");
 
 				}
 				else {
-					attributes.addFlashAttribute("error","Adding PF Contribution is failed. Try again.");
+					attributes.addFlashAttribute("error","Adding inventory Contribution is failed. Try again.");
 				}
 			} catch (Exception e) {
-				attributes.addFlashAttribute("error","Adding PF Contribution is failed. Try again.");
+				attributes.addFlashAttribute("error","Adding inventory Contribution is failed. Try again.");
 				e.printStackTrace();
 			}
 			return model;
@@ -128,16 +128,30 @@ public class InventoryContributionController {
 				DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd"); 
 			    String dt = formatter.format(new Date());
 				String endDate = DateForUser.date();
+				if(!StringUtils.isEmpty(inventoryContribution.getMediaList())) {
+					MultipartFile multipartFile = inventoryContribution.getMediaList();
+					if (null != multipartFile && !multipartFile.isEmpty()) {
+						String saveDirectory = CommonConstants.SAFETY_FILE_SAVING_PATH + "inventory" + File.separator;
+						String fileName = multipartFile.getOriginalFilename();
+						inventoryContribution.setUpload_file(fileName);
+						//obj.setCreated_date(DateParser.parse(date));
+						if (null != multipartFile && !multipartFile.isEmpty()) {
+							FileUploads.singleFileSaving(multipartFile, saveDirectory, fileName);
+						}
+					}
+				
+				}
+				
 				
 				flag = contributionService.updateinventoryContribution(inventoryContribution);
 				if(flag == true) {
-					attributes.addFlashAttribute("success", "PF Contribution updated Succesfully.");
+					attributes.addFlashAttribute("success", "inventory Contribution updated Succesfully.");
 				}
 				else {
-					attributes.addFlashAttribute("error","updating PF Contribution is failed. Try again.");
+					attributes.addFlashAttribute("error","updating inventory Contribution is failed. Try again.");
 				}
 			} catch (Exception e) {
-				attributes.addFlashAttribute("error","updating PF Contribution is failed. Try again.");
+				attributes.addFlashAttribute("error","updating inventory Contribution is failed. Try again.");
 				e.printStackTrace();
 			}
 			return model;

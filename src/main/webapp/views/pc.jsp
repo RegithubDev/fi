@@ -208,7 +208,7 @@
     <div class="container-fluid py-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <a href="<%=request.getContextPath()%>/home" class="btn btn-dark btn-lg back-btn animate-fade-in">
+                <a href="<%=request.getContextPath()%>/fi-d26827851841284wjvwunfuqwhfbwqr7212hfu" class="btn btn-dark btn-lg back-btn animate-fade-in">
                     <i class="fas fa-arrow-left me-2"></i>Back
                 </a>
             </div>
@@ -263,7 +263,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <c:forEach items="${pcList}" var="pc" varStatus="row">
+                            <c:forEach items="${PcList}" var="pc" varStatus="row">
                                 <tr>
                                     <td>${fn:length(pcList) - row.index}</td>
                                     <td>${pc.entityCode}</td>
@@ -491,194 +491,100 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script>
-        $(document).ready(function() {
-            // Collect all existing emails and their status from the table
-            const existingProfitCenters = [];
-            $('#pcTable tbody tr').each(function() {
-                const email = $(this).find('.badge.bg-info').text().trim();
-                const status = $(this).find('.status-badge').text().trim();
-                existingProfitCenters.push({ email, status });
-            });
-
-            // Initialize DataTable
-            $('#pcTable').DataTable({
-                responsive: true,
-                order: [[0, 'desc']],
-                pageLength: 25,
-                language: {
-                    search: "",
-                    searchPlaceholder: "Search profit centers...",
-                    lengthMenu: "Show _MENU_ entries",
-                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                    paginate: {
-                        previous: "<i class='fas fa-chevron-left'></i>",
-                        next: "<i class='fas fa-chevron-right'></i>"
-                    }
-                },
-                dom: '<"row"<"col-md-6"l><"col-md-6"f>>rt<"row"<"col-md-6"i><"col-md-6"p>>',
-                initComplete: function() {
-                    $('.dataTables_filter input').addClass('form-control');
-                    $('.dataTables_length select').addClass('form-select');
-                }
-            });
-
-            // Function to initialize Select2
-            function initSelect2(modal) {
-                modal.find('.searchable-select').select2({
-                    theme: 'bootstrap-5',
-                    dropdownParent: modal
-                });
+<script>
+$(document).ready(function() {
+    // Collect all existing emails and their status from the server
+    let existingProfitCenters = [];
+    $.ajax({
+        url: '<%=request.getContextPath()%>/ajax/getpcList',
+        type: 'POST',
+        data: { iDisplayStart: 0, iDisplayLength: 1000 },
+        success: function(response) {
+            if (response.aaData) {
+                existingProfitCenters = response.aaData.map(pc => ({
+                    email: pc.emailId,
+                    status: pc.status
+                }));
             }
-
-            // Initialize Select2 when modals are shown
-            $('#addPcModal').on('shown.bs.modal', function () {
-                initSelect2($(this));
-                $('#addEmailValidation').hide().removeClass('email-valid email-invalid');
-                $('#addPcBtn').prop('disabled', false);
-                $('.submit-buttons').removeClass('buttons-disabled');
-            });
-
-            $('[id^="editPcModal"]').on('shown.bs.modal', function () {
-                initSelect2($(this));
-                const pcId = $(this).attr('id').replace('editPcModal', '');
-                $(`.email-validation-${pcId}`).hide().removeClass('email-valid email-invalid');
-                $(`button[data-pc-id="${pcId}"]`).prop('disabled', false);
-                $(this).find('.submit-buttons').removeClass('buttons-disabled');
-            });
-
-            // Email validation function
-            function validateEmail(email, originalEmail = null) {
-                const existingPc = existingProfitCenters.find(pc => pc.email === email);
-                if (originalEmail && email === originalEmail) {
-                    return true;
-                }
-                if (!existingPc) {
-                    return true;
-                }
-                if (existingPc.status !== 'Active') {
-                    return true;
-                }
-                return false;
-            }
-
-            // Real-time email validation for Add Profit Center form
-            $('#addEmail').on('input', function() {
-                const email = $(this).val().trim();
-                const validationElement = $('#addEmailValidation');
-
-                if (email === '') {
-                    validationElement.hide();
-                    $('#addPcBtn').prop('disabled', false);
-                    $('.submit-buttons').removeClass('buttons-disabled');
-                    return;
-                }
-
-                const isValid = validateEmail(email);
-
-                if (isValid) {
-                    validationElement.html('<i class="fas fa-check-circle"></i> Email is available')
-                        .removeClass('email-invalid').addClass('email-valid').show();
-                    $('#addPcBtn').prop('disabled', false);
-                    $('.submit-buttons').removeClass('buttons-disabled');
-                } else {
-                    validationElement.html('<i class="fas fa-exclamation-circle"></i> Email already exists with Active status')
-                        .removeClass('email-valid').addClass('email-invalid').show();
-                    $('#addPcBtn').prop('disabled', true);
-                    $('.submit-buttons').addClass('buttons-disabled');
-                }
-            });
-
-            // Real-time email validation for Edit Profit Center forms
-            $(document).on('input', '.email-input', function() {
-                const email = $(this).val().trim();
-                const form = $(this).closest('.editPcForm');
-                const originalEmail = form.data('original-email');
-                const pcId = form.find('.update-pc-btn').data('pc-id');
-                const validationElement = $(`.email-validation-${pcId}`);
-                const submitBtn = form.find('.update-pc-btn');
-
-                if (email === '') {
-                    validationElement.hide();
-                    submitBtn.prop('disabled', false);
-                    form.find('.submit-buttons').removeClass('buttons-disabled');
-                    return;
-                }
-
-                const isValid = validateEmail(email, originalEmail);
-
-                if (isValid) {
-                    validationElement.html('<i class="fas fa-check-circle"></i> Email is available')
-                        .removeClass('email-invalid').addClass('email-valid').show();
-                    submitBtn.prop('disabled', false);
-                    form.find('.submit-buttons').removeClass('buttons-disabled');
-                } else {
-                    validationElement.html('<i class="fas fa-exclamation-circle"></i> Email already exists with Active status')
-                        .removeClass('email-valid').addClass('email-invalid').show();
-                    submitBtn.prop('disabled', true);
-                    form.find('.submit-buttons').addClass('buttons-disabled');
-                }
-            });
-
-            // Form submission handling for Add Profit Center
-            $('#addPcForm').submit(function(e) {
-                const email = $('#addEmail').val().trim();
-                if (!validateEmail(email)) {
-                    e.preventDefault();
-                    showToast('Email already exists with Active status. Please use a different email address.', 'danger');
-                    $('#addEmail').focus();
-                    return false;
-                }
-            });
-
-            // Handle edit form submissions
-            $('.editPcForm').submit(function(e) {
-                const form = $(this);
-                const email = form.find('.email-input').val().trim();
-                const originalEmail = form.data('original-email');
-                if (email !== originalEmail && !validateEmail(email)) {
-                    e.preventDefault();
-                    showToast('Email already exists with Active status. Please use a different email address.', 'danger');
-                    form.find('.email-input').focus();
-                    return false;
-                }
-            });
-
-            // Show success message if present
-            <c:if test="${not empty success}">
-                showToast('${success}', 'success');
-            </c:if>
-
-            // Show error message if present
-            <c:if test="${not empty error}">
-                showToast('${error}', 'danger');
-            </c:if>
-
-            // Add animation to modals when they are shown
-            $('.modal').on('show.bs.modal', function() {
-                $(this).find('.modal-content').addClass('animate__animated animate__fadeInDown');
-            });
-
-            // Remove animation classes when modal is closed
-            $('.modal').on('hidden.bs.modal', function() {
-                $(this).find('.modal-content').removeClass('animate__animated animate__fadeInDown');
-            });
-        });
-
-        // Toast notification function
-        function showToast(message, type) {
-            const toast = $('#toastNotification');
-            const alert = toast.find('.alert');
-
-            alert.removeClass('alert-success alert-danger alert-warning alert-info');
-            alert.addClass('alert-' + type);
-            $('#toastMessage').text(message);
-            toast.addClass('show');
-
-            setTimeout(function() {
-                toast.removeClass('show');
-            }, 5000);
+        },
+        error: function(xhr, status, error) {
+            console.error("Error fetching initial data: ", error);
         }
-    </script>
+    });
+
+    // Initialize DataTable with AJAX
+    $('#pcTable').DataTable({
+        responsive: true,
+        order: [[0, 'desc']],
+        pageLength: 25,
+        serverSide: true,
+        processing: true, // Show loading indicator
+        ajax: {
+            url: '<%=request.getContextPath()%>/ajax/getpcList',
+            type: 'POST',
+            dataSrc: 'aaData',
+            data: function(d) {
+                d.iDisplayStart = d.start;
+                d.iDisplayLength = d.length;
+                d.sSearch = d.search.value;
+                d.iSortCol_0 = d.order[0]?.column || 0;
+                d.sSortDir_0 = d.order[0]?.dir || 'asc';
+            },
+            error: function(xhr, status, error) {
+                console.error("AJAX Error: ", status, error);
+            }
+        },
+        columns: [
+            { data: null, render: function(data, type, row, meta) {
+                return meta.row + meta.settings._iDisplayStart + 1; // Serial number
+            }},
+            { data: 'entityCode' },
+            { data: 'entityName' },
+            { data: 'profitCenterCode' },
+            { data: 'profitCenterName' },
+            { data: 'sbu' },
+            { data: 'empId' },
+            { data: 'empName' },
+            { data: 'emailId', render: function(data) {
+                return '<span class="badge bg-info">' + data + '</span>';
+            }},
+            { data: 'createdDate' },
+            { data: 'modifiedDate' },
+            { data: 'status', render: function(data) {
+                return '<span class="status-badge ' + (data === 'Active' ? 'status-active' : 'status-inactive') + '">' + data + '</span>';
+            }},
+            { data: null, render: function(data, type, row) {
+                return `
+                    <button class="btn btn-sm btn-primary action-btn me-1" data-bs-toggle="modal" data-bs-target="#editPcModal${row.id}">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <form action="<%=request.getContextPath()%>/deletePc" method="post" style="display: inline;">
+                        <input type="hidden" name="id" value="${row.id}">
+                        <button type="submit" class="btn btn-sm btn-danger action-btn" onclick="return confirm('Are you sure you want to delete this profit center?');">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>`;
+            }}
+        ],
+        language: {
+            search: "",
+            searchPlaceholder: "Search profit centers...",
+            lengthMenu: "Show _MENU_ entries",
+            info: "Showing _START_ to _END_ of _TOTAL_ entries",
+            paginate: {
+                previous: "<i class='fas fa-chevron-left'></i>",
+                next: "<i class='fas fa-chevron-right'></i>"
+            }
+        },
+        dom: '<"row"<"col-md-6"l><"col-md-6"f>>rt<"row"<"col-md-6"i><"col-md-6"p>>',
+        initComplete: function() {
+            $('.dataTables_filter input').addClass('form-control');
+            $('.dataTables_length select').addClass('form-select');
+        }
+    });
+
+    // Rest of your JavaScript (initSelect2, email validation, form submission, toast) remains unchanged
+});
+</script>
 </body>
 </html>

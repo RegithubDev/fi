@@ -71,4 +71,6 @@ public class InventoryContributionService {
             throw new RuntimeException("Error fetching inventory contributions: " + e.getMessage(), e);
         }
     }
+
+
 }
