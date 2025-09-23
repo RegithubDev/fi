@@ -131,7 +131,7 @@ public class PTContributionDao {
 		 				    + ", due_date = :due_dates"
 		 				    + ", actual_payment_date = :actual_payment_dates"
 		 				    + ", no_of_emp = :no_of_emps"
-		 				    + ", status = :status, modified_date = getdate(),modified_by =:modified_by.upload_file =:upload_file,remarks =:remarks  "
+		 				    + ", status = :status, modified_date = getdate(),modified_by =:modified_by,upload_file =:upload_file,remarks =:remarks  "
 		 				    + " WHERE id = :id";
 
 					BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(pf);		 

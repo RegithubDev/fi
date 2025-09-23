@@ -469,7 +469,7 @@
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label fw-bold">Total (₹)</label>
-                                <input type="number" id="total_amount_${index.count}" name="total_amount" value="${pt.total_amount}" class="form-control bg-light" readonly required />
+                                <input type="number" id="total_amount_${index.count}" name="total_amounts" value="${pt.total_amount}" class="form-control bg-light" readonly required />
                             </div>
                         </div>
 
@@ -478,31 +478,31 @@
                         <div class="row mb-3 g-3">
                             <div class="col-md-4">
                                 <label class="form-label">Amount Paid (₹)</label>
-                                <input type="number" step="0.01" min="0" id="amount_paid_${index.count}" name="amount_paid" class="form-control" value="${pt.amount_paid}" oninput="calculateDifference_edit(${index.count})" required />
+                                <input type="number" step="0.01" min="0" id="amount_paid_${index.count}" name="amount_paids" class="form-control" value="${pt.amount_paid}" oninput="calculateDifference_edit(${index.count})" required />
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label fw-bold">Balance (₹)</label>
-                                <input type="number" id="difference_${index.count}" name="difference" value="${pt.difference}" class="form-control bg-light" readonly required />
+                                <input type="number" id="difference_${index.count}" name="differences" value="${pt.difference}" class="form-control bg-light" readonly required />
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">Challan Number</label>
-                                <input type="text" id="challan_no_${index.count}" name="challan_no" class="form-control" value="${pt.challan_no}" placeholder="Enter challan number" />
+                                <input type="text" id="challan_no_${index.count}" name="challan_nos" class="form-control" value="${pt.challan_no}" placeholder="Enter challan number" />
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Due Date</label>
-                                <input type="date" id="due_date_${index.count}" name="due_date" class="form-control" value="${pt.due_date}" required />
+                                <input type="date" id="due_date_${index.count}" name="due_dates" class="form-control" value="${pt.due_date}" required />
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Actual Payment Date</label>
-                                <input type="date" id="actual_payment_date_${index.count}" name="actual_payment_date" class="form-control actual-payment-date-input" value="${pt.actual_payment_date}" onchange="calculateDelayDays_edit(${index.count})" />
+                                <input type="date" id="actual_payment_date_${index.count}" name="actual_payment_dates" class="form-control actual-payment-date-input" value="${pt.actual_payment_date}" onchange="calculateDelayDays_edit(${index.count})" />
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Delay in Days</label>
-                                <input type="number" id="delay_days_${index.count}" name="delay_days" class="form-control bg-light" value="${pt.delay_days}" readonly />
+                                <input type="number" id="delay_days_${index.count}" name="delay_dayss" class="form-control bg-light" value="${pt.delay_days}" readonly />
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Employee Count</label>
-                                <input type="number" min="0" id="no_of_emp_${index.count}" name="no_of_emp" class="form-control" value="${pt.no_of_emp}" placeholder="e.g., 17" />
+                                <input type="number" min="0" id="no_of_emp_${index.count}" name="no_of_emps" class="form-control" value="${pt.no_of_emp}" placeholder="e.g., 17" />
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label fw-bold">Status</label>
@@ -517,17 +517,27 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label">Remarks</label>
-                                <textarea class="form-control" name="remarks" rows="3" placeholder="Enter remarks here...">${pf.remarks}</textarea>
+                                <textarea class="form-control" name="remarks" rows="3" placeholder="Enter remarks here...">${pt.remarks}</textarea>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Upload File</label>
                                 <input type="file" class="form-control" name="mediaList">
-                                  <c:if test="${pt.upload_file ne 'null'}"> <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>pt/${pt.upload_file }" 
-								   class="filevalue" 
-								   target="_blank">
-								   <i class="fa fa-eye"></i> ${pt.upload_file}
-								   
-								</a></c:if>
+                                 <c:choose>
+                                       <c:when test="${not empty pt.upload_file}">
+
+                                           <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>pt/${pt.upload_file }" 
+											   class="filevalue" 
+											   target="_blank">
+											   ${pt.upload_file}
+											</a>
+											
+                                        </c:when>
+                                       
+                                        <c:otherwise>
+                                        </c:otherwise>
+                                    </c:choose>
+                         <input type="hidden" id="challan_no_edit1_${index.count}" name="upload_file" class="form-control" value="${pt.upload_file}" />
+                                  
                             </div>
                           
                         </div>
@@ -870,106 +880,121 @@ $(document).ready(function () {
     });
 
     // Edit Modal Calculations
-    function calculateTotal_edit(index) {
-        var pt = parseNumericInput($('#pt_contribution_' + index));
-        $('#total_amount_' + index).val(pt.toFixed(2));
-        calculateDifference_edit(index);
-    }
+  
+    $(function() {
+   	   window.calculateTotal_edit = function(index) {
+   		 var pt = parseNumericInput($('#pt_contribution_' + index));
+         $('#total_amount_' + index).val(pt.toFixed(2));
+         calculateDifference_edit(index);
+   	   }
+   	});
+  
+    $(function() {
+  	   window.calculateDifference_edit = function(index) {
+  		 var total = parseNumericInput($('#total_amount_' + index));
+         var paidInput = $('#amount_paid_' + index);
+         var paid = parseNumericInput(paidInput);
+         
+         if (paid > total) {
+             paidInput.val(total.toFixed(2));
+             paid = total;
+         }
 
-    function calculateDifference_edit(index) {
-        var total = parseNumericInput($('#total_amount_' + index));
-        var paidInput = $('#amount_paid_' + index);
-        var paid = parseNumericInput(paidInput);
-        
-        if (paid > total) {
-            paidInput.val(total.toFixed(2));
-            paid = total;
-        }
+         var difference = total - paid;
+         $('#difference_' + index).val(difference.toFixed(2));
+  	   }
+  	});
 
-        var difference = total - paid;
-        $('#difference_' + index).val(difference.toFixed(2));
-    }
+    $(function() {
+ 	   window.calculateDelayDays_edit = function(index) {
+ 		   var dueDateStr = $('#due_date_' + index).val();
+ 	        var actualDateStr = $('#actual_payment_date_' + index).val();
+ 	        
+ 	        if (dueDateStr && actualDateStr) {
+ 	            var diffDays = (new Date(actualDateStr) - new Date(dueDateStr)) / (1000 * 3600 * 24);
+ 	            $('#delay_days_' + index).val(Math.max(0, Math.ceil(diffDays)));
+ 	        } else {
+ 	            $('#delay_days_' + index).val(0);
+ 	        }
+ 	   }
+ 	});
 
-    function calculateDelayDays_edit(index) {
-        var dueDateStr = $('#due_date_' + index).val();
-        var actualDateStr = $('#actual_payment_date_' + index).val();
-        
-        if (dueDateStr && actualDateStr) {
-            var diffDays = (new Date(actualDateStr) - new Date(dueDateStr)) / (1000 * 3600 * 24);
-            $('#delay_days_' + index).val(Math.max(0, Math.ceil(diffDays)));
-        } else {
-            $('#delay_days_' + index).val(0);
-        }
-    }
 
     // Add Modal Calculations
     function parseNumericInput(selector) { 
         return Math.max(0, parseFloat($(selector).val()) || 0); 
     }
+    $(function() {
+    	   window.calculateTotal = function() {
+    		   var total = parseNumericInput($('#pt_contribution')); 
+    	        $('#total_amount').val(total.toFixed(2)); 
+    	        calculateDifference(); 
+    	   }
+    	});
+   
+    $(function() {
+ 	   window.calculateDifference = function() {
+ 		  var total = parseNumericInput($('#total_amount'));
+ 	        var paidInput = $('#amount_paid');
+ 	        var paid = parseNumericInput(paidInput);
 
-    function calculateTotal() { 
-        var total = parseNumericInput($('#pt_contribution')); 
-        $('#total_amount').val(total.toFixed(2)); 
-        calculateDifference(); 
-    }
+ 	        if (paid > total) {
+ 	            paidInput.val(total.toFixed(2));
+ 	            paid = total;
+ 	        }
 
-    function calculateDifference() { 
-        var total = parseNumericInput($('#total_amount'));
-        var paidInput = $('#amount_paid');
-        var paid = parseNumericInput(paidInput);
+ 	        var difference = total - paid;
+ 	        $('#difference').val(difference.toFixed(2)); 
+ 	   }
+ 	});
 
-        if (paid > total) {
-            paidInput.val(total.toFixed(2));
-            paid = total;
-        }
+    $(function() {
+  	   window.calculateDelayDays = function() {
+  		 var dueDateStr = $('#due_date').val(); 
+         var actualDateStr = $('#actual_payment_date').val(); 
+         if (dueDateStr && actualDateStr) { 
+             var diffDays = (new Date(actualDateStr) - new Date(dueDateStr)) / (1000 * 3600 * 24); 
+             $('#delay_days').val(Math.max(0, Math.ceil(diffDays))); 
+         } else { 
+             $('#delay_days').val(0); 
+         }  
+  	   }
+  	});
+    $(function() {
+   	   window.checkDuplicatePCMY = function() {
+   		 var pcVal = $('#profitCenterSelect').val() ? $('#profitCenterSelect').val().trim() : '';
+         var myVal = $('#monthYear').val() ? $('#monthYear').val().trim() : '';
 
-        var difference = total - paid;
-        $('#difference').val(difference.toFixed(2)); 
-    }
+         if (pcVal && myVal) {
+             var isDuplicate = false;
+             var rowPcName = '';
 
-    function calculateDelayDays() { 
-        var dueDateStr = $('#due_date').val(); 
-        var actualDateStr = $('#actual_payment_date').val(); 
-        if (dueDateStr && actualDateStr) { 
-            var diffDays = (new Date(actualDateStr) - new Date(dueDateStr)) / (1000 * 3600 * 24); 
-            $('#delay_days').val(Math.max(0, Math.ceil(diffDays))); 
-        } else { 
-            $('#delay_days').val(0); 
-        } 
-    }
+             $('#ptTable').DataTable().rows().data().each(function (rowData) {
+                 var htmlContent = $('<div>' + rowData[0] + '</div>');
+                 var rowPc = htmlContent.find('.fw-bold').text().trim();
+                 rowPcName = htmlContent.find('.small').text().trim();
+                 var rowMy = rowData[1] ? rowData[1].trim() : '';
+                 var statusHtml = rowData[10] ? rowData[10].trim() : ''; // Status is at index 10 for non-Admin/SA
+                 var status = $(statusHtml).text().trim();
 
-    function checkDuplicatePCMY() {
-        var pcVal = $('#profitCenterSelect').val() ? $('#profitCenterSelect').val().trim() : '';
-        var myVal = $('#monthYear').val() ? $('#monthYear').val().trim() : '';
+                 if (rowPc === pcVal && rowMy === myVal && status === 'Active') {
+                     isDuplicate = true;
+                     return false; // Stop loop
+                 }
+             });
 
-        if (pcVal && myVal) {
-            var isDuplicate = false;
-            var rowPcName = '';
+             if (isDuplicate) {
+                 $('#monthYear').val('');
+                 showStrictAlertBox(
+                     "Duplicate Entry Detected",
+                     `Data for <strong>${rowPcName}</strong> in <strong>${myVal}</strong> with "Active" status already exists. Duplicate entries are not allowed.`
+                 );
+             }
+         } 
+   	   }
+   	});
 
-            $('#ptTable').DataTable().rows().data().each(function (rowData) {
-                var htmlContent = $('<div>' + rowData[0] + '</div>');
-                var rowPc = htmlContent.find('.fw-bold').text().trim();
-                rowPcName = htmlContent.find('.small').text().trim();
-                var rowMy = rowData[1] ? rowData[1].trim() : '';
-                var statusHtml = rowData[10] ? rowData[10].trim() : ''; // Status is at index 10 for non-Admin/SA
-                var status = $(statusHtml).text().trim();
-
-                if (rowPc === pcVal && rowMy === myVal && status === 'Active') {
-                    isDuplicate = true;
-                    return false; // Stop loop
-                }
-            });
-
-            if (isDuplicate) {
-                $('#monthYear').val('');
-                showStrictAlertBox(
-                    "Duplicate Entry Detected",
-                    `Data for <strong>${rowPcName}</strong> in <strong>${myVal}</strong> with "Active" status already exists. Duplicate entries are not allowed.`
-                );
-            }
-        }
-    }
-
+   
     function showStrictAlertBox(title, message) {
         $('#strictAlertBox').remove();
         var secondsLeft = 10;

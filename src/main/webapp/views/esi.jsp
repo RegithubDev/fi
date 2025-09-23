@@ -528,13 +528,21 @@
                             <div class="col-md-6">
                                 <label class="form-label">Upload File</label>
                                 <input type="file" class="form-control" name="mediaList">
-                                <c:if test="${esi.upload_file ne 'null'}"> <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>esi/${esi.upload_file }" 
-								   class="filevalue" 
-								   target="_blank">
-								   <i class="fa fa-eye"></i> ${esi.upload_file}
-								   				<input type="hidden" id="challan_no_edit1_${index.count}" name="upload_file" class="form-control" value="${esi.upload_file}" />
-								   
-								</a></c:if>
+                                 <c:choose>
+                                       <c:when test="${not empty esi.upload_file}">
+
+                                           <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>esi/${esi.upload_file }" 
+											   class="filevalue" 
+											   target="_blank">
+											   ${esi.upload_file}
+											</a>
+											
+                                        </c:when>
+                                       
+                                        <c:otherwise>
+                                        </c:otherwise>
+                                    </c:choose>
+                         <input type="hidden" id="challan_no_edit1_${index.count}" name="upload_file" class="form-control" value="${pt.upload_file}" />
                             </div>
                           
                         </div>
@@ -882,7 +890,8 @@ $(document).ready(function () {
     	   }
     	});
     // Edit Modal Calculations
-    function calculateTotal_edit(index) {
+    $(function() {
+  	   window.calculateTotal_edit= function(index) {
         var employee = parseNumericInput($('#employee_contribution_' + index));
         var employer = parseNumericInput($('#employer_contribution_' + index));
         var total = employee + employer;
@@ -890,8 +899,10 @@ $(document).ready(function () {
         $('#total_amount_' + index).val(total.toFixed(2));
         calculateDifference_edit(index);
     }
+    });
 
-    function calculateDifference_edit(index) {
+    $(function() {
+   	   window.calculateDifference_edit = function(index) {
         var total = parseNumericInput($('#total_amount_' + index));
         var paidInput = $('#amount_paid_' + index);
         var paid = parseNumericInput(paidInput);
@@ -904,8 +915,12 @@ $(document).ready(function () {
         var difference = total - paid;
         $('#difference_' + index).val(difference.toFixed(2));
     }
+   	   
+    });
 
-    function calculateDelayDays_edit(index) {
+   	   
+    $(function() {
+   	   window.calculateDelayDays_edit = function(index) {
         var dueDateStr = $('#due_date_' + index).val();
         var actualDateStr = $('#actual_payment_date_' + index).val();
         
@@ -916,6 +931,7 @@ $(document).ready(function () {
             $('#delay_days_' + index).val(0);
         }
     }
+    });
 
     // Add Modal Calculations
     function parseNumericInput(selector) { 
@@ -940,7 +956,8 @@ $(document).ready(function () {
 
    
 
-    function calculateDelayDays() { 
+    $(function() {
+ 	   window.calculateDelayDays = function() {
         var form = $('#esiForm');
         var dueDateStr = form.find('#due_date').val(); 
         var actualDateStr = form.find('#actual_payment_date').val(); 
@@ -951,8 +968,9 @@ $(document).ready(function () {
             form.find('#delay_days').val(0); 
         } 
     }
-
-    function checkDuplicatePCMY() {
+    });
+    $(function() {
+  	   window.checkDuplicatePCMY() = function() {
         var pcVal = $('#profitCenterSelect').val() ? $('#profitCenterSelect').val().trim() : '';
         var myVal = $('#monthYear').val() ? $('#monthYear').val().trim() : '';
 
@@ -983,7 +1001,7 @@ $(document).ready(function () {
             }
         }
     }
-
+    });
     function showStrictAlertBox(title, message) {
         $('#strictAlertBox').remove();
         var secondsLeft = 10;

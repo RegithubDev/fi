@@ -545,13 +545,21 @@
                             <div class="col-md-6">
                                 <label class="form-label">Upload File</label>
                                 <input type="file" class="form-control" name="mediaList">
-                                  <c:if test="${pf.upload_file ne 'null'}"> <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>pf/${pf.upload_file }" 
-								   class="filevalue" 
-								   target="_blank">
-								   <i class="fa fa-eye"></i> ${pf.upload_file}
-				<input type="hidden" id="challan_no_edit1_${index.count}" name="upload_file" class="form-control" value="${pf.upload_file}" />
-								   
-								</a></c:if>
+                                   <c:choose>
+                                       <c:when test="${not empty pf.upload_file}">
+
+                                           <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>pf/${pf.upload_file }" 
+											   class="filevalue" 
+											   target="_blank">
+											   ${pf.upload_file}
+											</a>
+											
+                                        </c:when>
+                                       
+                                        <c:otherwise>
+                                        </c:otherwise>
+                                    </c:choose>
+                         <input type="hidden" id="challan_no_edit1_${index.count}" name="upload_file" class="form-control" value="${pt.upload_file}" />
                             </div>
                           
                         </div>

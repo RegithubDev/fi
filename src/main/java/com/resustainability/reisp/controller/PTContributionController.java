@@ -125,7 +125,7 @@ public class PTContributionController {
 				DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd"); 
 			    String dt = formatter.format(new Date());
 				String endDate = DateForUser.date();
-				
+				esiContribution.setModified_by(userId);
 				
 				if(!StringUtils.isEmpty(esiContribution.getMediaList())) {
 					MultipartFile multipartFile = esiContribution.getMediaList();
