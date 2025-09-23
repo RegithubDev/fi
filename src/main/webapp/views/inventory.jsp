@@ -362,6 +362,7 @@
                                     <th class="text-center"><i class="fas fa-cogs me-2"></i>Actions</th>
                                 </c:when>
                                 <c:otherwise>
+                                 	<th><i class="fas fa-file-invoice me-2"></i>Attachment</th>
                                     <th><i class="fas fa-gavel me-2"></i>Action</th>
                                 </c:otherwise>
                             </c:choose>
@@ -403,6 +404,25 @@
                                         </td>
                                     </c:when>
                                     <c:otherwise>
+                                    <td data-label="Due Date">
+								  
+								   <c:choose>
+                                       <c:when test="${not empty inventory.upload_file}">
+
+                                           <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>inventory/${inventory.upload_file }" 
+											   class="filevalue" 
+											   target="_blank">
+											   ${inventory.upload_file}
+											</a>
+											
+                                        </c:when>
+                                       
+                                        <c:otherwise>
+                                        <i data-feather='slash'>No File</i>
+                                        </c:otherwise>
+                                    </c:choose>
+                                    
+									</td>
                                         <td>
                                             <button class="btn btn-sm appeal-btn" 
                                                     data-record-id="${inventory.id}" 
@@ -705,7 +725,7 @@
 <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <script>
 $(document).ready(function () {
     // Debugging: Log when script starts
@@ -874,14 +894,14 @@ $(document).ready(function () {
         });
     }
 
- // Appeal button logic
+    // Initialize EmailJS (replace with your public key from EmailJS dashboard)
+    (function(){
+      emailjs.init("ZPmNxPbmYMoEtDDWO");
+    })();
+
     $(document).on('click', '.appeal-btn', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
         var recordId = $(this).data('record-id');
         var index = $(this).data('index');
-        var appealUrl = $(this).data('url');
-        console.log('Appeal button clicked for index:', index, 'recordId:', recordId);
 
         Swal.fire({
             title: 'Appeal Request',
@@ -895,33 +915,34 @@ $(document).ready(function () {
         }).then((result) => {
             if (result.isConfirmed) {
                 try {
-                    // Instead of opening the edit modal, show success message
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Successfully Appealed',
-                        text: 'Your appeal has been submitted to the Admin.',
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                    console.log('Appeal submitted for recordId:', recordId);
+                    // Email parameters
+                    var templateParams = {
+                        record_id: recordId,
+                        index: index,
+                        user_name: "Dilu",              // you can pass from JSP
+                        user_email: "saidileep.p@resustainability.com",   // optional
+                        message: "Appeal requested for record " + recordId
+                    };
 
-                    // Optional: Add AJAX call to notify backend
-                    $.ajax({
-                        url: appealUrl,
-                        type: 'POST',
-                        data: { id: recordId },
-                        success: function(response) {
-                            console.log('Appeal logged successfully:', response);
-                        },
-                        error: function(xhr, status, error) {
-                            console.error('Error logging appeal:', error);
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: 'Failed to submit appeal. Please try again.'
-                            });
-                        }
-                    });
+                    // Send email
+                    emailjs.send("service_qpt5k78", "template_nz2svpq", templateParams)
+                      .then(function(response) {
+                          console.log("SUCCESS!", response.status, response.text);
+                          Swal.fire({
+                              icon: 'success',
+                              title: 'Successfully Appealed',
+                              text: 'Your appeal email has been sent to Admin.',
+                              timer: 2000,
+                              showConfirmButton: false
+                          });
+                      }, function(error) {
+                          console.error("FAILED...", error);
+                          Swal.fire({
+                              icon: 'error',
+                              title: 'Error',
+                              text: 'Failed to send appeal email. Please try again.'
+                          });
+                      });
                 } catch (error) {
                     console.error('Error processing appeal for index ' + index + ':', error);
                     Swal.fire({
