@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@page import="com.resustainability.reisp.constants.CommonConstants"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -314,6 +316,7 @@
                                     <th class="text-center"><i class="fas fa-cogs me-2"></i>Actions</th>
                                 </c:when>
                                 <c:otherwise>
+                                <th><i class="fas fa-file-invoice me-2"></i>Attachment</th>
                                     <th><i class="fas fa-gavel me-2"></i>Action</th>
                                 </c:otherwise>
                             </c:choose>
@@ -346,6 +349,7 @@
                                     </c:choose>
                                 </td>
                                 <td data-label="Challan No">${esi.challan_no}</td>
+                                  
                                 <c:choose>
                                     <c:when test="${sessionScope.ROLE eq 'Admin' or sessionScope.ROLE eq 'SA'}">
                                         <td data-label="Status">
@@ -362,6 +366,25 @@
                                         </td>
                                     </c:when>
                                     <c:otherwise>
+                                    <td data-label="Due Date">
+								  
+								   <c:choose>
+                                       <c:when test="${not empty esi.upload_file}">
+
+                                           <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>esi/${esi.upload_file }" 
+											   class="filevalue" 
+											   target="_blank">
+											   ${esi.upload_file}
+											</a>
+											
+                                        </c:when>
+                                       
+                                        <c:otherwise>
+                                        <i data-feather='slash'>No File</i>
+                                        </c:otherwise>
+                                    </c:choose>
+                                    
+									</td>
                                         <td data-label="Action">
                                             <button class="btn btn-sm appeal-btn" 
                                                     data-record-id="${esi.id}" 
@@ -385,7 +408,7 @@
     <div class="modal fade" id="esiModal_${index.count}" tabindex="-1" aria-labelledby="esiModalLabel_${index.count}" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
-                <form id="esiForm_${index.count}" action="<%=request.getContextPath() %>/update-esi" method="post">
+                <form id="esiForm_${index.count}" action="<%=request.getContextPath() %>/update-esi" method="post" enctype="multipart/form-data">
                     <div class="modal-header">
                         <h5 class="modal-title" id="esiModalLabel_${index.count}">Update ESI Contribution</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -444,15 +467,15 @@
                         <div class="row mb-3 g-3">
                             <div class="col-md-4">
                                 <label class="form-label">Employee (₹)</label>
-                                <input type="number" step="0.01" min="0" id="employee_contribution_${index.count}" name="employee_contribution" class="form-control" value="${esi.employee_contribution}" oninput="calculateTotal_edit(${index.count})" required />
+                                <input type="number" step="0.01" min="0" id="employee_contribution_${index.count}" name="employee_contributions" class="form-control" value="${esi.employee_contribution}" oninput="calculateTotal_edit(${index.count})" required />
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">Employer (₹)</label>
-                                <input type="number" step="0.01" min="0" id="employer_contribution_${index.count}" name="employer_contribution" class="form-control" value="${esi.employer_contribution}" oninput="calculateTotal_edit(${index.count})" required />
+                                <input type="number" step="0.01" min="0" id="employer_contribution_${index.count}" name="employer_contributions" class="form-control" value="${esi.employer_contribution}" oninput="calculateTotal_edit(${index.count})" required />
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label fw-bold">Total (₹)</label>
-                                <input type="number" id="total_amount_${index.count}" name="total_amount" value="${esi.total_amount}" class="form-control bg-light" readonly required />
+                                <input type="number" id="total_amount_${index.count}" name="total_amounts" value="${esi.total_amount}" class="form-control bg-light" readonly required />
                             </div>
                         </div>
 
@@ -461,23 +484,23 @@
                         <div class="row mb-3 g-3">
                             <div class="col-md-4">
                                 <label class="form-label">Amount Paid (₹)</label>
-                                <input type="number" step="0.01" min="0" id="amount_paid_${index.count}" name="amount_paid" class="form-control" value="${esi.amount_paid}" oninput="calculateDifference_edit(${index.count})" required />
+                                <input type="number" step="0.01" min="0" id="amount_paid_${index.count}" name="amount_paids" class="form-control" value="${esi.amount_paid}" oninput="calculateDifference_edit(${index.count})" required />
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label fw-bold">Balance (₹)</label>
-                                <input type="number" id="difference_${index.count}" name="difference" value="${esi.difference}" class="form-control bg-light" readonly required />
+                                <input type="number" id="difference_${index.count}" name="differences" value="${esi.difference}" class="form-control bg-light" readonly required />
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">Challan Number</label>
-                                <input type="text" id="challan_no_${index.count}" name="challan_no" class="form-control" value="${esi.challan_no}" placeholder="Enter challan number" />
+                                <input type="text" id="challan_no_${index.count}" name="challan_nos" class="form-control" value="${esi.challan_no}" placeholder="Enter challan number" />
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Due Date</label>
-                                <input type="date" id="due_date_${index.count}" name="due_date" class="form-control" value="${esi.due_date}" required />
+                                <input type="date" id="due_date_${index.count}" name="due_dates" class="form-control" value="${esi.due_date}" required />
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Actual Payment Date</label>
-                                <input type="date" id="actual_payment_date_${index.count}" name="actual_payment_date" class="form-control actual-payment-date-input" value="${esi.actual_payment_date}" onchange="calculateDelayDays_edit(${index.count})" required />
+                                <input type="date" id="actual_payment_date_${index.count}" name="actual_payment_dates" class="form-control actual-payment-date-input" value="${esi.actual_payment_date}" onchange="calculateDelayDays_edit(${index.count})" required />
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Delay in Days</label>
@@ -485,7 +508,7 @@
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Employee Count</label>
-                                <input type="number" min="0" id="no_of_emp_${index.count}" name="no_of_emp" class="form-control" value="${esi.no_of_emp}" placeholder="e.g., 17" />
+                                <input type="number" min="0" id="no_of_emp_${index.count}" name="no_of_emps" class="form-control" value="${esi.no_of_emp}" placeholder="e.g., 17" />
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label fw-bold">Status</label>
@@ -504,7 +527,14 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Upload File</label>
-                                <input type="file" class="form-control" name="uploadFile">
+                                <input type="file" class="form-control" name="mediaList">
+                                <c:if test="${esi.upload_file ne 'null'}"> <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>esi/${esi.upload_file }" 
+								   class="filevalue" 
+								   target="_blank">
+								   <i class="fa fa-eye"></i> ${esi.upload_file}
+								   				<input type="hidden" id="challan_no_edit1_${index.count}" name="upload_file" class="form-control" value="${esi.upload_file}" />
+								   
+								</a></c:if>
                             </div>
                           
                         </div>
@@ -524,7 +554,7 @@
 <div class="modal fade" id="esiModal" tabindex="-1" aria-labelledby="esiModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
-            <form id="esiForm" action="<%=request.getContextPath() %>/add-esi" method="post">
+            <form id="esiForm" action="<%=request.getContextPath() %>/add-esi" method="post" enctype="multipart/form-data">
                 <div class="modal-header">
                     <h5 class="modal-title" id="esiModalLabel">Add New ESI Contribution</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -580,11 +610,11 @@
                     <div class="row mb-3 g-3">
                         <div class="col-md-4">
                             <label class="form-label">Employee (₹)</label>
-                            <input type="number" step="0.01" min="0" class="form-control" name="employee_contribution" id="employee_contribution" oninput="calculateTotal()" required>
+                            <input type="number" step="0.01" min="0" class="form-control" name="employee_contribution" id="employee_contribution" oninput="calculateTotal();" required />
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Employer (₹)</label>
-                            <input type="number" step="0.01" min="0" class="form-control" name="employer_contribution" id="employer_contribution" oninput="calculateTotal()" required>
+                            <input type="number" step="0.01" min="0" class="form-control" name="employer_contribution" id="employer_contribution" oninput="calculateTotal();" required />
                         </div>
                         <div class="col-md-4">
                             <label class="form-label fw-bold">Total (₹)</label>
@@ -633,7 +663,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Upload File</label>
-                                <input type="file" class="form-control" name="uploadFile">
+                                <input type="file" class="form-control" name="mediaList">
                             </div>
                           
                         </div>
@@ -841,6 +871,16 @@ $(document).ready(function () {
         }
     });
 
+   
+    $(function() {
+    	   window.calculateTotal = function() {
+    		   var form = $('#esiForm');
+    	        var total = parseNumericInput(form.find('#employee_contribution')) 
+    	                  + parseNumericInput(form.find('#employer_contribution')); 
+    	        form.find('#total_amount').val(total.toFixed(2)); 
+    	        calculateDifference();
+    	   }
+    	});
     // Edit Modal Calculations
     function calculateTotal_edit(index) {
         var employee = parseNumericInput($('#employee_contribution_' + index));
@@ -881,28 +921,24 @@ $(document).ready(function () {
     function parseNumericInput(selector) { 
         return Math.max(0, parseFloat($(selector).val()) || 0); 
     }
+    $(function() {
+    	   window.calculateDifference = function() {
+    		   var form = $('#esiForm');
+    	        var total = parseNumericInput(form.find('#total_amount'));
+    	        var paidInput = form.find('#amount_paid');
+    	        var paid = parseNumericInput(paidInput);
 
-    function calculateTotal() { 
-        var form = $('#esiForm');
-        var total = parseNumericInput(form.find('#employee_contribution')) + parseNumericInput(form.find('#employer_contribution')); 
-        form.find('#total_amount').val(total.toFixed(2)); 
-        calculateDifference(); 
-    }
+    	        if (paid > total) {
+    	            paidInput.val(total.toFixed(2));
+    	            paid = total;
+    	        }
 
-    function calculateDifference() { 
-        var form = $('#esiForm');
-        var total = parseNumericInput(form.find('#total_amount'));
-        var paidInput = form.find('#amount_paid');
-        var paid = parseNumericInput(paidInput);
+    	        var difference = total - paid;
+    	        form.find('#difference').val(difference.toFixed(2)); 
+    	   }
+    	});
 
-        if (paid > total) {
-            paidInput.val(total.toFixed(2));
-            paid = total;
-        }
-
-        var difference = total - paid;
-        form.find('#difference').val(difference.toFixed(2)); 
-    }
+   
 
     function calculateDelayDays() { 
         var form = $('#esiForm');
@@ -987,6 +1023,8 @@ $(document).ready(function () {
 
     $('#profitCenterSelect, #monthYear').on('change', checkDuplicatePCMY);
 });
+
+
 </script>
 </body>
 </html>

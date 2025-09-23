@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@page import="com.resustainability.reisp.constants.CommonConstants"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -313,6 +315,7 @@
                                     <th class="text-center"><i class="fas fa-cogs me-2"></i>Actions</th>
                                 </c:when>
                                 <c:otherwise>
+                                <th><i class="fas fa-file-invoice me-2"></i>Attachment</th>
                                     <th><i class="fas fa-gavel me-2"></i>Action</th>
                                 </c:otherwise>
                             </c:choose>
@@ -344,6 +347,7 @@
                                     </c:choose>
                                 </td>
                                 <td data-label="Challan No">${pt.challan_no}</td>
+                                  
                                 <c:choose>
                                     <c:when test="${sessionScope.ROLE eq 'Admin' or sessionScope.ROLE eq 'SA'}">
                                         <td data-label="Status">
@@ -360,6 +364,25 @@
                                         </td>
                                     </c:when>
                                     <c:otherwise>
+                                    <td data-label="Due Date">
+								  
+								   <c:choose>
+                                       <c:when test="${not empty pt.upload_file}">
+
+                                           <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>pt/${pt.upload_file }" 
+											   class="filevalue" 
+											   target="_blank">
+											   ${pt.upload_file}
+											</a>
+											
+                                        </c:when>
+                                       
+                                        <c:otherwise>
+                                        <i data-feather='slash'>No File</i>
+                                        </c:otherwise>
+                                    </c:choose>
+                                    
+									</td>
                                         <td data-label="Action">
                                             <button class="btn btn-sm appeal-btn" 
                                                     data-record-id="${pt.id}" 
@@ -383,7 +406,7 @@
     <div class="modal fade" id="ptModal_${index.count}" tabindex="-1" aria-labelledby="ptModalLabel_${index.count}" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
-                <form id="ptForm_${index.count}" action="<%=request.getContextPath() %>/update-pt" method="post">
+                <form id="ptForm_${index.count}" action="<%=request.getContextPath() %>/update-pt" method="post" enctype="multipart/form-data">
                     <div class="modal-header">
                         <h5 class="modal-title" id="ptModalLabel_${index.count}">Update PT Contribution</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -498,7 +521,13 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Upload File</label>
-                                <input type="file" class="form-control" name="uploadFile">
+                                <input type="file" class="form-control" name="mediaList">
+                                  <c:if test="${pt.upload_file ne 'null'}"> <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>pt/${pt.upload_file }" 
+								   class="filevalue" 
+								   target="_blank">
+								   <i class="fa fa-eye"></i> ${pt.upload_file}
+								   
+								</a></c:if>
                             </div>
                           
                         </div>
@@ -519,7 +548,7 @@
 <div class="modal fade" id="ptModal" tabindex="-1" aria-labelledby="ptModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
-            <form id="ptForm" action="<%=request.getContextPath() %>/add-pt" method="post">
+            <form id="ptForm" action="<%=request.getContextPath() %>/add-pt" method="post" enctype="multipart/form-data">
                 <div class="modal-header">
                     <h5 class="modal-title" id="ptModalLabel">Add New PT Contribution</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -624,7 +653,14 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Upload File</label>
-                                <input type="file" class="form-control" name="uploadFile">
+                                <input type="file" class="form-control" name="mediaList">
+                                  <c:if test="${pt.upload_file ne 'null'}"> <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>pt/${pt.upload_file }" 
+								   class="filevalue" 
+								   target="_blank">
+								   <i class="fa fa-eye"></i> ${pt.upload_file}
+					<input type="hidden" id="challan_no_edit1_${index.count}" name="upload_file" class="form-control" value="${pt.upload_file}" />
+								   
+								</a></c:if>
                             </div>
                           
                         </div>

@@ -44,7 +44,7 @@ public class PTContributionDao {
 	        		+ "      ,pf.[due_date]\r\n"
 	        		+ "      ,pf.[actual_payment_date]\r\n"
 	        		+ "      ,pf.[delay_days]\r\n"
-	        		+ "      ,pf.[challan_no],no_of_emp,pf.status FROM pt pf "
+	        		+ "      ,pf.[challan_no],no_of_emp,pf.status,pf.upload_file, pf.remarks FROM pt pf "
 	        		+ "left join profit_center p on pf.profit_center_code = p.profit_center_code "
 	        		+ "left join entity e on p.entity_code = e.entity_code "
 
@@ -71,11 +71,7 @@ public class PTContributionDao {
 	                params.add(pcCodes);
 	            }
 	        }
-    		if(!usr.getRole().equals("Admin") && !usr.getRole().equals("SA")) {
-    			sql += "and pf.status <> 'Inactive' and pf.[profit_center_code] = ? ";
-    			 params.add(usr.getProfit_center_code());
-    		}
-
+    		
 	        if (monthYear != null) {
 	            sql += " AND month_year = ?";
 	            params.add(monthYear);
@@ -102,10 +98,10 @@ public class PTContributionDao {
 	 			NamedParameterJdbcTemplate namedParamJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 	 			String insertQry = "INSERT INTO [pt] "
 						+ "(created_by,profit_center_code, month_year, pt,total_amount,amount_paid,difference,challan_no, "
-						+ "due_date, actual_payment_date,no_of_emp,status,created_date)"
+						+ "due_date, actual_payment_date,no_of_emp,status,created_date,upload_file,remarks)"
 						+ " VALUES "
 						+ "(:created_by, :profit_center_code, :month_year,:pt, :total_amount, :amount_paid, :difference,:challan_no, "
-						+ ":due_date, :actual_payment_date, :no_of_emp, :status, getdate())";
+						+ ":due_date, :actual_payment_date, :no_of_emp, :status, getdate(), :upload_file, :remarks)";
 				BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(pf);		 
 			    count = namedParamJdbcTemplate.update(insertQry, paramSource);
 			    transactionManager.commit(status);
@@ -135,7 +131,7 @@ public class PTContributionDao {
 		 				    + ", due_date = :due_dates"
 		 				    + ", actual_payment_date = :actual_payment_dates"
 		 				    + ", no_of_emp = :no_of_emps"
-		 				    + ", status = :status, modified_date = getdate(),modified_by =:modified_by "
+		 				    + ", status = :status, modified_date = getdate(),modified_by =:modified_by.upload_file =:upload_file,remarks =:remarks  "
 		 				    + " WHERE id = :id";
 
 					BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(pf);		 

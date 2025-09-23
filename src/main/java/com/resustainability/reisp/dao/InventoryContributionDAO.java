@@ -34,13 +34,13 @@ public class InventoryContributionDAO {
 
     public List<inventoryContribution> getInventoryContributions(String monthYear, String entityCode, String profitCenterCode, User user) {
         StringBuilder sql = new StringBuilder(
-                "SELECT TOP 1000 inv.[id], inv.[entity_code], e.entity_name, inv.[profit_center_code], p.profit_center_name, " +
+                "SELECT TOP 1000 inv.[id], e.[entity_code], e.entity_name, inv.[profit_center_code], p.profit_center_name, " +
                 "inv.[sbu], inv.[month_year], inv.[book_value], inv.[reported_value], inv.[tb_adjustment_gl], " +
                 "inv.[tb_system_gl], inv.[varience], inv.[remarks], inv.[upload_file], inv.[created_by], " +
                 "inv.[created_date], inv.[modified_by], inv.[modified_date], inv.[status] " +
                 "FROM [FIDB].[dbo].[inventory] inv " +
                 "LEFT JOIN [FIDB].[dbo].[profit_center] p ON inv.profit_center_code = p.profit_center_code " +
-                "LEFT JOIN [FIDB].[dbo].[entity] e ON inv.entity_code = e.entity_code " +
+                "LEFT JOIN [FIDB].[dbo].[entity] e ON p.entity_code = e.entity_code " +
                 "WHERE 1=1"
         );
         List<Object> params = new ArrayList<>();

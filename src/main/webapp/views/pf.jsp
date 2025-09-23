@@ -319,6 +319,7 @@
  							   <th class="text-center"><i class="fas fa-cogs me-2"></i>Actions</th>
                               </c:when>
                               <c:otherwise>
+                               <th><i class="fas fa-file-invoice me-2"></i>Attachment</th>
                                <th><i class="fas fa-file-invoice me-2"></i>Action</th>
                               </c:otherwise>
                              </c:choose>
@@ -372,7 +373,27 @@
                                         </div>
                                       </td>
                                   </c:when>
-								  <c:otherwise> <td data-label="Days Diff">
+								  <c:otherwise>
+								  <td data-label="Due Date">
+								  
+								   <c:choose>
+                                       <c:when test="${not empty pf.upload_file}">
+
+                                           <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>pf/${pf.upload_file }" 
+											   class="filevalue" 
+											   target="_blank">
+											   ${pf.upload_file}
+											</a>
+											
+                                        </c:when>
+                                       
+                                        <c:otherwise>
+                                        <i data-feather='slash'>No File</i>
+                                        </c:otherwise>
+                                    </c:choose>
+                                    
+									</td>
+								   <td data-label="Days Diff">
 								    <button class="btn btn-sm appeal-btn" 
 								            data-record-id="${record.id}" 
 								            data-url="<%=request.getContextPath()%>/appealRecord">
@@ -394,7 +415,7 @@
   <div class="modal fade" id="pfModal_${index.count}" tabindex="-1" aria-labelledby="pfModalLabel_${index.count}" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered">
       <div class="modal-content">
-            <form id="pfForm_${index.count }" action="<%=request.getContextPath() %>/update-pf" method="post">
+            <form id="pfForm_${index.count }" action="<%=request.getContextPath() %>/update-pf" method="post" enctype="multipart/form-data">
                 <div class="modal-header">
                     <h5 class="modal-title" id="pfModalLabel_${index.count}">Update Contribution</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -452,27 +473,27 @@
                   <div class="row mb-3 g-3">
                       <div class="col-md-4 col-lg-2">
                           <label class="form-label">Employee (₹)</label>
-                          <input type="number" step="0.01" min="0" id="employee_contribution_edit_${index.count}" name="employee_contribution" class="form-control" value="${pf.employee_contribution}" oninput="calculateTotal_edit_pf(${index.count})" required />
+                          <input type="number" step="0.01" min="0" id="employee_contribution_edit_${index.count}" name="employee_contributions" class="form-control" value="${pf.employee_contribution}" oninput="calculateTotal_edit_pf(${index.count})" required />
                       </div>
                       <div class="col-md-4 col-lg-2">
                           <label class="form-label">VPF (₹)</label>
-                          <input type="number" step="0.01" min="0" id="vpf_edit_${index.count}" name="vpf" class="form-control" value="${pf.vpf}" oninput="calculateTotal_edit_pf(${index.count})" required />
+                          <input type="number" step="0.01" min="0" id="vpf_edit_${index.count}" name="vpfs" class="form-control" value="${pf.vpf}" oninput="calculateTotal_edit_pf(${index.count})" required />
                       </div>
                       <div class="col-md-4 col-lg-2">
                           <label class="form-label">Employer (₹)</label>
-                          <input type="number" step="0.01" min="0" id="employer_contribution_edit_${index.count}" name="employer_contribution" class="form-control" value="${pf.employer_contribution}" oninput="calculateTotal_edit_pf(${index.count})" required />
+                          <input type="number" step="0.01" min="0" id="employer_contribution_edit_${index.count}" name="employer_contributions" class="form-control" value="${pf.employer_contribution}" oninput="calculateTotal_edit_pf(${index.count})" required />
                       </div>
                       <div class="col-md-4 col-lg-2">
                           <label class="form-label">PF Admin (₹)</label>
-                          <input type="number" step="0.01" min="0" id="pf_admin_edit_${index.count}" name="pf_admin" class="form-control" value="${pf.pf_admin}" oninput="calculateTotal_edit_pf(${index.count})" required />
+                          <input type="number" step="0.01" min="0" id="pf_admin_edit_${index.count}" name="pf_admins" class="form-control" value="${pf.pf_admin}" oninput="calculateTotal_edit_pf(${index.count})" required />
                       </div>
                       <div class="col-md-4 col-lg-2">
                           <label class="form-label">PF EDLI (₹)</label>
-                          <input type="number" step="0.01" min="0" id="pf_edli_edit_${index.count}" name="pf_edli" class="form-control" value="${pf.pf_edli}" oninput="calculateTotal_edit_pf(${index.count})" required />
+                          <input type="number" step="0.01" min="0" id="pf_edli_edit_${index.count}" name="pf_edlis" class="form-control" value="${pf.pf_edli}" oninput="calculateTotal_edit_pf(${index.count})" required />
                       </div>
                       <div class="col-md-4 col-lg-2">
                           <label class="form-label fw-bold">Total (₹)</label>
-                          <input type="number" id="total_amount_edit_${index.count}" name="total_amount" value="${pf.total_amount}" class="form-control bg-light" readonly required />
+                          <input type="number" id="total_amount_edit_${index.count}" name="total_amounts" value="${pf.total_amount}" class="form-control bg-light" readonly required />
                       </div>
                   </div>
 
@@ -481,23 +502,23 @@
                   <div class="row mb-3 g-3">
                       <div class="col-md-4">
                           <label class="form-label">Amount Paid (₹)</label>
-                          <input type="number" step="0.01" min="0" id="amount_paid_edit_${index.count}" name="amount_paid" class="form-control" value="${pf.amount_paid}" oninput="calculateDifference_edit_pf(${index.count})" required />
+                          <input type="number" step="0.01" min="0" id="amount_paid_edit_${index.count}" name="amount_paids" class="form-control" value="${pf.amount_paid}" oninput="calculateDifference_edit_pf(${index.count})" required />
                       </div>
                       <div class="col-md-4">
                           <label class="form-label fw-bold">Balance (₹)</label>
-                          <input type="number" id="difference_edit_${index.count}" name="difference" value="${pf.difference}" class="form-control bg-light" readonly required />
+                          <input type="number" id="difference_edit_${index.count}" name="differences" value="${pf.difference}" class="form-control bg-light" readonly required />
                       </div>
                       <div class="col-md-4">
                           <label class="form-label">Challan Number</label>
-                          <input type="text" id="challan_no_edit_${index.count}" name="challan_no" class="form-control" value="${pf.challan_no}" placeholder="Enter challan number" />
+                          <input type="text" id="challan_no_edit_${index.count}" name="challan_nos" class="form-control" value="${pf.challan_no}" placeholder="Enter challan number" />
                       </div>
                       <div class="col-md-3">
                           <label class="form-label">Due Date</label>
-                          <input type="date" id="due_date_edit_${index.count}" name="due_date" class="form-control" value="${pf.due_date}" required />
+                          <input type="date" id="due_date_edit_${index.count}" name="due_dates" class="form-control" value="${pf.due_date}" required />
                       </div>
                       <div class="col-md-3">
                           <label class="form-label">Actual Payment Date</label>
-                          <input type="date" id="actual_payment_date_edit_${index.count}" name="actual_payment_date" class="form-control actual-payment-date-input" value="${pf.actual_payment_date}" onchange="calculateDelayDays_edit_pf(${index.count})" required />
+                          <input type="date" id="actual_payment_date_edit_${index.count}" name="actual_payment_dates" class="form-control actual-payment-date-input" value="${pf.actual_payment_date}" onchange="calculateDelayDays_edit_pf(${index.count})" required />
                       </div>
                       <div class="col-md-3">
                           <label class="form-label">Delay in Days</label>
@@ -505,7 +526,7 @@
                       </div>
                       <div class="col-md-3">
                           <label class="form-label">Employee Count</label>
-                          <input type="number" min="0" id="no_of_emp_edit_${index.count}" name="no_of_emp" class="form-control" value="${pf.no_of_emp}" placeholder="e.g., 17" />
+                          <input type="number" min="0" id="no_of_emp_edit_${index.count}" name="no_of_emps" class="form-control" value="${pf.no_of_emp}" placeholder="e.g., 17" />
                       </div>
                       <div class="col-md-3">
                           <label class="form-label fw-bold">Status</label>
@@ -523,11 +544,13 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Upload File</label>
-                                <input type="file" class="form-control" name="uploadFile">
+                                <input type="file" class="form-control" name="mediaList">
                                   <c:if test="${pf.upload_file ne 'null'}"> <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>pf/${pf.upload_file }" 
 								   class="filevalue" 
 								   target="_blank">
 								   <i class="fa fa-eye"></i> ${pf.upload_file}
+				<input type="hidden" id="challan_no_edit1_${index.count}" name="upload_file" class="form-control" value="${pf.upload_file}" />
+								   
 								</a></c:if>
                             </div>
                           
@@ -550,7 +573,7 @@
 <div class="modal fade" id="pfModal" tabindex="-1" aria-labelledby="pfModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
-            <form id="pfForm" action="<%=request.getContextPath() %>/add-pf" method="post">
+            <form id="pfForm" action="<%=request.getContextPath() %>/add-pf" method="post" enctype="multipart/form-data">
                 <div class="modal-header">
                     <h5 class="modal-title" id="pfModalLabel">Add New Contribution</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -631,7 +654,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Upload File</label>
-                                <input type="file" class="form-control" name="uploadFile">
+                                <input type="file" class="form-control" name="mediaList">
                             </div>
                           
                         </div>

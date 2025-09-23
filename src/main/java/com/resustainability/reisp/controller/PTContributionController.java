@@ -89,7 +89,7 @@ public class PTContributionController {
 					if (null != multipartFile && !multipartFile.isEmpty()) {
 						String saveDirectory = CommonConstants.SAFETY_FILE_SAVING_PATH + "pt" + File.separator;
 						String fileName = multipartFile.getOriginalFilename();
-						EsiContribution.setUpload_file(fileName);
+						esiContribution.setUpload_file(fileName);
 						//obj.setCreated_date(DateParser.parse(date));
 						if (null != multipartFile && !multipartFile.isEmpty()) {
 							FileUploads.singleFileSaving(multipartFile, saveDirectory, fileName);
@@ -132,7 +132,7 @@ public class PTContributionController {
 					if (null != multipartFile && !multipartFile.isEmpty()) {
 						String saveDirectory = CommonConstants.SAFETY_FILE_SAVING_PATH + "pt" + File.separator;
 						String fileName = multipartFile.getOriginalFilename();
-						EsiContribution.setUpload_file(fileName);
+						esiContribution.setUpload_file(fileName);
 						//obj.setCreated_date(DateParser.parse(date));
 						if (null != multipartFile && !multipartFile.isEmpty()) {
 							FileUploads.singleFileSaving(multipartFile, saveDirectory, fileName);

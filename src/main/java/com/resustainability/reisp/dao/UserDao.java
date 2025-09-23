@@ -113,7 +113,7 @@ public class UserDao {
 
 					+ "where id = :id ";
 
-					+ "where user_id = :user_id ";
+			//		+ "where user_id = :user_id ";
 
 			BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(obj);		 
 		    count = namedParamJdbcTemplate.update(updateQry, paramSource);

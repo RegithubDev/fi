@@ -567,19 +567,19 @@
                 <div class="modal-body">
                     <h5><i class="fas fa-info-circle me-2"></i>Core Information</h5>
                     <div class="row g-3 mb-4">
-                        <div class="col-md-6">
+                   <%--      <div class="col-md-6">
                             <label for="entityCodeSelect" class="form-label fw-bold">Entity Code</label>
                             <select class="form-select select2" id="entityCodeSelect" name="entity_code" required>
                                 <option value="">-- Search Entity --</option>
                                 <c:choose>
-                                    <c:when test="${sessionScope.ROLE eq 'Admin' or sessionScope.ROLE eq 'SA' or sessionScope.ROLE eq 'User'}">
+                                    <c:when test="${sessionScope.ROLE eq 'Admin' or sessionScope.ROLE eq 'SA'}">
                                         <c:forEach items="${eList}" var="entity">
                                             <option value="${entity.entity_code}" data-entity-name="${entity.entity_name}">${entity.entity_code} - ${entity.entity_name}</option>
                                         </c:forEach>
                                     </c:when>
                                     <c:when test="${sessionScope.ROLE eq 'Management'}">
                                         <c:set var="allowedEntities" value="${fn:split(sessionScope.entity, ',')}" />
-                                        <c:forEach items="${entityList}" var="entity">
+                                        <c:forEach items="${eList}" var="entity">
                                             <c:if test="${fn:contains(',' + sessionScope.entity + ',', ',' + entity.entity_code + ',')}">
                                                 <option value="${entity.entity_code}" data-entity-name="${entity.entity_name}">${entity.entity_code} - ${entity.entity_name}</option>
                                             </c:if>
@@ -595,7 +595,7 @@
                                     </c:otherwise>
                                 </c:choose>
                             </select>
-                        </div>
+                        </div> --%>
                         <div class="col-md-6">
                             <label for="profitCenterSelect" class="form-label fw-bold">Profit Center</label>
                             <c:choose>
