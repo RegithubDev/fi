@@ -425,7 +425,8 @@
 									</td>
                                         <td>
                                             <button class="btn btn-sm appeal-btn" 
-                                                    data-record-id="${inventory.id}" 
+                                                    data-record-id="${pf.month_year}" 
+								             		data-record-id1="${pf.profit_center_name}" 
                                                     data-index="${index.count}"
                                                     data-url="<%=request.getContextPath()%>/appealRecord">
                                                 <i class="fas fa-gavel me-1"></i> Appeal for change
