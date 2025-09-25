@@ -899,22 +899,35 @@ $(document).ready(function () {
       emailjs.init("ZPmNxPbmYMoEtDDWO");
     })();
 
-    $('.appeal-btn').on('click', function() {
-        const recordId = $(this).data('record-id');
+    $('.appeal-btn').on('click', function () {
+        const period = $(this).data('record-id');
+        const pcn = $(this).data('record-id1');
         const appealUrl = $(this).data('url');
-        
+        const admin = "madhuri.s@resustainability.com";
+
         Swal.fire({
             title: 'Appeal Request',
-            text: 'Do you want to appeal this record to Admin for changes?',
+            html: `
+                <p>Please enter your appeal message:</p>
+                <textarea id="appealMessage" class="swal2-textarea" placeholder="Type your message here..."></textarea>
+            `,
             icon: 'question',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, Appeal',
-            cancelButtonText: 'Cancel'
+            confirmButtonText: 'Submit Appeal',
+            cancelButtonText: 'Cancel',
+            preConfirm: () => {
+                const msg = Swal.getPopup().querySelector('#appealMessage').value.trim();
+                if (!msg) {
+                    Swal.showValidationMessage('Message is required!');
+                }
+                return msg;
+            }
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = appealUrl + '?id=' + recordId;
+                const msg = encodeURIComponent(result.value);
+                window.location.href = appealUrl + '?period=' + period + '&pcn=' + pcn + '&admin=' + admin+ '&msg=' + msg;
             }
         });
     });
