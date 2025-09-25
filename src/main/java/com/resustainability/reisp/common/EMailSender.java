@@ -36,6 +36,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.resustainability.reisp.common.EMailSender;
+import com.resustainability.reisp.model.EMail;
 import com.resustainability.reisp.model.IRM;
 import com.resustainability.reisp.model.User;
 
@@ -45,7 +46,7 @@ private static Logger logger = Logger.getLogger(EMailSender.class);
 
 	/************** G Mail Server Credentials**************************************/
 	private static String mailId = "businessapps.appworks@resustainability.com";
-	private static String pass = "Appmint@321";
+	private static String pass = "qwqc wxgk qqoe qyga";
 	
 	public static Session getSession() {
 		Properties prop = new Properties();
@@ -67,7 +68,7 @@ private static Logger logger = Logger.getLogger(EMailSender.class);
 		  });
 		return session;
 	}
-	public boolean send(String toAddress, String subject, String body, IRM obj, String subject2) throws UnsupportedEncodingException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, NullPointerException {
+	public boolean send(String toAddress, String subject, String body, EMail obj, String subject2) throws UnsupportedEncodingException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, NullPointerException {
 		boolean isSend = false;		
 		try {
 			MimeMessage message = new MimeMessage(getSession());

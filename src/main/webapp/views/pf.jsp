@@ -395,9 +395,10 @@
 									</td>
 								   <td data-label="Days Diff">
 								    <button class="btn btn-sm appeal-btn" 
-								            data-record-id="${record.id}" 
+								            data-record-id="${pf.month_year}" 
+								             data-record-id1="${pf.profit_center_name}" 
 								            data-url="<%=request.getContextPath()%>/appealRecord">
-								        <i class="fas fa-gavel me-1"></i> Appeal
+								        <i class="fas fa-gavel me-1"></i> Appeal for change
 								    </button>
 								</td></c:otherwise>
                                  </c:choose>
@@ -709,9 +710,10 @@ $(document).ready(function () {
         });
     }
     $('.appeal-btn').on('click', function() {
-        const recordId = $(this).data('record-id');
+        const period = $(this).data('record-id');
+        const pcn = $(this).data('record-id1');
         const appealUrl = $(this).data('url');
-        
+        const admin = "madhuri.s@resustainability.com"
         Swal.fire({
             title: 'Appeal Request',
             text: 'Do you want to appeal this record to Admin for changes?',
@@ -723,7 +725,7 @@ $(document).ready(function () {
             cancelButtonText: 'Cancel'
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = appealUrl + '?id=' + recordId;
+            	window.location.href = appealUrl + '?period=' + period + '&pcn=' + pcn + '&admin=' + admin;
             }
         });
     });

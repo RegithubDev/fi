@@ -26,9 +26,12 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.resustainability.reisp.common.DateForUser;
+import com.resustainability.reisp.common.EMailSender;
 import com.resustainability.reisp.common.FileUploads;
+import com.resustainability.reisp.common.Mail;
 import com.resustainability.reisp.constants.CommonConstants;
 import com.resustainability.reisp.constants.PageConstants;
+import com.resustainability.reisp.model.EMail;
 import com.resustainability.reisp.model.EsiContribution;
 import com.resustainability.reisp.model.PfContribution;
 import com.resustainability.reisp.model.User;
@@ -69,10 +72,37 @@ public class ContributionController {
 		}
 	
 	 @RequestMapping(value = "/appealRecord", method = RequestMethod.GET)
-	 public String appealRecord(@RequestParam("id") Long recordId) {
-	     // Your appeal logic here
+	 public ModelAndView appealRecord(@RequestParam("period") String period,@RequestParam("pcn") String pcn,
+			 EMail email,RedirectAttributes attributes,HttpSession session,@RequestParam("admin") String admin) {
+		 	boolean flag = false;
+			String userId = null;
+			String userName = null;
+			ModelAndView model = new ModelAndView();
+		 try {	
+				model.setViewName("redirect:/pf");
+			 String emailTo = (String) session.getAttribute("USER_EMAIL");
+			 	userId = (String) session.getAttribute("USER_ID");
+				userName = (String) session.getAttribute("USER_EMAIL");
+				DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd"); 
+			 EMailSender emailSender = new EMailSender();
+			 Mail mail = new Mail();
+			mail.setMailTo(admin);
+			mail.setMailSubject("Finance | Appeal chnage Request | Re Sustainability");
+			String body = "Dear Admin, <br>"
+					+ " Greetings From <b>Re Sustainability</b>"
+					+ "<br><br>  <b>"+userName+"</b> has Appealed for Change Request for  <b> "+period+"</b>"
+					+ "<br> For  "+pcn+" <br> Please verify and compelte the request! "
+					+ "<br><br><br>"
+					+ "Thanks"
+					+ "<p style='color : red'><b>Finance</b></p>"
+					+ "<b>Re Sustainability</b>";
+			String subject = "Acknowledgment!";
+			emailSender.send(mail.getMailTo(), mail.getMailSubject(), body,email,subject);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 		 
-	     return "redirect:/pf"; // Redirect after processing
+	     return model; // Redirect after processing
 	 }
 		@RequestMapping(value = "/add-pf", method = {RequestMethod.GET,RequestMethod.POST})
 		public ModelAndView addPfContribution(@ModelAttribute PfContribution pfContribution,RedirectAttributes attributes,HttpSession session) {

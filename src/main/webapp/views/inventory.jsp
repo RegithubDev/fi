@@ -428,7 +428,7 @@
                                                     data-record-id="${inventory.id}" 
                                                     data-index="${index.count}"
                                                     data-url="<%=request.getContextPath()%>/appealRecord">
-                                                <i class="fas fa-gavel me-1"></i> Appeal
+                                                <i class="fas fa-gavel me-1"></i> Appeal for change
                                             </button>
                                         </td>
                                     </c:otherwise>
@@ -899,10 +899,10 @@ $(document).ready(function () {
       emailjs.init("ZPmNxPbmYMoEtDDWO");
     })();
 
-    $(document).on('click', '.appeal-btn', function (e) {
-        var recordId = $(this).data('record-id');
-        var index = $(this).data('index');
-
+    $('.appeal-btn').on('click', function() {
+        const recordId = $(this).data('record-id');
+        const appealUrl = $(this).data('url');
+        
         Swal.fire({
             title: 'Appeal Request',
             text: 'Do you want to appeal this record to Admin for changes?',
@@ -914,43 +914,7 @@ $(document).ready(function () {
             cancelButtonText: 'Cancel'
         }).then((result) => {
             if (result.isConfirmed) {
-                try {
-                    // Email parameters
-                    var templateParams = {
-                        record_id: recordId,
-                        index: index,
-                        user_name: "Dilu",              // you can pass from JSP
-                        user_email: "saidileep.p@resustainability.com",   // optional
-                        message: "Appeal requested for record " + recordId
-                    };
-
-                    // Send email
-                    emailjs.send("service_qpt5k78", "template_nz2svpq", templateParams)
-                      .then(function(response) {
-                          console.log("SUCCESS!", response.status, response.text);
-                          Swal.fire({
-                              icon: 'success',
-                              title: 'Successfully Appealed',
-                              text: 'Your appeal email has been sent to Admin.',
-                              timer: 2000,
-                              showConfirmButton: false
-                          });
-                      }, function(error) {
-                          console.error("FAILED...", error);
-                          Swal.fire({
-                              icon: 'error',
-                              title: 'Error',
-                              text: 'Failed to send appeal email. Please try again.'
-                          });
-                      });
-                } catch (error) {
-                    console.error('Error processing appeal for index ' + index + ':', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Unable to process the appeal. Check console for details.'
-                    });
-                }
+                window.location.href = appealUrl + '?id=' + recordId;
             }
         });
     });

@@ -387,7 +387,7 @@
                                             <button class="btn btn-sm appeal-btn" 
                                                     data-record-id="${pt.id}" 
                                                     data-url="<%=request.getContextPath()%>/appealRecord">
-                                                <i class="fas fa-gavel me-1"></i> Appeal
+                                                <i class="fas fa-gavel me-1"></i> Appeal for change
                                             </button>
                                         </td>
                                     </c:otherwise>
