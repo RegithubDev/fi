@@ -713,7 +713,7 @@ $(document).ready(function () {
         const period = $(this).data('record-id');
         const pcn = $(this).data('record-id1');
         const appealUrl = $(this).data('url');
-        const admin = "madhuri.s@resustainability.com";
+        const admin = "ashok.patra@resustainability.com";
 
         Swal.fire({
             title: 'Appeal Request',

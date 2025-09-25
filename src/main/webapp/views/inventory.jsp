@@ -397,7 +397,7 @@
                                         </td>
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center">
-                                                <button class="btn btn-sm btn-outline-primary me-1 edit-trigger" data-index="${index.count}">
+                                                <button class="btn btn-sm btn-outline-primary me-1 edit-trigger" data-index="${index.count}" onclick="fixSBU('${index.count}')">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
                                             </div>
@@ -471,10 +471,10 @@
                                 <c:when test="${sessionScope.ROLE eq 'Admin' or sessionScope.ROLE eq 'SA'}">
                                     <div class="col-md-6">
                                         <label class="form-label fw-bold">Profit Center</label>
-                                        <select class="form-select select2" name="profit_center_code" required>
+                                        <select class="form-select select2" id="profit_center_code${index.count}" name="profit_center_code" onchange="fixSBU('${index.count}')" required>
                                             <option value="">-- Search Profit Center --</option>
                                             <c:forEach items="${profitCenterList}" var="pc">
-                                                <option value="${pc.profit_center_code}" sbu="${pc.sbu}" ${pc.profit_center_code == inventory.profit_center_code ? 'selected' : ''}>${pc.profit_center_code} - ${pc.profit_center_name}</option>
+                                                <option value="${pc.profit_center_code}" sbu="${pc.sbu}" ${pc.profit_center_code == inventory.profit_center_code ? 'selected' : ''}>${pc.sbu} - ${pc.profit_center_code} - ${pc.profit_center_name}</option>
                                             </c:forEach>
                                         </select>
                                     </div>
@@ -482,13 +482,13 @@
                                 <c:when test="${sessionScope.ROLE eq 'Management'}">
                                     <div class="col-md-6">
                                         <label class="form-label fw-bold">Profit Center</label>
-                                        <select class="form-select select2" name="profit_center_code" ${sessionScope.ROLE != 'Admin' && sessionScope.ROLE != 'SA' ? 'disabled' : ''} required>
+                                        <select class="form-select select2" id="profit_center_code${index.count}" name="profit_center_code" onchange="fixSBU('${index.count}')"  ${sessionScope.ROLE != 'Admin' && sessionScope.ROLE != 'SA' ? 'disabled' : ''} required>
                                             <option value="">-- Search Profit Center --</option>
                                             <c:set var="pcList" value="${fn:split(sessionScope.PC, ',')}" />
                                             <c:forEach items="${profitCenterList}" var="pc">
                                                 <c:forEach var="allowedPC" items="${pcList}">
                                                     <c:if test="${pc.profit_center_code == fn:trim(allowedPC)}">
-                                                        <option value="${pc.profit_center_code}" sbu="${pc.sbu}" ${pc.profit_center_code == inventory.profit_center_code ? 'selected' : ''}>${pc.profit_center_code} - ${pc.profit_center_name}</option>
+                                                        <option value="${pc.profit_center_code}" sbu="${pc.sbu}" ${pc.profit_center_code == inventory.profit_center_code ? 'selected' : ''}>${pc.sbu} - ${pc.profit_center_code} - ${pc.profit_center_name}</option>
                                                     </c:if>
                                                 </c:forEach>
                                             </c:forEach>
@@ -499,10 +499,12 @@
                                     <div class="col-md-6">
                                         <label class="form-label fw-bold">Profit Center</label>
                                         <p class="form-control-plaintext bg-light p-2 rounded">${inventory.profit_center_code} - ${inventory.profit_center_name}</p>
-                                        <input type="hidden" name="profit_center_code" value="${inventory.profit_center_code}" />
+                                        <input type="hidden" id="profit_center_code${index.count}" name="profit_center_code" value="${inventory.profit_center_code}" />
                                     </div>
                                 </c:otherwise>
                             </c:choose>
+                              <p id="sbuDisplay1" style="margin-top:10px; font-weight:bold; color:#333;"></p>
+									<input type="hidden" id="sbuInput1" name="sbu" />
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Month-Year</label>
                                 <input type="month" class="form-control" name="month_year" value="${inventory.month_year}" ${sessionScope.ROLE != 'Admin' && sessionScope.ROLE != 'SA' ? 'readonly' : ''} required>
@@ -620,7 +622,7 @@
                                     <select class="form-select select2" id="profitCenterSelect" name="profit_center_code" required>
                                         <option value="">-- Search Profit Center --</option>
                                         <c:forEach items="${profitCenterList}" var="pc">
-                                            <option value="${pc.profit_center_code}" sbu="${pc.sbu}">${pc.profit_center_code} - ${pc.profit_center_name}</option>
+                                            <option value="${pc.profit_center_code}" sbu="${pc.sbu}">${pc.sbu} - ${pc.profit_center_code} - ${pc.profit_center_name}</option>
                                         </c:forEach>
                                     </select>
                                     <p id="sbuDisplay" style="margin-top:10px; font-weight:bold; color:#333;"></p>
@@ -633,7 +635,7 @@
                                         <c:forEach items="${profitCenterList}" var="pc">
                                             <c:forEach var="allowedPC" items="${pcList}">
                                                 <c:if test="${pc.profit_center_code == fn:trim(allowedPC)}">
-                                                    <option value="${pc.profit_center_code}" sbu="${pc.sbu}">${pc.profit_center_code} - ${pc.profit_center_name}</option>
+                                                    <option value="${pc.profit_center_code}" sbu="${pc.sbu}">${pc.sbu} - ${pc.profit_center_code} - ${pc.profit_center_name}</option>
                                                 </c:if>
                                             </c:forEach>
                                         </c:forEach>
@@ -647,7 +649,7 @@
                                         <option value="">-- Search Profit Center --</option>
                                         <c:forEach items="${profitCenterList}" var="pc">
                                             <c:if test="${pc.profit_center_code eq sessionScope.PC}">
-                                                <option value="${pc.profit_center_code}" sbu="${pc.sbu}" selected>${pc.profit_center_code} - ${pc.profit_center_name}</option>
+                                                <option value="${pc.profit_center_code}" sbu="${pc.sbu}" selected>${pc.sbu} - ${pc.profit_center_code} - ${pc.profit_center_name}</option>
                                             </c:if>
                                         </c:forEach>
                                     </select>
@@ -674,11 +676,11 @@
                     <div class="row g-3">
                         <div class="col-md-4">
                             <label for="tbAdjustmentGL" class="form-label">As per TB with Adjustment GL (₹)</label>
-                            <input type="number" step="0.01" min="0" class="form-control" id="tbAdjustmentGL" name="tb_adjustment_gl" oninput="calculateVariance()" required>
+                            <input type="number" step="0.01" min="0" class="form-control" id="tbAdjustmentGL" name="tb_adjustment_gl" oninput="calculateVariance()" readonly required>
                         </div>
                         <div class="col-md-4">
                             <label for="tbSystemGL" class="form-label">As per TB with System GL (₹)</label>
-                            <input type="number" step="0.01" min="0" class="form-control" id="tbSystemGL" name="tb_system_gl" oninput="calculateVariance()" required>
+                            <input type="number" step="0.01" min="0" class="form-control" id="tbSystemGL" name="tb_system_gl" oninput="calculateVariance()" readonly required>
                         </div>
                         <div class="col-md-4">
                             <label for="bookValue" class="form-label">Book Value (₹)</label>
@@ -905,7 +907,7 @@ $(document).ready(function () {
         const period = $(this).data('record-id');
         const pcn = $(this).data('record-id1');
         const appealUrl = $(this).data('url');
-        const admin = "madhuri.s@resustainability.com";
+        const admin = "ashok.patra@resustainability.com";
 
         Swal.fire({
             title: 'Appeal Request',
@@ -1110,6 +1112,12 @@ $('#profitCenterSelect').on('change', function () {
     $('#sbuInput').val(selectedSbu);
 });
 
+function fixSBU(dot){
+	 const selectedSbu = $('#profit_center_code'+dot).find(':selected').attr('sbu') || '';
+	    $('#sbuDisplay1').text( "SBU: "+selectedSbu);
+	    $('#sbuInput1').val(selectedSbu);
+	
+}
 </script>
 </body>
 </html>
