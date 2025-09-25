@@ -73,7 +73,7 @@ public class ContributionController {
 	
 	 @RequestMapping(value = "/appealRecord", method = RequestMethod.GET)
 	 public ModelAndView appealRecord(@RequestParam("period") String period,@RequestParam("pcn") String pcn,
-			 EMail email,RedirectAttributes attributes,HttpSession session,@RequestParam("admin") String admin) {
+			 EMail email,RedirectAttributes attributes,HttpSession session,@RequestParam("admin") String admin,@RequestParam("msg") String msg) {
 		 	boolean flag = false;
 			String userId = null;
 			String userName = null;
@@ -88,14 +88,19 @@ public class ContributionController {
 			 Mail mail = new Mail();
 			mail.setMailTo(admin);
 			mail.setMailSubject("Finance | Appeal chnage Request | Re Sustainability");
-			String body = "Dear Admin, <br>"
-					+ " Greetings From <b>Re Sustainability</b>"
-					+ "<br><br>  <b>"+userName+"</b> has Appealed for Change Request for  <b> "+period+"</b>"
-					+ "<br> For  "+pcn+" <br> Please verify and compelte the request! "
-					+ "<br><br><br>"
-					+ "Thanks"
-					+ "<p style='color : red'><b>Finance</b></p>"
-					+ "<b>Re Sustainability</b>";
+			String body = "Dear Admin,<br><br>"
+				    + "Greetings from <b>Re Sustainability</b>.<br><br>"
+				    + "User <b>" + userName + "</b> has submitted an <b>Appeal Request</b> for the period <b>" + period + "</b> "
+				    + "related to <b>" + pcn + "</b>.<br><br>"
+				    + "<b>Appeal Message:</b><br>"
+				    + "<blockquote style='border-left:3px solid #ccc; margin:10px 0; padding:10px; background:#f9f9f9;'>"
+				    + msg
+				    + "</blockquote><br>"
+				    + "We kindly request you to review and complete this request at the earliest.<br><br>"
+				    + "Thank you,<br><br>"
+				    + "<p style='color:red; font-weight:bold; margin:0;'>Finance Team</p>"
+				    + "<b>Re Sustainability</b>";
+
 			String subject = "Acknowledgment!";
 			emailSender.send(mail.getMailTo(), mail.getMailSubject(), body,email,subject);
 		} catch (Exception e) {
