@@ -173,7 +173,7 @@ public class EsiContributionDao {
 		public List<EsiContribution> getpList()throws Exception {
 			List<EsiContribution> objsList = new ArrayList<EsiContribution>();
 			try {
-				String qry = "SELECT p.[id]\r\n"
+				String qry = "SELECT p.[id],p.sbu\r\n"
 						+ "      ,p.[entity_code],e.entity_name\r\n"
 						+ "      ,[profit_center_code]\r\n"
 						+ "      ,[profit_center_name]\r\n"

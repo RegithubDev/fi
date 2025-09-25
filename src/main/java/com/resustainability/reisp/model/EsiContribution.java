@@ -6,10 +6,18 @@ public class EsiContribution {
 
 private String id,Entity_code,pt,pts,profit_center_code,profit_center_name,month_year,employee_contribution,employer_contribution,total_amount,amount_paid,
 difference,due_date,actual_payment_date,delay_days,challan_no,no_of_emp,status,employee_contributions,employer_contributions,total_amounts,amount_paids,differences,due_dates,actual_payment_dates,delay_dayss,challan_nos,no_of_emps
-,created_date,modified_date,created_by,modified_by,atatchment,remarks,atatchments,remarkss,entity_name,upload_file;
+,created_date,modified_date,created_by,modified_by,atatchment,remarks,atatchments,remarkss,entity_name,upload_file,sbu;
 
 private MultipartFile mediaList;
 
+
+public String getSbu() {
+	return sbu;
+}
+
+public void setSbu(String sbu) {
+	this.sbu = sbu;
+}
 
 public String getUpload_file() {
 	return upload_file;

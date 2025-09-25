@@ -179,7 +179,7 @@ public class ContributionDao {
 		public List<PfContribution> getpList()throws Exception {
 			List<PfContribution> objsList = new ArrayList<PfContribution>();
 			try {
-				String qry = "SELECT p.[id]\r\n"
+				String qry = "SELECT p.[id],p.sbu\r\n"
 						+ "      ,p.[entity_code],e.entity_name\r\n"
 						+ "      ,[profit_center_code]\r\n"
 						+ "      ,[profit_center_name]\r\n"

@@ -458,7 +458,7 @@
                         <input type="hidden" name="id" value="${inventory.id}" />
                         <h5><i class="fas fa-info-circle me-2"></i>Core Information</h5>
                         <div class="row g-3 mb-4">
-                            <div class="col-md-6">
+                         <%--    <div class="col-md-6">
                                 <label for="entityCodeSelect_${index.count}" class="form-label fw-bold">Entity Code</label>
                                 <select class="form-select select2" id="entityCodeSelect_${index.count}" name="entity_code" ${sessionScope.ROLE != 'Admin' && sessionScope.ROLE != 'SA' ? 'disabled' : ''} required>
                                     <option value="">-- Search Entity Code --</option>
@@ -466,7 +466,7 @@
                                         <option value="${entity.entity_code}" data-entity-name="${entity.entity_name}" ${entity.entity_code == inventory.entity_code ? 'selected' : ''}>${entity.entity_code} - ${entity.entity_name}</option>
                                     </c:forEach>
                                 </select>
-                            </div>
+                            </div> --%>
                             <c:choose>
                                 <c:when test="${sessionScope.ROLE eq 'Admin' or sessionScope.ROLE eq 'SA'}">
                                     <div class="col-md-6">
@@ -474,7 +474,7 @@
                                         <select class="form-select select2" name="profit_center_code" required>
                                             <option value="">-- Search Profit Center --</option>
                                             <c:forEach items="${profitCenterList}" var="pc">
-                                                <option value="${pc.profit_center_code}" ${pc.profit_center_code == inventory.profit_center_code ? 'selected' : ''}>${pc.profit_center_code} - ${pc.profit_center_name}</option>
+                                                <option value="${pc.profit_center_code}" sbu="${pc.sbu}" ${pc.profit_center_code == inventory.profit_center_code ? 'selected' : ''}>${pc.profit_center_code} - ${pc.profit_center_name}</option>
                                             </c:forEach>
                                         </select>
                                     </div>
@@ -488,7 +488,7 @@
                                             <c:forEach items="${profitCenterList}" var="pc">
                                                 <c:forEach var="allowedPC" items="${pcList}">
                                                     <c:if test="${pc.profit_center_code == fn:trim(allowedPC)}">
-                                                        <option value="${pc.profit_center_code}" ${pc.profit_center_code == inventory.profit_center_code ? 'selected' : ''}>${pc.profit_center_code} - ${pc.profit_center_name}</option>
+                                                        <option value="${pc.profit_center_code}" sbu="${pc.sbu}" ${pc.profit_center_code == inventory.profit_center_code ? 'selected' : ''}>${pc.profit_center_code} - ${pc.profit_center_name}</option>
                                                     </c:if>
                                                 </c:forEach>
                                             </c:forEach>
@@ -539,10 +539,7 @@
                                 <label class="form-label">Variance (₹)</label>
                                 <input type="number" step="0.01" min="0" class="form-control bg-light" name="varience" value="${inventory.varience}" ${sessionScope.ROLE != 'Admin' && sessionScope.ROLE != 'SA' ? 'readonly' : ''} readonly required>
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label">SBU</label>
-                                <input type="text" class="form-control" name="sbu" value="${inventory.sbu}" ${sessionScope.ROLE != 'Admin' && sessionScope.ROLE != 'SA' ? 'readonly' : ''} required>
-                            </div>
+                     
                         </div>
                         <h5 class="mt-4"><i class="fas fa-file-alt me-2"></i>Additional Details</h5>
                         <div class="row g-3">
@@ -623,9 +620,11 @@
                                     <select class="form-select select2" id="profitCenterSelect" name="profit_center_code" required>
                                         <option value="">-- Search Profit Center --</option>
                                         <c:forEach items="${profitCenterList}" var="pc">
-                                            <option value="${pc.profit_center_code}">${pc.profit_center_code} - ${pc.profit_center_name}</option>
+                                            <option value="${pc.profit_center_code}" sbu="${pc.sbu}">${pc.profit_center_code} - ${pc.profit_center_name}</option>
                                         </c:forEach>
                                     </select>
+                                    <p id="sbuDisplay" style="margin-top:10px; font-weight:bold; color:#333;"></p>
+									<input type="hidden" id="sbuInput" name="sbu" />
                                 </c:when>
                                 <c:when test="${sessionScope.ROLE eq 'Management'}">
                                     <select class="form-select select2" id="profitCenterSelect" name="profit_center_code" required>
@@ -634,21 +633,27 @@
                                         <c:forEach items="${profitCenterList}" var="pc">
                                             <c:forEach var="allowedPC" items="${pcList}">
                                                 <c:if test="${pc.profit_center_code == fn:trim(allowedPC)}">
-                                                    <option value="${pc.profit_center_code}">${pc.profit_center_code} - ${pc.profit_center_name}</option>
+                                                    <option value="${pc.profit_center_code}" sbu="${pc.sbu}">${pc.profit_center_code} - ${pc.profit_center_name}</option>
                                                 </c:if>
                                             </c:forEach>
                                         </c:forEach>
                                     </select>
+                                                                        <p id="sbuDisplay" style="margin-top:10px; font-weight:bold; color:#333;"></p>
+									<input type="hidden" id="sbuInput" name="sbu" />
+                                
                                 </c:when>
                                 <c:otherwise>
                                     <select class="form-select select2" id="profitCenterSelect" name="profit_center_code" required>
                                         <option value="">-- Search Profit Center --</option>
                                         <c:forEach items="${profitCenterList}" var="pc">
                                             <c:if test="${pc.profit_center_code eq sessionScope.PC}">
-                                                <option value="${pc.profit_center_code}" selected>${pc.profit_center_code} - ${pc.profit_center_name}</option>
+                                                <option value="${pc.profit_center_code}" sbu="${pc.sbu}" selected>${pc.profit_center_code} - ${pc.profit_center_name}</option>
                                             </c:if>
                                         </c:forEach>
                                     </select>
+                                   <p id="sbuDisplay" style="margin-top:10px; font-weight:bold; color:#333;"></p>
+									<input type="hidden" id="sbuInput" name="sbu" />
+                                
                                 </c:otherwise>
                             </c:choose>
                         </div>
@@ -687,11 +692,8 @@
                             <label for="variance" class="form-label">Variance (₹)</label>
                             <input type="number" step="0.01" min="0" class="form-control bg-light" id="variance" name="varience" readonly required>
                         </div>
-                        <div class="col-md-4">
-                            <label for="sbu" class="form-label">SBU</label>
-                            <input type="text" class="form-control" id="sbu" name="sbu" required>
-                        </div>
-                    </div>
+                        
+
                     <h5 class="mt-4"><i class="fas fa-file-alt me-2"></i>Additional Details</h5>
                     <div class="row g-3">
                         <div class="col-md-6">
@@ -1102,6 +1104,12 @@ $(document).ready(function () {
         });
     }
 });
+$('#profitCenterSelect').on('change', function () {
+    const selectedSbu = $(this).find(':selected').attr('sbu') || '';
+    $('#sbuDisplay').text( "SBU: "+selectedSbu);
+    $('#sbuInput').val(selectedSbu);
+});
+
 </script>
 </body>
 </html>

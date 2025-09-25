@@ -159,8 +159,7 @@ public class UserDao {
 		User userDetails = null;
 		try{  
 			con = dataSource.getConnection();
-			String qry = "  select USER_ID,email_id,u.entity_code,e.entity_name, u.profit_center_code,p.profit_center_name,u.role,u.status   from [fi_user] u\r\n"
-					+ "  left join entity e on u.entity_code = e.entity_code\r\n"
+			String qry = "  select USER_ID,email_id,u.entity_code as sbu, u.profit_center_code,p.profit_center_name,u.role,u.status   from [fi_user] u\r\n"
 					+ "  left join profit_center p on u.profit_center_code = p.profit_center_code   "
 					+ "where  u.status = 'Active' ";
 			if(!StringUtils.isEmpty(user.getEmail_id())){
@@ -176,8 +175,7 @@ public class UserDao {
 				userDetails.setUser_id(rs.getString("user_id"));
 				userDetails.setEmail_id(rs.getString("email_id"));
 				userDetails.setRole(rs.getString("role"));
-				userDetails.setEntity_code(rs.getString("entity_code"));
-				userDetails.setEntity_name(rs.getString("entity_name"));
+				userDetails.setEntity_code(rs.getString("sbu"));
 				userDetails.setProfit_center_code(rs.getString("profit_center_code"));
 				userDetails.setProfit_center_name(rs.getString("profit_center_name"));
 			}

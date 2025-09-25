@@ -313,6 +313,7 @@
                                 <th>Email</th>
                                 <th>Profit Center</th>
                                 <th>Role</th>
+                                 <th>SBU</th>
                                 <th>Created On</th>
                                 <th>Modified On</th>
                                 <th>Status</th>
@@ -337,6 +338,7 @@
 								    </c:forEach>
 								</td>
                                     <td>${user.role}</td>
+                                    <td>${user.sbu}</td>
                                     <td>${user.created_on}</td>
                                     <td>${user.modified_on}</td>
                                     <td>

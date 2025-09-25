@@ -95,6 +95,7 @@ public class LoginController {
 						session.setAttribute("USER_EMAIL", userDetails.getEmail_id());
 						session.setAttribute("ROLE", userDetails.getRole());
 						session.setAttribute("PC", userDetails.getProfit_center_code());
+						session.setAttribute("SBU", userDetails.getEntity_code());
 						session.setAttribute("PCN", userDetails.getProfit_center_name());
 					
 					//	List<User> menuList = service.getMenuList();

@@ -2,7 +2,15 @@ package com.resustainability.reisp.model;
 
 public class User {
 
-	private String  id,user_id,email_id,created_by,modified_by,entity_code,profit_center_code,role,profit_center_name,entity_name,created_on,modified_on,status;
+	private String  id,user_id,email_id,created_by,sbu,modified_by,entity_code,profit_center_code,role,profit_center_name,entity_name,created_on,modified_on,status;
+
+	public String getSbu() {
+		return sbu;
+	}
+
+	public void setSbu(String sbu) {
+		this.sbu = sbu;
+	}
 
 	public String getCreated_by() {
 		return created_by;
