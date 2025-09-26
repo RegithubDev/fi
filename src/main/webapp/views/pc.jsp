@@ -5,7 +5,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <html lang="en">
 <head>
-    <title>SBU Management</title>
+    <title>pc Management</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -222,7 +222,7 @@
         <div class="header-bar animate-fade-in">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <h2 class="mb-1"><i class="fas fa-building me-2"></i>SBU Management</h2>
+                    <h2 class="mb-1"><i class="fas fa-building me-2"></i>pc Management</h2>
                     <p class="mb-0">Manage profit centers and their details</p>
                 </div>
                 <div>
@@ -240,7 +240,7 @@
 
         <div class="card animate-fade-in">
             <div class="card-header">
-                <i class="fas fa-list me-2"></i>SBU List
+                <i class="fas fa-list me-2"></i>pc List
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -252,7 +252,7 @@
                                 <th>Entity Name</th>
                                 <th>Profit Center Code</th>
                                 <th>Profit Center Name</th>
-                                <th>SBU</th>
+                                <th>sbu</th>
                                 <th>Employee ID</th>
                                 <th>Employee Name</th>
                                 <th>Email</th>
@@ -310,7 +310,7 @@
             <div class="modal-content">
                 <form action="<%=request.getContextPath()%>/addPc" method="post" id="addPcForm">
                     <div class="modal-header bg-primary text-white">
-                        <h5 class="modal-title"><i class="fas fa-building-plus me-2"></i>Add New SBU</h5>
+                        <h5 class="modal-title"><i class="fas fa-building-plus me-2"></i>Add New pc</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -345,8 +345,8 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">SBU <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="sbu" required>
+                                    <label class="form-label">pc <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="pc" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -385,7 +385,7 @@
                     </div>
                     <div class="modal-footer submit-buttons">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" id="addPcBtn">Add SBU</button>
+                        <button type="submit" class="btn btn-primary" id="addPcBtn">Add pc</button>
                     </div>
                 </form>
             </div>
@@ -399,7 +399,7 @@
                 <div class="modal-content">
                     <form action="<%=request.getContextPath()%>/updatePc" method="post" class="editPcForm" data-original-email="${pc.emailId}">
                         <div class="modal-header bg-primary text-white">
-                            <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Edit SBU</h5>
+                            <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Edit pc</h5>
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -435,8 +435,8 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label class="form-label">SBU <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="sbu" value="${pc.sbu}" required>
+                                        <label class="form-label">pc <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="pc" value="${pc.pc}" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -542,7 +542,7 @@ $(document).ready(function() {
             { data: 'entityName' },
             { data: 'profitCenterCode' },
             { data: 'profitCenterName' },
-            { data: 'sbu' },
+            { data: 'pc' },
             { data: 'empId' },
             { data: 'empName' },
             { data: 'emailId', render: function(data) {

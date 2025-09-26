@@ -79,7 +79,7 @@ public class ContributionController {
 			String userName = null;
 			ModelAndView model = new ModelAndView();
 		 try {	
-				model.setViewName("redirect:/pf");
+				model.setViewName("redirect:/inventory");
 			 String emailTo = (String) session.getAttribute("USER_EMAIL");
 			 	userId = (String) session.getAttribute("USER_ID");
 				userName = (String) session.getAttribute("USER_EMAIL");

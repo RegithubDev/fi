@@ -425,8 +425,8 @@
 									</td>
                                         <td>
                                             <button class="btn btn-sm appeal-btn" 
-                                                    data-record-id="${pf.month_year}" 
-								             		data-record-id1="${pf.profit_center_name}" 
+                                                    data-record-id="${inventory.month_year}" 
+								             		data-record-id1="${inventory.profit_center_name}" 
                                                     data-index="${index.count}"
                                                     data-url="<%=request.getContextPath()%>/appealRecord">
                                                 <i class="fas fa-gavel me-1"></i> Appeal for change
@@ -619,7 +619,7 @@
                         <div class="col-md-6">
                             <label for="profitCenterSelect" class="form-label fw-bold">Profit Center</label>
                             <c:choose>
-                                <c:when test="${sessionScope.ROLE eq 'Admin' or sessionScope.ROLE eq 'SA' or sessionScope.ROLE eq 'User'}">
+                                <c:when test="${sessionScope.ROLE eq 'Admin' or sessionScope.ROLE eq 'SA' }">
                                     <select class="form-select select2" id="profitCenterSelect" name="profit_center_code" required>
                                         <option value="">-- Search Profit Center --</option>
                                         <c:forEach items="${profitCenterList}" var="pc">
@@ -629,7 +629,7 @@
                                     <p id="sbuDisplay" style="margin-top:10px; font-weight:bold; color:#333;"></p>
 									<input type="hidden" id="sbuInput" name="sbu" />
                                 </c:when>
-                                <c:when test="${sessionScope.ROLE eq 'Management'}">
+                                <c:when test="${sessionScope.ROLE eq 'Management' or sessionScope.ROLE eq 'User'}">
                                     <select class="form-select select2" id="profitCenterSelect" name="profit_center_code" required>
                                         <option value="">-- Search Profit Center --</option>
                                         <c:set var="pcList" value="${fn:split(sessionScope.PC, ',')}" />
@@ -675,6 +675,8 @@
                     </div>
                     <h5 class="mt-4"><i class="fas fa-calculator me-2"></i>Financial Details</h5>
                     <div class="row g-3">
+                     <c:choose>
+                                <c:when test="${sessionScope.ROLE eq 'Admin' or sessionScope.ROLE eq 'SA' }">
                         <div class="col-md-4">
                             <label for="tbAdjustmentGL" class="form-label">As per TB with Adjustment GL (₹)</label>
                             <input type="number" step="0.01" min="0" class="form-control" id="tbAdjustmentGL" name="tb_adjustment_gl" oninput="calculateVariance()" readonly required>
@@ -695,8 +697,15 @@
                             <label for="variance" class="form-label">Variance (₹)</label>
                             <input type="number" step="0.01" min="0" class="form-control bg-light" id="variance" name="varience" readonly required>
                         </div>
-                        
-
+                         </c:when>
+                          <c:otherwise>
+                                   <div class="col-md-4">
+                            <label for="reportedValue" class="form-label">Reported Value (₹)</label>
+                            <input type="number" step="0.01" min="0" class="form-control" id="reportedValue" name="reported_value"  required>
+                        </div>
+                                
+						 </c:otherwise>
+                     </c:choose>
                     <h5 class="mt-4"><i class="fas fa-file-alt me-2"></i>Additional Details</h5>
                     <div class="row g-3">
                         <div class="col-md-6">
@@ -843,61 +852,65 @@ $(document).ready(function () {
 
     // Initialize DataTable
     try {
-        var table = $('#inventoryTable').DataTable({
-            responsive: true,
-            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
-            language: { search: "", searchPlaceholder: "Search..." },
-            dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
-                 "<'row'<'col-sm-12'tr>>" +
-                 "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
-            buttons: [
-                {
-                    extend: 'excelHtml5',
-                    text: '<i class="fas fa-file-excel me-1"></i>Export',
-                    className: 'btn btn-success btn-sm',
-                    exportOptions: {
-                        columns: ':not(:last-child)',
-                        format: {
-                            body: function (data, row, column, node) {
-                                return $(node).text().trim();
-                            }
+    var userRole = "${sessionScope.ROLE}"; // Example: coming from JSP / backend
+
+    var table = $('#inventoryTable').DataTable({
+        responsive: true,
+        lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+        language: { search: "", searchPlaceholder: "Search..." },
+        dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+             "<'row'<'col-sm-12'tr>>" +
+             "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+        buttons: (userRole !== "User"  && userRole !== "Management") ? [   // 👈 check here
+            {
+                extend: 'excelHtml5',
+                text: '<i class="fas fa-file-excel me-1"></i>Export',
+                className: 'btn btn-success btn-sm',
+                exportOptions: {
+                    columns: ':not(:last-child)',
+                    format: {
+                        body: function (data, row, column, node) {
+                            return $(node).text().trim();
                         }
                     }
                 }
-            ],
-            initComplete: function(settings, json) {
+            }
+        ] : [],
+        initComplete: function(settings, json) {
+            if (userRole !== "user") {
                 this.api().buttons().container().appendTo('#buttons');
-                initSelect2();
-                populateFilters(this.api());
-                console.log('DataTable initialized');
-            },
-            drawCallback: function() {
-                // Reinitialize Select2 only for modal dropdowns to avoid resetting filters
-                $('[id^=inventoryModal_]').each(function() {
-                    $(this).find('.select2').select2({
-                        theme: 'bootstrap-5',
-                        dropdownParent: $(this),
-                        allowClear: true,
-                        placeholder: function() { return $(this).data('placeholder') || '-- Search --'; }
-                    });
-                });
-                $('#inventoryModal .select2').select2({
+            }
+            initSelect2();
+            populateFilters(this.api());
+            console.log('DataTable initialized');
+        },
+        drawCallback: function() {
+            $('[id^=inventoryModal_]').each(function() {
+                $(this).find('.select2').select2({
                     theme: 'bootstrap-5',
-                    dropdownParent: $('#inventoryModal'),
+                    dropdownParent: $(this),
                     allowClear: true,
                     placeholder: function() { return $(this).data('placeholder') || '-- Search --'; }
                 });
-                console.log('DataTable draw complete, Select2 reinitialized for modals');
-            }
-        });
-    } catch (error) {
-        console.error('Error initializing DataTable:', error);
-        Swal.fire({
-            icon: 'error',
-            title: 'DataTable Error',
-            text: 'Failed to initialize DataTable. Check console for details.'
-        });
-    }
+            });
+            $('#inventoryModal .select2').select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#inventoryModal'),
+                allowClear: true,
+                placeholder: function() { return $(this).data('placeholder') || '-- Search --'; }
+            });
+            console.log('DataTable draw complete, Select2 reinitialized for modals');
+        }
+    });
+} catch (error) {
+    console.error('Error initializing DataTable:', error);
+    Swal.fire({
+        icon: 'error',
+        title: 'DataTable Error',
+        text: 'Failed to initialize DataTable. Check console for details.'
+    });
+}
+
 
     // Initialize EmailJS (replace with your public key from EmailJS dashboard)
     (function(){

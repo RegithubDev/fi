@@ -385,6 +385,8 @@
 									</td>
                                         <td data-label="Action">
                                             <button class="btn btn-sm appeal-btn" 
+                                            data-record-id="${pt.month_year}" 
+								             		data-record-id1="${pt.profit_center_name}" 
                                                     data-record-id="${pt.id}" 
                                                     data-url="<%=request.getContextPath()%>/appealRecord">
                                                 <i class="fas fa-gavel me-1"></i> Appeal for change

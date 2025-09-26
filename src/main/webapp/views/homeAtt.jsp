@@ -218,6 +218,49 @@
             .dashboard-subtitle { font-size: 1rem; }
             .card-container { grid-template-columns: 1fr; padding: 2rem 0; }
         }
+        
+/* Style for the inventory button */
+    .inventory-button {
+        background-color: #ff0000; /* Red background to match the arrow color */
+        border: none;
+        border-radius: 50px; /* Adjusted to oval shape to accommodate text */
+        padding: 8px 15px; /* Padding to fit text and icon */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+        margin-left: 10px; /* Space from the card title */
+        font-family: Arial, sans-serif; /* Ensure text readability */
+        font-size: 14px; /* Adjust text size */
+        color: #ffffff; /* White text to match icon */
+    }
+
+    .inventory-button:hover {
+        transform: scale(1.1); /* Slight scale on hover for interactivity */
+    }
+
+    .inventory-button i {
+        margin-right: 5px; /* Space between icon and text */
+    }
+
+    /* Ensure the card-header is flexible to accommodate the button */
+    .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+    }
+
+    /* Adjust card-icon and card-title layout */
+    .card-icon, .card-title {
+        margin: 0;
+    }
+        
+        
+        
+        
+        
     </style>
 </head>
 <body>
@@ -236,8 +279,8 @@
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="mastersDropdown">
                                 <li><a class="dropdown-item" href="<%=request.getContextPath()%>/user">Users</a></li>
-<li><a class="dropdown-item" href="<%=request.getContextPath()%>/pc">SBU</a></li> 
-                        </ul>
+<li><a class="dropdown-item" href="<%=request.getContextPath()%>/pc">PC</a></li> 
+                       </ul>
                         </li>
                     </c:if>
                     <li class="nav-item">
@@ -258,39 +301,43 @@
     <div class="container">
         <div class="card-container">
             <!-- PF Card -->
-            <a href="<%=request.getContextPath()%>/pf" class="compliance-card pf animate__animated animate__fadeInUp animate__delay-0_2s">
+         <!--     <a href="<%=request.getContextPath()%>/pf" class="compliance-card pf animate__animated animate__fadeInUp animate__delay-0_2s">
                 <div class="card-header">
                     <div class="card-icon"><i class="fas fa-piggy-bank"></i></div>
                     <h2 class="card-title">Provident Fund</h2>
                 </div>
                 <div class="card-subtitle">Access services for PF contributions, view statements, and manage employee accounts.</div>
-            </a>
+            </a> -->
             
             <!-- ESI Card -->
-            <a href="<%=request.getContextPath()%>/esi" class="compliance-card esi animate__animated animate__fadeInUp animate__delay-0_4s">
+         <!--     <a href="<%=request.getContextPath()%>/esi" class="compliance-card esi animate__animated animate__fadeInUp animate__delay-0_4s">
                 <div class="card-header">
                     <div class="card-icon"><i class="fas fa-hospital-user"></i></div>
                     <h2 class="card-title">Employees State Insurance</h2>
                 </div>
                 <div class="card-subtitle">Complete ESI filings, manage employee benefits, and access related insurance services.</div>
             </a>
-            
+            -->
             <!-- PT Card -->
-            <a href="<%=request.getContextPath()%>/pt" class="compliance-card pt animate__animated animate__fadeInUp animate__delay-0_6s">
+          <!--   <a href="<%=request.getContextPath()%>/pt" class="compliance-card pt animate__animated animate__fadeInUp animate__delay-0_6s">
                 <div class="card-header">
                     <div class="card-icon"><i class="fas fa-file-invoice-dollar"></i></div>
                     <h2 class="card-title">Professional Tax</h2>
                 </div>
                 <div class="card-subtitle">Handle all aspects of Professional Tax, including calculations, payments, and filings.</div>
-            </a>
-            
-               <a href="<%=request.getContextPath()%>/inventory" class="compliance-card pt animate__animated animate__fadeInUp animate__delay-0_6s">
-                <div class="card-header">
-                    <div class="card-icon"><i class="fas fa-file-invoice-dollar"></i></div>
-                    <h2 class="card-title">Inventory</h2>
-                </div>
-                <div class="card-subtitle"></div>
-            </a>
+            </a>       -->      
+ <a href="<%=request.getContextPath()%>/inventory" class="compliance-card pt animate__animated animate__fadeInUp animate__delay-0_6s">
+    <div class="card-header">
+        <div class="card-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+        <h2 class="card-title">Inventory</h2>
+        <!-- Updated button with icon and "Go" text -->
+        <button class="inventory-button">
+            <i class="fas fa-arrow-right"></i> Go
+        </button>
+    </div>
+    <div class="card-subtitle"> Inventory = Stock (Raw materials, WIP, Finished goods, MRO) that a business holds to run its operations and meet customer demand.
+    </div>
+</a>
             
             
         </div>
