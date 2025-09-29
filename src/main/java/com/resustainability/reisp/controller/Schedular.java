@@ -59,7 +59,7 @@ public class Schedular {
 	    private EsiContributionService contributionService1;
 	 
 	 
-	 @Scheduled(cron = "0 30 15 * * *")
+	 @Scheduled(cron = "0 29 16 * * *")
 	public void userLoginTimeout(){ if(is_cron_jobs_enabled || is_cron_jobs_enabled_in_qa) {
 	  try { System.out.println("cronJob Called!!!!"); 
 	  
@@ -67,6 +67,7 @@ public class Schedular {
 
 	        // Only run after 4th of quarter start months (Jan, Apr, Jul, Oct)
 	        if (!isQuarterReminderPeriod(today)) {
+	        	System.out.println("not");
 	            return;
 	        }
 
@@ -84,15 +85,14 @@ public class Schedular {
 	            			
 	            			 String[] months = {"2025-03", "2025-06", "2025-09", "2025-12"};
 
-	            		        for (String month : months) {
-	            		            System.out.println("Processing month: " + month);
+	            		        if (pc.getResult().equalsIgnoreCase("No")) {
 	            		            // Add your logic here for each month
 	            		        
 	            				mail.setMailTo(pc.getEmail_id());
 		            			mail.setMailSubject("Finance | Gentle Reminder | Re Sustainability");
-		            			String body = "Dear "+pc.getEmail_id()+",<br><br>" +
+		            			String body = "Dear User,<br><br>" +
 		            				    "This is a kind reminder from <b>Re Sustainability Finance Team</b>.<br><br>" +
-		            				    "Our records indicate that the <b>Inventory data for " + lastQuarter + " (Quarter " + lastQuarter + ")</b> " +
+		            				    "Our records indicate that the <b>Inventory data for " + pc.getMonth_year() + " (Quarter " + pc.getMonth_year() + ")</b> " +
 		            				    "has not been submitted for your Profit Center <b>" + pc.getProfit_center_name() + "</b>.<br><br>" +
 		            				    "As per the reporting guidelines, it is mandatory to complete the inventory update by the due date.<br>" +
 		            				    "Please update the records at the earliest to avoid any compliance issues.<br><br>" +
@@ -113,18 +113,16 @@ public class Schedular {
 	  e.printStackTrace(); logger.error("userLoginTimeout() : "+e.getMessage()); }
 	  } }
 	 
-	
+	 private boolean isQuarterReminderPeriod(LocalDate today) {
+		    int month = today.getMonthValue();
+		    int day = today.getDayOfMonth();
 
-	    private boolean isQuarterReminderPeriod(LocalDate today) {
-	        int month = today.getMonthValue();
-	        int day = today.getDayOfMonth();
-
-	        // Quarter start months = Jan, Apr, Jul, Oct
-	        if (month == 1 || month == 4 || month == 7 || month == 10) {
-	            return day >= 4; // Start from 4th onward
-	        }
-	        return true; // For rest of month keep sending until updated
-	    }
+		    // Quarter start months = Jan, Apr, Jul, Oct
+		    if (month == 1 || month == 4 || month == 7 || month == 9) {
+		        return day >= 4; // Run only from 4th day onwards
+		    }
+		    return false; // Do not run in other months
+		}
 
 	    private YearMonth getLastQuarter(YearMonth now) {
 	        int month = now.getMonthValue();
