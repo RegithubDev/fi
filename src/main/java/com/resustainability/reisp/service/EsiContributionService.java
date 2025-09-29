@@ -36,4 +36,8 @@ public class EsiContributionService {
 			return  contributionDao.getpList();
 		}
 
+		public List<EsiContribution> getUList() throws Exception {
+			return  contributionDao.getUList();
+		}
+
 }

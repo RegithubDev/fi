@@ -188,6 +188,33 @@ private static Logger logger = Logger.getLogger(EMailSender.class);
 		}
 		
 	}
+	public void sendAlerts(String mailTo, String mailSubject, String body, String[] email, String subject) throws UnsupportedEncodingException {
+		boolean isSend = false;		
+		try {
+			MimeMessage message = new MimeMessage(getSession());
+			message.setFrom(new InternetAddress(mailId, mailSubject));
+			message.setRecipients(Message.RecipientType.TO,InternetAddress.parse(mailTo));
+			//message.setRecipients(Message.RecipientType.CC,InternetAddress.parse(mailId));
+			message.setRecipients(Message.RecipientType.BCC,InternetAddress.parse(mailId));
+			message.setSubject(subject,"UTF-8");
+			Multipart mp = new MimeMultipart();
+			MimeBodyPart htmlPart = new MimeBodyPart();
+			
+			htmlPart.setContent(message, "text/html");
+			mp.addBodyPart(htmlPart);
+			message.setContent(mp);
+			message.setText( body,"utf-8", "html");
+			
+			Transport.send(message);
+			logger.info("Email sent successfully");
+			isSend = true;
+		} catch (MessagingException e) {
+			e.printStackTrace();
+			logger.error("Exception occured while sending an email: "+e.getMessage());			
+		}
+		return;
+		
+	}
 	
 	
 }

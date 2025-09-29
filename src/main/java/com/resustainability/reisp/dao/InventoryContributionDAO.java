@@ -17,6 +17,8 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
+
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -194,4 +196,42 @@ public class InventoryContributionDAO {
         }
         return profitCenterList;
     }
+
+	public boolean isInventoryUpdatedForQuarter(String profit_center_code, YearMonth lastQuarter) throws Exception {
+		 List<InventoryContributionDAO> entityList = new ArrayList<>();
+		 boolean flag = false;
+	        try {
+	            String qry = "select [id]\r\n"
+	            		+ "      ,[entity_code]\r\n"
+	            		+ "      ,[entity_name]\r\n"
+	            		+ "      ,[profit_center_code]\r\n"
+	            		+ "      ,[profit_center_name]\r\n"
+	            		+ "      ,[sbu]\r\n"
+	            		+ "      ,[month_year]\r\n"
+	            		+ "      ,[book_value]\r\n"
+	            		+ "      ,[reported_value]\r\n"
+	            		+ "      ,[tb_adjustment_gl]\r\n"
+	            		+ "      ,[tb_system_gl]\r\n"
+	            		+ "      ,[varience]\r\n"
+	            		+ "      ,[remarks]\r\n"
+	            		+ "      ,[upload_file]\r\n"
+	            		+ "      ,[created_by]\r\n"
+	            		+ "      ,[created_date]\r\n"
+	            		+ "      ,[modified_by]\r\n"
+	            		+ "      ,[modified_date]\r\n"
+	            		+ "      ,[status]\r\n"
+	            		+ "  FROM [FIDB].[dbo].[inventory]\r\n"
+	            		+ " " +
+	                         "WHERE profit_center_code <> '' AND profit_center_code IS NOT NULL AND status = 'Active' "
+	                         + "and profit_center_code = '"+profit_center_code+"' and month_year = '"+lastQuarter+"'";
+	            entityList = jdbcTemplate.query(qry, new BeanPropertyRowMapper<>(InventoryContributionDAO.class));
+	            if(entityList.size() > 0) {
+	            		flag = true;
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            throw new Exception("Error fetching entity list: " + e.getMessage(), e);
+	        }
+	        return flag;
+	}
 }

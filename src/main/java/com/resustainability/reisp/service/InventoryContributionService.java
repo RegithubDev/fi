@@ -6,6 +6,7 @@ import com.resustainability.reisp.dao.InventoryContributionDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.YearMonth;
 import java.util.List;
 
 @Service
@@ -71,6 +72,10 @@ public class InventoryContributionService {
             throw new RuntimeException("Error fetching inventory contributions: " + e.getMessage(), e);
         }
     }
+
+	public boolean isInventoryUpdatedForQuarter(String profit_center_code, YearMonth lastQuarter) throws Exception {
+		  return inventoryDAO.isInventoryUpdatedForQuarter(profit_center_code,lastQuarter); // Assuming DAO has this method
+	}
 
 
 }

@@ -190,4 +190,80 @@ public class EsiContributionDao {
 			}
 			return objsList;
 		}
+
+		public List<EsiContribution> getUList() throws Exception {
+			List<EsiContribution> objsList = new ArrayList<EsiContribution>();
+			try {
+//				String qry = "SELECT \r\n"
+//						+ "    u.user_id,\r\n"
+//						+ "    u.email_id,\r\n"
+//						+ "    LTRIM(RTRIM(s.value)) AS profit_center_code, -- split values\r\n"
+//						+ "    u.role,\r\n"
+//						+ "    p.profit_center_name,\r\n"
+//						+ "    u.status,\r\n"
+//						+ "    u.created_by,\r\n"
+//						+ "    u.modified_by\r\n"
+//						+ "FROM [FIDB].[dbo].[fi_user] u\r\n"
+//						+ "CROSS APPLY STRING_SPLIT(u.profit_center_code, ',') s\r\n"
+//						+ "LEFT JOIN profit_center p \r\n"
+//						+ "       ON LTRIM(RTRIM(s.value)) = p.profit_center_code;\r\n"
+//						+ ""
+//						+ " ";
+				String qry = "WITH Months AS (\r\n"
+						+ "    SELECT '2025-03' AS month_year\r\n"
+						+ "    UNION ALL\r\n"
+						+ "    SELECT '2025-06'\r\n"
+						+ "    UNION ALL\r\n"
+						+ "    SELECT '2025-09'\r\n"
+						+ "    UNION ALL\r\n"
+						+ "    SELECT '2025-12'\r\n"
+						+ "),\r\n"
+						+ "\r\n"
+						+ "UserPC AS (\r\n"
+						+ "    SELECT\r\n"
+						+ "        u.user_id,\r\n"
+						+ "        u.email_id,\r\n"
+						+ "        LTRIM(RTRIM(s.value)) AS profit_center_code\r\n"
+						+ "    FROM [FIDB].[dbo].[fi_user] u\r\n"
+						+ "    CROSS APPLY STRING_SPLIT(u.profit_center_code, ',') s\r\n"
+						+ "    WHERE u.status = 'Active' \r\n"
+						+ "),\r\n"
+						+ "\r\n"
+						+ "UserMonth AS (\r\n"
+						+ "    SELECT \r\n"
+						+ "        u.user_id,\r\n"
+						+ "        u.email_id,\r\n"
+						+ "        u.profit_center_code,\r\n"
+						+ "        m.month_year\r\n"
+						+ "    FROM UserPC u\r\n"
+						+ "    CROSS JOIN Months m\r\n"
+						+ ")\r\n"
+						+ "\r\n"
+						+ "SELECT \r\n"
+						+ "    um.profit_center_code,\r\n"
+						+ "    um.month_year,\r\n"
+						+ "    um.user_id,\r\n"
+						+ "    um.email_id,\r\n"
+						+ "    CASE \r\n"
+						+ "        WHEN i.profit_center_code IS NOT NULL THEN 'Yes'\r\n"
+						+ "        ELSE 'No'\r\n"
+						+ "    END AS result\r\n"
+						+ "FROM UserMonth um\r\n"
+						+ "LEFT JOIN [FIDB].[dbo].[inventory] i\r\n"
+						+ "       ON i.profit_center_code = um.profit_center_code\r\n"
+						+ "      AND i.month_year = um.month_year\r\n"
+						+ "      AND i.status = 'Active' \r\n"
+						+ "	  WHERE um.email_id = 'saidileep.p@resustainability.com'\r\n"
+						+ "\r\n"
+						+ "ORDER BY  um.month_year;\r\n"
+						+ "";
+				
+				
+				objsList = jdbcTemplate.query( qry, new BeanPropertyRowMapper<EsiContribution>(EsiContribution.class));
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new Exception(e);
+			}
+			return objsList;
+		}
 }

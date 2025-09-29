@@ -4,12 +4,28 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class EsiContribution {
 
-private String id,Entity_code,pt,pts,profit_center_code,profit_center_name,month_year,employee_contribution,employer_contribution,total_amount,amount_paid,
+private String id,Entity_code,pt,pts,profit_center_code,email_id,profit_center_name,month_year,employee_contribution,employer_contribution,total_amount,amount_paid,
 difference,due_date,actual_payment_date,delay_days,challan_no,no_of_emp,status,employee_contributions,employer_contributions,total_amounts,amount_paids,differences,due_dates,actual_payment_dates,delay_dayss,challan_nos,no_of_emps
-,created_date,modified_date,created_by,modified_by,atatchment,remarks,atatchments,remarkss,entity_name,upload_file,sbu;
+,created_date,modified_date,created_by,modified_by,result,atatchment,remarks,atatchments,remarkss,entity_name,upload_file,sbu;
 
 private MultipartFile mediaList;
 
+
+public String getResult() {
+	return result;
+}
+
+public void setResult(String result) {
+	this.result = result;
+}
+
+public String getEmail_id() {
+	return email_id;
+}
+
+public void setEmail_id(String email_id) {
+	this.email_id = email_id;
+}
 
 public String getSbu() {
 	return sbu;

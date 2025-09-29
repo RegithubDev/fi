@@ -662,7 +662,7 @@
                         </div>
                         <div class="col-md-6">
                             <label for="month" class="form-label fw-bold">Month-Year</label>
-                            <input type="month" class="form-control" id="month" name="month_year" required>
+                            <input type="month" class="form-control" id="monthYear" name="month_year" required>
                         </div>
                         <!-- Add Status Field -->
                         <div class="col-md-6">
@@ -1089,7 +1089,44 @@ $(document).ready(function () {
     $('#profitCenterSelect, #month').on('change', function() {
         console.log('Profit Center or Month-Year changed:', $('#profitCenterSelect').val(), $('#month').val());
     });
+    $('#profitCenterSelect, #monthYear').on('change', checkDuplicatePCMY);
 
+    function checkDuplicatePCMY() {
+        var pcVal = $('#profitCenterSelect').val() ? $('#profitCenterSelect').val().trim() : '';
+        var myVal = $('#monthYear').val() ? $('#monthYear').val().trim() : '';
+
+        if (pcVal && myVal) {
+            var isDuplicate = false;
+            var rowPcName = '';
+
+            $('#inventoryTable').DataTable().rows().data().each(function (rowData) {
+                var htmlContent = $('<div>' + rowData[0] + '</div>');
+                var rowPc = rowData[2] ? rowData[2].trim() : '';
+                var tempDiv = document.createElement('div');
+                tempDiv.innerHTML = rowPc;
+                var numberOnly = tempDiv.textContent || tempDiv.innerText;
+                rowPc = numberOnly;
+                rowPcName = htmlContent.find('.small').text().trim();
+                var rowMy = rowData[5] ? rowData[5].trim() : '';
+                var statusHtml = rowData[12] ? rowData[12].trim() : '';
+                var status = $(statusHtml).text().trim();
+
+                if (rowPc === pcVal && rowMy === myVal && status === 'Active') {
+                    isDuplicate = true;
+                    return false; // Stop loop
+                }
+            });
+
+            if (isDuplicate) {
+                $('#monthYear').val('');
+                showStrictAlertBox(
+                    "Duplicate Entry Detected",
+                    `Data for <strong>${rowPcName}</strong> in <strong>${myVal}</strong> with "Active" status already exists. Duplicate entries are not allowed.`
+                );
+            }
+        }
+    }
+    
     function showStrictAlertBox(title, message) {
         $('#strictAlertBox').remove();
         var secondsLeft = 10;
