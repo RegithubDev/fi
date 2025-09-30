@@ -19,6 +19,61 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
+    
+	   .fa-download {
+    color: blue;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover animation */
+.fa-download:hover {
+    color: #1e40af;
+    transform: translateY(-2px);
+    text-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+}
+
+/* Pulse animation */
+@keyframes pulse-download {
+    0% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+    }
+}
+
+/* Apply pulse animation on download button hover */
+.download-btn:hover .fa-download {
+    animation: pulse-download 1.5s infinite;
+}
+
+/* Bounce animation for download icon */
+@keyframes bounce-download {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-5px);
+    }
+    60% {
+        transform: translateY(-3px);
+    }
+}
+
+/* Apply bounce when parent is hovered */
+.file-item:hover .fa-download {
+    animation: bounce-download 0.6s ease;
+}
+
+/* Click animation */
+.fa-download:active {
+    transform: scale(0.95);
+    color: #1e3a8a;
+}
         :root {
             --primary-gov-blue: #0d47a1;
             --secondary-gov-blue: #1565c0;
@@ -397,11 +452,13 @@
 								   <c:choose>
                                        <c:when test="${not empty inventory.upload_file}">
 											    <c:forEach var="file" items="${fn:split(inventory.upload_file, ',')}">
-											        <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>inventory/${file}" 
+											      <span class="badge badge-light-dark"> 
+											    <i class="fa-solid fa-download"></i> <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>inventory/${file}" 
 											           class="filevalue" 
 											           target="_blank">
 											           ${file}
-											        </a><br/>
+											        </a></span>
+											       <br/>
 											    </c:forEach>
 											
                                         </c:when>
@@ -433,11 +490,12 @@
 								   <c:choose>
                                        <c:when test="${not empty inventory.upload_file}">
 											    <c:forEach var="file" items="${fn:split(inventory.upload_file, ',')}">
-											        <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>inventory/${file}" 
+											        <span class="badge badge-light-dark"> 
+											    <i class="fa-solid fa-download"></i> <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>inventory/${file}" 
 											           class="filevalue" 
 											           target="_blank">
 											           ${file}
-											        </a><br/>
+											        </a></span><br/>
 											    </c:forEach>
 											
                                         </c:when>
@@ -581,11 +639,12 @@
 								    <c:if test="${inventory.upload_file ne 'null'}"> 
 								  
 								 <c:forEach var="file" items="${fn:split(inventory.upload_file, ',')}">
-											        <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>inventory/${file}" 
+											         <span class="badge badge-light-dark"> 
+											    <i class="fa-solid fa-download"></i> <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>inventory/${file}" 
 											           class="filevalue" 
 											           target="_blank">
 											           ${file}
-											        </a><br/>
+											        </a></span><br/>
 											    </c:forEach>
 								
 								
