@@ -88,19 +88,23 @@ public class InventoryContributionController {
 			    String dt = formatter.format(new Date());
 				String endDate = DateForUser.date();
 				inventoryContribution.setCreated_by(userId);
+				String file_name = "";
 				if(!StringUtils.isEmpty(inventoryContribution.getMediaList())) {
-					MultipartFile multipartFile = inventoryContribution.getMediaList();
-					if (null != multipartFile && !multipartFile.isEmpty()) {
-						String saveDirectory = CommonConstants.SAFETY_FILE_SAVING_PATH + "inventory" + File.separator;
-						String fileName = multipartFile.getOriginalFilename();
-						inventoryContribution.setUpload_file(fileName);
-						//obj.setCreated_date(DateParser.parse(date));
+					for (int i = 0; i < (inventoryContribution.getMediaList().length); i++) {
+						MultipartFile multipartFile = inventoryContribution.getMediaList()[i];
 						if (null != multipartFile && !multipartFile.isEmpty()) {
-							FileUploads.singleFileSaving(multipartFile, saveDirectory, fileName);
+							String saveDirectory = CommonConstants.SAFETY_FILE_SAVING_PATH + "inventory" + File.separator;
+							String fileName = multipartFile.getOriginalFilename();
+							inventoryContribution.setUpload_file(fileName);
+							if (null != multipartFile && !multipartFile.isEmpty()) {
+								FileUploads.singleFileSaving(multipartFile, saveDirectory, fileName);
+							}
+							file_name = file_name+ fileName+",";
+							inventoryContribution.setUpload_file(file_name);
 						}
 					}
-				
 				}
+		
 				flag = contributionService.addinventoryContribution(inventoryContribution);
 				if(flag == true) {
 					attributes.addFlashAttribute("success", "inventory Contribution Added Succesfully.");
@@ -128,20 +132,23 @@ public class InventoryContributionController {
 				DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd"); 
 			    String dt = formatter.format(new Date());
 				String endDate = DateForUser.date();
+				String file_name = "";
 				if(!StringUtils.isEmpty(inventoryContribution.getMediaList())) {
-					MultipartFile multipartFile = inventoryContribution.getMediaList();
-					if (null != multipartFile && !multipartFile.isEmpty()) {
-						String saveDirectory = CommonConstants.SAFETY_FILE_SAVING_PATH + "inventory" + File.separator;
-						String fileName = multipartFile.getOriginalFilename();
-						inventoryContribution.setUpload_file(fileName);
-						//obj.setCreated_date(DateParser.parse(date));
+					for (int i = 0; i < (inventoryContribution.getMediaList().length); i++) {
+						MultipartFile multipartFile = inventoryContribution.getMediaList()[i];
 						if (null != multipartFile && !multipartFile.isEmpty()) {
-							FileUploads.singleFileSaving(multipartFile, saveDirectory, fileName);
+							String saveDirectory = CommonConstants.SAFETY_FILE_SAVING_PATH + "inventory" + File.separator;
+							String fileName = multipartFile.getOriginalFilename();
+							inventoryContribution.setUpload_file(fileName);
+							if (null != multipartFile && !multipartFile.isEmpty()) {
+								FileUploads.singleFileSaving(multipartFile, saveDirectory, fileName);
+							}
+							file_name = file_name+ fileName+",";
+							inventoryContribution.setUpload_file(file_name);
 						}
 					}
-				
 				}
-				
+		
 				
 				flag = contributionService.updateinventoryContribution(inventoryContribution);
 				if(flag == true) {

@@ -358,7 +358,9 @@
                             <th><i class="fas fa-file-invoice me-2"></i>Remarks</th>
                             <c:choose>
                                 <c:when test="${sessionScope.ROLE eq 'Admin' or sessionScope.ROLE eq 'SA'}">
+                                <th><i class="fas fa-file-invoice me-2"></i>Attachment</th>
                                     <th><i class="fas fa-file-invoice me-2"></i>Status</th>
+                                    	
                                     <th class="text-center"><i class="fas fa-cogs me-2"></i>Actions</th>
                                 </c:when>
                                 <c:otherwise>
@@ -390,11 +392,32 @@
                                 <td>${inventory.remarks}</td>
                                 <c:choose>
                                     <c:when test="${sessionScope.ROLE eq 'Admin' or sessionScope.ROLE eq 'SA'}">
+                                    <td data-label="Due Date">
+								  
+								   <c:choose>
+                                       <c:when test="${not empty inventory.upload_file}">
+											    <c:forEach var="file" items="${fn:split(inventory.upload_file, ',')}">
+											        <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>inventory/${file}" 
+											           class="filevalue" 
+											           target="_blank">
+											           ${file}
+											        </a><br/>
+											    </c:forEach>
+											
+                                        </c:when>
+                                       
+                                        <c:otherwise>
+                                        <i data-feather='slash'>No File</i>
+                                        </c:otherwise>
+                                    </c:choose>
+                                    
+									</td>
                                         <td>
                                             <span class="status-badge ${inventory.status == 'Active' ? 'active' : 'inactive'}">
                                                 <span class="status-text">${inventory.status}</span>
                                             </span>
                                         </td>
+                                        
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center">
                                                 <button class="btn btn-sm btn-outline-primary me-1 edit-trigger" data-index="${index.count}" onclick="fixSBU('${index.count}')">
@@ -402,18 +425,20 @@
                                                 </button>
                                             </div>
                                         </td>
+                                        
                                     </c:when>
                                     <c:otherwise>
                                     <td data-label="Due Date">
 								  
 								   <c:choose>
                                        <c:when test="${not empty inventory.upload_file}">
-
-                                           <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>inventory/${inventory.upload_file }" 
-											   class="filevalue" 
-											   target="_blank">
-											   ${inventory.upload_file}
-											</a>
+											    <c:forEach var="file" items="${fn:split(inventory.upload_file, ',')}">
+											        <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>inventory/${file}" 
+											           class="filevalue" 
+											           target="_blank">
+											           ${file}
+											        </a><br/>
+											    </c:forEach>
 											
                                         </c:when>
                                        
@@ -552,12 +577,20 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Upload File</label>
-                                <input type="file" class="form-control" name="mediaList">
-								    <c:if test="${inventory.upload_file ne 'null'}"> <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>inventory/${inventory.upload_file }" 
-								   class="filevalue" 
-								   target="_blank">
-								   <i class="fa fa-eye"></i> ${inventory.upload_file}
-								</a></c:if>
+                                <input type="file" class="form-control" name="mediaList" multiple>
+								    <c:if test="${inventory.upload_file ne 'null'}"> 
+								  
+								 <c:forEach var="file" items="${fn:split(inventory.upload_file, ',')}">
+											        <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>inventory/${file}" 
+											           class="filevalue" 
+											           target="_blank">
+											           ${file}
+											        </a><br/>
+											    </c:forEach>
+								
+								
+								
+								</c:if>
        
 
                             </div>
@@ -714,7 +747,7 @@
                         </div>
                         <div class="col-md-6">
                             <label for="uploadFile" class="form-label">Upload File</label>
-                            <input type="file" class="form-control" id="uploadFile" name="mediaList">
+                            <input type="file" class="form-control" id="uploadFile" name="mediaList" multiple> 
                         </div>
                     </div>
                 </div>

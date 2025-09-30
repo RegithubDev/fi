@@ -6,10 +6,26 @@ public class EsiContribution {
 
 private String id,Entity_code,pt,pts,profit_center_code,email_id,profit_center_name,month_year,employee_contribution,employer_contribution,total_amount,amount_paid,
 difference,due_date,actual_payment_date,delay_days,challan_no,no_of_emp,status,employee_contributions,employer_contributions,total_amounts,amount_paids,differences,due_dates,actual_payment_dates,delay_dayss,challan_nos,no_of_emps
-,created_date,modified_date,created_by,modified_by,result,atatchment,remarks,atatchments,remarkss,entity_name,upload_file,sbu;
+,created_date,modified_date,created_by,modified_by,user_name,user_id,result,atatchment,remarks,atatchments,remarkss,entity_name,upload_file,sbu;
 
 private MultipartFile mediaList;
 
+
+public String getUser_name() {
+	return user_name;
+}
+
+public void setUser_name(String user_name) {
+	this.user_name = user_name;
+}
+
+public String getUser_id() {
+	return user_id;
+}
+
+public void setUser_id(String user_id) {
+	this.user_id = user_id;
+}
 
 public String getResult() {
 	return result;

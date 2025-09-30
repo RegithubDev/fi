@@ -90,7 +90,11 @@ public class Schedular {
 	            		        
 	            				mail.setMailTo(pc.getEmail_id());
 		            			mail.setMailSubject("Finance | Gentle Reminder | Re Sustainability");
-		            			String body = "Dear User,<br><br>" +
+		            			String name = "User";
+		            			if(!StringUtils.isEmpty(pc.getUser_name())) {
+		            				name = pc.getUser_name();
+		            			}
+		            			String body = "Dear "+name+",<br><br>" +
 		            				    "This is a kind reminder from <b>Re Sustainability Finance Team</b>.<br><br>" +
 		            				    "Our records indicate that the <b>Inventory data for " + pc.getMonth_year() + " (Quarter " + pc.getMonth_year() + ")</b> " +
 		            				    "has not been submitted for your Profit Center <b>" + pc.getProfit_center_name() + "</b>.<br><br>" +

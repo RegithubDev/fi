@@ -47,5 +47,6 @@ public class PageConstants {
 	public static final String pt = "pt";
 	public static final String inventory = "inventory";
 	public static final String pc = "pc";
+	public static final String MO = "mo";
 	
 }

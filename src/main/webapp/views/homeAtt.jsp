@@ -279,7 +279,7 @@
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="mastersDropdown">
                                 <li><a class="dropdown-item" href="<%=request.getContextPath()%>/user">Users</a></li>
-<li><a class="dropdown-item" href="<%=request.getContextPath()%>/pc">PC</a></li> 
+							<li><a class="dropdown-item" href="<%=request.getContextPath()%>/mo">Inventory (Missed)</a></li> 
                        </ul>
                         </li>
                     </c:if>
