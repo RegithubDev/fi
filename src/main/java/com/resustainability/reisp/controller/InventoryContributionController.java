@@ -113,7 +113,7 @@ public class InventoryContributionController {
 				    "has not been submitted for your Profit Center <b>" + in.getProfit_center_name() + "</b>.<br><br>" +
 				    "As per the reporting guidelines, it is mandatory to complete the inventory update by the due date.<br>" +
 				    "Please update the records at the earliest to avoid any compliance issues.<br><br>" +
-				    "You can update your inventory using the <a href='https://appmint.resustainability.com/fi/' target='_blank'>Finance App</a>.<br><br>" 
+				    "You can update your inventory using the <a href='https://appmint.resustainability.com/fi/inventory' target='_blank' onclick='window.open(this.href, '_blank', 'noopener,noreferrer'); return false;'>Finance App</a>.<br><br>" 
 				   +msg+
 				    "If you have already submitted the data, kindly ignore this message.<br><br>" +
 				    "Thanks & Regards,<br>" +

@@ -100,7 +100,7 @@ public class Schedular {
 		            				    "has not been submitted for your Profit Center <b>" + pc.getProfit_center_name() + "</b>.<br><br>" +
 		            				    "As per the reporting guidelines, it is mandatory to complete the inventory update by the due date.<br>" +
 		            				    "Please update the records at the earliest to avoid any compliance issues.<br><br>" +
-		            				    "You can update your inventory using the <a href='https://appmint.resustainability.com/fi/' target='_blank'>Finance App</a>.<br><br>" +
+		            				    "You can update your inventory using the <a href='https://appmint.resustainability.com/fi/inventory' target='_blank' onclick='window.open(this.href, '_blank', 'noopener,noreferrer'); return false;'>Finance App</a>.<br><br>" +
 		            				    "<b>Next Reminder:</b> A reminder email will continue to be sent daily at 8:00 AM until the submission is complete.<br><br>" +
 		            				    "If you have already submitted the data, kindly ignore this message.<br><br>" +
 		            				    "Thanks & Regards,<br>" +
