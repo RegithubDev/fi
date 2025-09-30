@@ -240,7 +240,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center">
-                <a href="<%=request.getContextPath()%>/dashboard" class="btn back-btn">
+                <a href="<%=request.getContextPath()%>/fi-d26827851841284wjvwunfuqwhfbwqr7212hfu" class="btn back-btn">
                     <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
                 </a>
                 <a href="<%=request.getContextPath()%>/logout" class="btn logout-btn">
@@ -256,9 +256,9 @@
             <div class="header-bar">
                 <div class="d-flex justify-content-between align-items-center">
                     <h2><i class="fas fa-clipboard-check me-3"></i>Inventory Compliance Dashboard</h2>
-                    <button class="btn btn-warning" id="triggerAllBtn">
+                    <!-- <button class="btn btn-warning" id="triggerAllBtn">
                         <i class="fas fa-paper-plane me-2"></i>Trigger All Alerts
-                    </button>
+                    </button> -->
                 </div>
             </div>
         </div>
@@ -321,44 +321,40 @@
                                 <tr>
                                     <th><i class="fas fa-building me-2"></i>Profit Center</th>
                                     <th><i class="fas fa-calendar-alt me-2"></i>Period</th>
-                                    <th><i class="fas fa-user me-2"></i>User ID</th>
+                                   <!--  <th><i class="fas fa-user me-2"></i>User</th> -->
                                     <th><i class="fas fa-envelope me-2"></i>Email</th>
-                                    <th><i class="fas fa-check-circle me-2"></i>Compliance Status</th>
                                     <th class="text-center"><i class="fas fa-bolt me-2"></i>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <c:forEach items="${inventoryList}" var="item" varStatus="status">
+                                <c:if test="${item.result == 'No' }">
                                     <tr>
                                         <td data-label="Profit Center">
                                             <div class="fw-bold text-primary">${item.profit_center_code}</div>
                                             <div class="small text-muted">${item.profit_center_name}</div>
                                         </td>
                                         <td data-label="Period" class="fw-semibold">${item.month_year}</td>
-                                        <td data-label="User ID" class="text-muted">${item.user_id}</td>
+                                       <%--  <td data-label="User" class="fw-semibold">${item.user_name}</td> --%>
                                         <td data-label="Email">
                                             <a href="mailto:${item.email_id}" class="text-decoration-none">
                                                 <i class="fas fa-envelope me-1"></i>${item.email_id}
                                             </a>
                                         </td>
-                                        <td data-label="Status">
-                                            <span class="status-badge ${item.result == 'Yes' ? 'status-yes' : 'status-no'}">
-                                                <i class="fas ${item.result == 'Yes' ? 'fa-check' : 'fa-times'} me-1"></i>
-                                                ${item.result}
-                                            </span>
-                                        </td>
+                                        
                                         <td class="text-center" data-label="Actions">
                                             <div class="d-flex justify-content-center gap-2">
                                                 <button class="btn trigger-btn action-btn trigger-single-btn" 
                                                         data-email="${item.email_id}"
-                                                        data-profit-center="${item.profit_center_code}"
+                                                        data-profit-center="${item.profit_center_name}"
                                                         data-month-year="${item.month_year}"
-                                                        data-user-id="${item.user_id}">
+                                                        data-user-id="${item.user_name}">
                                                     <i class="fas fa-paper-plane me-1"></i>Trigger Alert
                                                 </button>
                                             </div>
                                         </td>
                                     </tr>
+                                      </c:if>
                                 </c:forEach>
                             </tbody>
                         </table>
@@ -385,7 +381,8 @@
 <script>
 $(document).ready(function () {
     // Initialize DataTable
-    var table = $('#inventoryTable').DataTable({
+  $(document).ready(function() {
+    $('#inventoryTable').DataTable({
         "responsive": true,
         "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
         "pageLength": 10,
@@ -406,7 +403,7 @@ $(document).ready(function () {
                 text: '<i class="fas fa-file-excel me-2"></i>Export Excel',
                 className: 'btn btn-success btn-sm',
                 exportOptions: {
-                    columns: [0, 1, 2, 3, 4]
+                    columns: [0, 1, 2, 3]
                 }
             },
             {
@@ -414,7 +411,7 @@ $(document).ready(function () {
                 text: '<i class="fas fa-print me-2"></i>Print',
                 className: 'btn btn-primary btn-sm',
                 exportOptions: {
-                    columns: [0, 1, 2, 3, 4]
+                    columns: [0, 1, 2, 3]
                 }
             }
         ],
@@ -425,13 +422,17 @@ $(document).ready(function () {
                 width: '100%'
             });
             
-            // Populate filters
-            populateFilters();
+            // Populate filters if you have any function
+            if (typeof populateFilters === 'function') {
+                populateFilters();
+            }
             
             // Add buttons container
             this.api().buttons().container().appendTo('#inventoryTable_wrapper .col-md-6:eq(0)');
         }
     });
+});
+
 
     // Populate filter dropdowns
    function populateFilters() {
@@ -519,69 +520,64 @@ $(document).ready(function () {
     });
 
     // Single Trigger Alert
-    $(document).on('click', '.trigger-single-btn', function() {
-        var email = $(this).data('email');
-        var profitCenter = $(this).data('profit-center');
-        var monthYear = $(this).data('month-year');
-        var userId = $(this).data('user-id');
+   $(document).on('click', '.trigger-single-btn', function() {
+    var email = $(this).data('email');
+    var profitCenter = $(this).data('profit-center');
+    var monthYear = $(this).data('month-year');
 
-        Swal.fire({
-            title: 'Trigger Alert',
-            html: `
-                <div class="text-start">
-                    <p><strong>Recipient:</strong> ${email}</p>
-                    <p><strong>Profit Center:</strong> ${profitCenter}</p>
-                    <p><strong>Period:</strong> ${monthYear}</p>
-                    <p><strong>User ID:</strong> ${userId}</p>
-                    <div class="mb-3">
-                        <label for="alertMessage" class="form-label fw-semibold">Custom Message (Optional):</label>
-                        <textarea id="alertMessage" class="form-control" rows="3" placeholder="Add a custom message..."></textarea>
-                    </div>
-                </div>
-            `,
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#6f42c1',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: '<i class="fas fa-paper-plane me-2"></i>Send Alert',
-            cancelButtonText: 'Cancel',
-            preConfirm: () => {
-                const message = document.getElementById('alertMessage').value;
-                return { message: message };
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Send AJAX request to trigger alert
-                $.ajax({
-                    url: '<%=request.getContextPath()%>/triggerAlert',
-                    type: 'POST',
-                    data: {
-                        email: email,
-                        profitCenter: profitCenter,
-                        monthYear: monthYear,
-                        userId: userId,
-                        message: result.value.message
-                    },
-                    success: function(response) {
-                        Swal.fire({
-                            title: 'Success!',
-                            text: 'Alert has been triggered successfully',
-                            icon: 'success',
-                            confirmButtonColor: '#198754'
-                        });
-                    },
-                    error: function(xhr, status, error) {
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'Failed to trigger alert: ' + error,
-                            icon: 'error',
-                            confirmButtonColor: '#dc3545'
-                        });
-                    }
-                });
-            }
-        });
+    Swal.fire({
+        title: 'Trigger Alert',
+        html: '<div class="text-start">' +
+        '<p><strong>Recipient:</strong> ' + email + '</p>' +
+        '<p><strong>Profit Center:</strong> ' + profitCenter + '</p>' +
+        '<p><strong>Period:</strong> ' + monthYear + '</p>' +
+        '<div class="mb-3">' +
+            '<label for="alertMessage" class="form-label fw-semibold">Custom Message (Optional):</label>' +
+            '<textarea id="alertMessage" class="form-control" rows="3" placeholder="Add a custom message..."></textarea>' +
+        '</div>' +
+    '</div>',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#6f42c1',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: '<i class="fas fa-paper-plane me-2"></i>Send Alert',
+        cancelButtonText: 'Cancel',
+        preConfirm: () => {
+            const message = $('#alertMessage').val();
+            return { message: message };
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '/fi/triggerAlert', // Make sure this matches your backend route
+                type: 'GET',
+                data: {
+                    email_id: email,
+                    profit_center_name: profitCenter,
+                    month_year: monthYear,
+                    message: result.value.message
+                },
+                success: function(response) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Alert has been triggered successfully',
+                        icon: 'success',
+                        confirmButtonColor: '#198754'
+                    });
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Failed to trigger alert: ' + xhr.responseText || error,
+                        icon: 'error',
+                        confirmButtonColor: '#dc3545'
+                    });
+                }
+            });
+        }
     });
+});
+
 
     // Trigger All Alerts
     $('#triggerAllBtn').on('click', function() {

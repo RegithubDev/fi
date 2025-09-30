@@ -6,8 +6,24 @@ public class inventoryContribution {
 
 private String id
 	      ,entity_code ,entity_name,profit_center_code,profit_center_name,sbu,month_year,book_value,reported_value,tb_adjustment_gl
-,tb_system_gl,varience,remarks ,upload_file ,created_by ,created_date ,modified_by ,modified_date,status;
+,tb_system_gl,varience,remarks ,upload_file ,created_by ,created_date ,modified_by ,modified_date,status,email_id,message;
 private MultipartFile[] mediaList;
+
+public String getEmail_id() {
+	return email_id;
+}
+
+public void setEmail_id(String email_id) {
+	this.email_id = email_id;
+}
+
+public String getMessage() {
+	return message;
+}
+
+public void setMessage(String message) {
+	this.message = message;
+}
 
 public MultipartFile[] getMediaList() {
 	return mediaList;

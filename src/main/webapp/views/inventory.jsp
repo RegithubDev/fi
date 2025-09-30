@@ -712,11 +712,11 @@
                                 <c:when test="${sessionScope.ROLE eq 'Admin' or sessionScope.ROLE eq 'SA' }">
                         <div class="col-md-4">
                             <label for="tbAdjustmentGL" class="form-label">As per TB with Adjustment GL (₹)</label>
-                            <input type="number" step="0.01" min="0" class="form-control" id="tbAdjustmentGL" name="tb_adjustment_gl" oninput="calculateVariance()" readonly required>
+                            <input type="number" step="0.01" min="0" class="form-control" id="tbAdjustmentGL" name="tb_adjustment_gl" oninput="calculateVariance()"  required>
                         </div>
                         <div class="col-md-4">
                             <label for="tbSystemGL" class="form-label">As per TB with System GL (₹)</label>
-                            <input type="number" step="0.01" min="0" class="form-control" id="tbSystemGL" name="tb_system_gl" oninput="calculateVariance()" readonly required>
+                            <input type="number" step="0.01" min="0" class="form-control" id="tbSystemGL" name="tb_system_gl" oninput="calculateVariance()"  required>
                         </div>
                         <div class="col-md-4">
                             <label for="bookValue" class="form-label">Book Value (₹)</label>

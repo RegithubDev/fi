@@ -1,11 +1,15 @@
 package com.resustainability.reisp.controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
@@ -26,10 +30,13 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.resustainability.reisp.common.DateForUser;
+import com.resustainability.reisp.common.EMailSender;
 import com.resustainability.reisp.common.FileUploads;
+import com.resustainability.reisp.common.Mail;
 import com.resustainability.reisp.constants.CommonConstants;
 import com.resustainability.reisp.constants.PageConstants;
 import com.resustainability.reisp.model.inventoryContribution;
+import com.resustainability.reisp.model.EMail;
 import com.resustainability.reisp.model.EsiContribution;
 import com.resustainability.reisp.model.User;
 import com.resustainability.reisp.service.ContributionService;
@@ -72,7 +79,55 @@ public class InventoryContributionController {
 			}
 			return model;
 		}
-	
+	 @RequestMapping(value = "/triggerAlert", method = RequestMethod.GET)
+	 public ModelAndView triggerAlert(HttpServletRequest request, HttpServletResponse response,@ModelAttribute inventoryContribution in, HttpSession session) throws ServletException, IOException {
+		    String email = request.getParameter("email_id");
+		    String profitCenter = request.getParameter("profit_center_name");
+		    String monthYear = request.getParameter("month_year");
+		    String message = request.getParameter("message") ;
+		 	boolean flag = false;
+			String userId = null;
+			String userName = null;
+			ModelAndView model = new ModelAndView();
+		 try {	
+				model.setViewName("redirect:/inventory");
+			 String emailTo = (String) session.getAttribute("USER_EMAIL");
+			 	userId = (String) session.getAttribute("USER_ID");
+				userName = (String) session.getAttribute("USER_EMAIL");
+				DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd"); 
+			 EMailSender emailSender = new EMailSender();
+			 Mail mail = new Mail();
+			mail.setMailTo(in.getEmail_id());
+			mail.setMailSubject("Finance |  Gentle Reminder | Re Sustainability");
+			String msg = "";
+			 if(!StringUtils.isEmpty(in.getMessage())) {
+				 msg = msg+	 "<b>Appeal Message:</b><br>"+
+							   "<blockquote style='border-left:3px solid #ccc; margin:10px 0; padding:10px; background:#f9f9f9;'>"+
+							   in.getMessage()+
+							   "</blockquote><br>";
+ 			}
+		
+			String body = "Dear User,<br><br>" +
+				    "This is a kind reminder from <b>Re Sustainability Finance Team</b>.<br><br>" +
+				    "Our records indicate that the <b>Inventory data for " + in.getMonth_year() + " (Quarter " + in.getMonth_year() + ")</b> " +
+				    "has not been submitted for your Profit Center <b>" + in.getProfit_center_name() + "</b>.<br><br>" +
+				    "As per the reporting guidelines, it is mandatory to complete the inventory update by the due date.<br>" +
+				    "Please update the records at the earliest to avoid any compliance issues.<br><br>" +
+				    "You can update your inventory using the <a href='https://appmint.resustainability.com/fi/' target='_blank'>Finance App</a>.<br><br>" 
+				   +msg+
+				    "If you have already submitted the data, kindly ignore this message.<br><br>" +
+				    "Thanks & Regards,<br>" +
+				    "<b>Finance Team</b><br>" +
+				    "<b>Re Sustainability</b>";
+
+			String subject = "Acknowledgment!";
+			emailSender.sendAlertSingle(mail.getMailTo(), mail.getMailSubject(), body,email,subject);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		 
+	     return model; // Redirect after processing
+	 }
 
 		@RequestMapping(value = "/inventory/add", method = {RequestMethod.GET,RequestMethod.POST})
 		public ModelAndView addinventoryContribution(@ModelAttribute inventoryContribution inventoryContribution, MultipartFile file, RedirectAttributes attributes,HttpSession session) {
