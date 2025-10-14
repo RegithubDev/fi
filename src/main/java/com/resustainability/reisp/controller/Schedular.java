@@ -71,7 +71,7 @@ public class Schedular {
 	            return;
 	        }
 
-	        YearMonth lastQuarter = getLastQuarter(YearMonth.from(today));
+	        YearMonth lastQuarter = getThisQuarterMinusOneMonth(YearMonth.from(today));
 	        
 	        List<EsiContribution> pcs = contributionService1.getUList();
 	        int i = 0;
@@ -79,8 +79,8 @@ public class Schedular {
 			 Mail mail = new Mail();
 	        for (EsiContribution pc : pcs) {
 	            boolean updated = inventoryService.isInventoryUpdatedForQuarter(pc.getProfit_center_code(), lastQuarter);
-	            
-	            		if (!updated) {
+	            System.out.println(lastQuarter + " - "+pc.getMonth_year());
+	            		if (!updated && lastQuarter.toString().equalsIgnoreCase(pc.getMonth_year())) {
 	            			System.out.println(lastQuarter);
 	            			
 	            			 String[] months = {"2025-03", "2025-06", "2025-09", "2025-12"};
@@ -135,4 +135,33 @@ public class Schedular {
 	        else if (month >= 7 && month <= 9) return YearMonth.of(now.getYear(), 4);  // Last Q1
 	        else return YearMonth.of(now.getYear(), 7);                                // Last Q2
 	    }
+	    private YearMonth getThisQuarter(YearMonth now) {
+	        int month = now.getMonthValue();
+
+	        if (month >= 1 && month <= 3) 
+	            return YearMonth.of(now.getYear(), 1);   // Q1 starts in January
+	        else if (month >= 4 && month <= 6) 
+	            return YearMonth.of(now.getYear(), 4);   // Q2 starts in April
+	        else if (month >= 7 && month <= 9) 
+	            return YearMonth.of(now.getYear(), 7);   // Q3 starts in July
+	        else 
+	            return YearMonth.of(now.getYear(), 10);  // Q4 starts in October
+	    }
+
+		private static YearMonth getThisQuarterMinusOneMonth(YearMonth now) {
+		    int month = now.getMonthValue();
+
+		    YearMonth quarterStart;
+		    if (month >= 1 && month <= 3)
+		        quarterStart = YearMonth.of(now.getYear(), 1);   // Q1 starts in Jan
+		    else if (month >= 4 && month <= 6)
+		        quarterStart = YearMonth.of(now.getYear(), 4);   // Q2 starts in Apr
+		    else if (month >= 7 && month <= 9)
+		        quarterStart = YearMonth.of(now.getYear(), 7);   // Q3 starts in Jul
+		    else
+		        quarterStart = YearMonth.of(now.getYear(), 10);  // Q4 starts in Oct
+
+		    // Return one month before the quarter start
+		    return quarterStart.minusMonths(1);
+		}
 }

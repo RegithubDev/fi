@@ -420,6 +420,7 @@
                                 </c:when>
                                 <c:otherwise>
                                  	<th><i class="fas fa-file-invoice me-2"></i>Attachment</th>
+                                 	 <th><i class="fas fa-file-invoice me-2"></i>Status</th>
                                     <th><i class="fas fa-gavel me-2"></i>Action</th>
                                 </c:otherwise>
                             </c:choose>
@@ -506,6 +507,11 @@
                                     </c:choose>
                                     
 									</td>
+									<td>
+                                            <span class="status-badge ${inventory.status == 'Active' ? 'active' : 'inactive'}">
+                                                <span class="status-text">${inventory.status}</span>
+                                            </span>
+                                        </td>
                                         <td>
                                             <button class="btn btn-sm appeal-btn" 
                                                     data-record-id="${inventory.month_year}" 
@@ -1200,7 +1206,7 @@ $(document).ready(function () {
                 rowPc = numberOnly;
                 rowPcName = htmlContent.find('.small').text().trim();
                 var rowMy = rowData[5] ? rowData[5].trim() : '';
-                var statusHtml = rowData[12] ? rowData[12].trim() : '';
+                var statusHtml = rowData[13] ? rowData[13].trim() : '';
                 var status = $(statusHtml).text().trim();
 
                 if (rowPc === pcVal && rowMy === myVal && status === 'Active') {

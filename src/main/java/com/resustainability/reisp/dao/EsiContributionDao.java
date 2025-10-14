@@ -258,7 +258,7 @@ public class EsiContributionDao {
 						+ "       ON pc.profit_center_code = um.profit_center_code\r\n"
 						+ "WHERE um.email_id NOT IN (\r\n"
 						+ "      'saidileep.p@resustainability.com',\r\n"
-						+ "      'madhuri.s@resustainability.com','businessapps.appworks@resustainability.com'\r\n"
+						+ "      'madhuri.s@resustainability.com','businessapps.appworks@resustainability.com','chandan.p@resustainability.com'\r\n"
 											+ ") and um.role <> 'Admin' and um.role <> 'SA' \r\n"
 						+ "ORDER BY um.email_id, um.month_year;\r\n"
 						+ "\r\n"
