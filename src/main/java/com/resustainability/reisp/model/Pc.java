@@ -2,114 +2,73 @@ package com.resustainability.reisp.model;
 
 public class Pc {
 
-    private String id;
-    private String entityCode;
-    private String entityName;
-    private String profitCenterCode;
-    private String profitCenterName;
-    private String sbu;
-    private String empId;
-    private String empName;
-    private String emailId;
-    private String createdDate;
-    private String modifiedDate;
-    private String status;
+    private String id,entity_code,profit_center_code,profit_center_name,sbu,created_on,modified_on,status;
 
-    public String getId() {
-        return id;
-    }
+    
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public String getEntityCode() {
-        return entityCode;
-    }
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    public void setEntityCode(String entityCode) {
-        this.entityCode = entityCode;
-    }
+	public String getEntity_code() {
+		return entity_code;
+	}
 
-    public String getEntityName() {
-        return entityName;
-    }
+	public void setEntity_code(String entity_code) {
+		this.entity_code = entity_code;
+	}
 
-    public void setEntityName(String entityName) {
-        this.entityName = entityName;
-    }
+	public String getProfit_center_code() {
+		return profit_center_code;
+	}
 
-    public String getProfitCenterCode() {
-        return profitCenterCode;
-    }
+	public void setProfit_center_code(String profit_center_code) {
+		this.profit_center_code = profit_center_code;
+	}
 
-    public void setProfitCenterCode(String profitCenterCode) {
-        this.profitCenterCode = profitCenterCode;
-    }
+	public String getProfit_center_name() {
+		return profit_center_name;
+	}
 
-    public String getProfitCenterName() {
-        return profitCenterName;
-    }
+	public void setProfit_center_name(String profit_center_name) {
+		this.profit_center_name = profit_center_name;
+	}
 
-    public void setProfitCenterName(String profitCenterName) {
-        this.profitCenterName = profitCenterName;
-    }
+	public String getSbu() {
+		return sbu;
+	}
 
-    public String getSbu() {
-        return sbu;
-    }
+	public void setSbu(String sbu) {
+		this.sbu = sbu;
+	}
 
-    public void setSbu(String sbu) {
-        this.sbu = sbu;
-    }
+	public String getCreated_on() {
+		return created_on;
+	}
 
-    public String getEmpId() {
-        return empId;
-    }
+	public void setCreated_on(String created_on) {
+		this.created_on = created_on;
+	}
 
-    public void setEmpId(String empId) {
-        this.empId = empId;
-    }
+	public String getModified_on() {
+		return modified_on;
+	}
 
-    public String getEmpName() {
-        return empName;
-    }
+	public void setModified_on(String modified_on) {
+		this.modified_on = modified_on;
+	}
 
-    public void setEmpName(String empName) {
-        this.empName = empName;
-    }
+	public String getStatus() {
+		return status;
+	}
 
-    public String getEmailId() {
-        return emailId;
-    }
-
-    public void setEmailId(String emailId) {
-        this.emailId = emailId;
-    }
-
-    public String getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(String createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public String getModifiedDate() {
-        return modifiedDate;
-    }
-
-    public void setModifiedDate(String modifiedDate) {
-        this.modifiedDate = modifiedDate;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
+	public void setStatus(String status) {
+		this.status = status;
+	}
 
 	public void setModifiedBy(String userId) {
 		// TODO Auto-generated method stub

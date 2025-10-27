@@ -71,16 +71,17 @@ public class PcController {
     public String dataExportNoData;
 
     @RequestMapping(value = "/pc", method = {RequestMethod.POST, RequestMethod.GET})
-    public ModelAndView pc(@ModelAttribute Pc pc, HttpSession session) {
+    public ModelAndView pc(@ModelAttribute Pc pc, HttpSession session, HttpServletResponse response) {
         ModelAndView model = new ModelAndView(PageConstants.pc);
         try {
-            String userId = (String) session.getAttribute("USER_ID");
-            String userName = (String) session.getAttribute("USER_NAME");
-            if (userId == null || userName == null) {
-                throw new Exception("User session expired or invalid.");
-            }
-            List<Pc> pcList = service.getPcList(null, 0, Integer.MAX_VALUE, null);
+          
+            
+            List<Pc> pcList = service.getPcList(pc, 1, 1111111, null);
             model.addObject("pcList", pcList);
+            // Prevent caching
+            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            response.setHeader("Pragma", "no-cache");
+            response.setDateHeader("Expires", 0);
         } catch (Exception e) {
             logger.error("pc : User Id - " + session.getAttribute("USER_ID") + " - User Name - " + session.getAttribute("USER_NAME") + " - " + e.getMessage());
             model.addObject("error", "Access denied or session expired.");
@@ -88,7 +89,7 @@ public class PcController {
         return model;
     }
 
-    @RequestMapping(value = "/ajax/getPcList", method = {RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping(value = "/ajax/getpcList", method = {RequestMethod.POST, RequestMethod.GET})
     public void getPcList(@ModelAttribute Pc obj, HttpServletRequest request, HttpServletResponse response, HttpSession session) throws IOException {
         PrintWriter pw = null;
         String json2 = null;
@@ -131,7 +132,7 @@ public class PcController {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             json2 = gson.toJson(pcJsonObject);
         } catch (Exception e) {
-            logger.error("getPcList : User Id - " + session.getAttribute("USER_ID") + " - User Name - " + session.getAttribute("USER_NAME") + " - " + e.getMessage());
+            logger.error("getpcList : User Id - " + session.getAttribute("USER_ID") + " - User Name - " + session.getAttribute("USER_NAME") + " - " + e.getMessage());
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             json2 = "{\"error\": \"Access denied or session expired.\"}";
         }
@@ -158,7 +159,7 @@ public class PcController {
         return pcList;
     }
 
-    @RequestMapping(value = "/addPc", method = RequestMethod.POST)
+    @RequestMapping(value = "/addpc", method = RequestMethod.POST)
     public String addPc(@ModelAttribute Pc pc, RedirectAttributes redirectAttributes, HttpSession session) {
         try {
             String userId = (String) session.getAttribute("USER_ID");
@@ -166,18 +167,18 @@ public class PcController {
                 throw new Exception("Session expired");
             }
             // Optional: Set createdDate, createdBy, etc.
-            pc.setCreatedDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+            pc.setCreated_on(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
             pc.setCreatedBy(userId);
             service.addPc(pc);  // Implement in PcService (e.g., insert into DB)
             redirectAttributes.addFlashAttribute("success", "Profit Center added successfully");
         } catch (Exception e) {
-            logger.error("addPc : User Id - " + session.getAttribute("USER_ID") + " - " + e.getMessage());
+            logger.error("addpc : User Id - " + session.getAttribute("USER_ID") + " - " + e.getMessage());
             redirectAttributes.addFlashAttribute("error", commonError);
         }
         return "redirect:/pc";
     }
 
-    @RequestMapping(value = "/updatePc", method = RequestMethod.POST)
+    @RequestMapping(value = "/updatepc", method = RequestMethod.POST)
     public String updatePc(@ModelAttribute Pc pc, RedirectAttributes redirectAttributes, HttpSession session) {
         try {
             String userId = (String) session.getAttribute("USER_ID");
@@ -185,18 +186,18 @@ public class PcController {
                 throw new Exception("Session expired");
             }
             // Optional: Set modifiedDate, modifiedBy, etc.
-            pc.setModifiedDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+            pc.setModified_on(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
             pc.setModifiedBy(userId);
             service.updatePc(pc);  // Implement in PcService (e.g., update DB by id)
             redirectAttributes.addFlashAttribute("success", "Profit Center updated successfully");
         } catch (Exception e) {
-            logger.error("updatePc : User Id - " + session.getAttribute("USER_ID") + " - " + e.getMessage());
+            logger.error("updatepc : User Id - " + session.getAttribute("USER_ID") + " - " + e.getMessage());
             redirectAttributes.addFlashAttribute("error", commonError);
         }
         return "redirect:/pc";
     }
 
-    @RequestMapping(value = "/deletePc", method = RequestMethod.POST)
+    @RequestMapping(value = "/deletepc", method = RequestMethod.POST)
     public String deletePc(@ModelAttribute Pc pc, RedirectAttributes redirectAttributes, HttpSession session) {
         try {
             String userId = (String) session.getAttribute("USER_ID");
@@ -206,13 +207,13 @@ public class PcController {
             service.deletePc(pc);  // Implement in PcService (e.g., delete from DB by id)
             redirectAttributes.addFlashAttribute("success", "Profit Center deleted successfully");
         } catch (Exception e) {
-            logger.error("deletePc : User Id - " + session.getAttribute("USER_ID") + " - " + e.getMessage());
+            logger.error("deletepc : User Id - " + session.getAttribute("USER_ID") + " - " + e.getMessage());
             redirectAttributes.addFlashAttribute("error", commonError);
         }
         return "redirect:/pc";
     }
 
-    @RequestMapping(value = "/exportPc", method = RequestMethod.POST)
+    @RequestMapping(value = "/exportpc", method = RequestMethod.POST)
     public ResponseEntity<byte[]> exportPc(HttpSession session) {
         try {
             String userId = (String) session.getAttribute("USER_ID");
@@ -242,16 +243,12 @@ public class PcController {
             int rowNum = 1;
             for (Pc pc : pcList) {
                 Row row = sheet.createRow(rowNum++);
-                row.createCell(0).setCellValue(pc.getEntityCode() != null ? pc.getEntityCode() : "");
-                row.createCell(1).setCellValue(pc.getEntityName() != null ? pc.getEntityName() : "");
-                row.createCell(2).setCellValue(pc.getProfitCenterCode() != null ? pc.getProfitCenterCode() : "");
-                row.createCell(3).setCellValue(pc.getProfitCenterName() != null ? pc.getProfitCenterName() : "");
+                row.createCell(0).setCellValue(pc.getEntity_code() != null ? pc.getEntity_code() : "");
+                row.createCell(2).setCellValue(pc.getProfit_center_code() != null ? pc.getProfit_center_code() : "");
+                row.createCell(3).setCellValue(pc.getProfit_center_name() != null ? pc.getProfit_center_name() : "");
                 row.createCell(4).setCellValue(pc.getSbu() != null ? pc.getSbu() : "");
-                row.createCell(5).setCellValue(pc.getEmpId() != null ? pc.getEmpId() : "");
-                row.createCell(6).setCellValue(pc.getEmpName() != null ? pc.getEmpName() : "");
-                row.createCell(7).setCellValue(pc.getEmailId() != null ? pc.getEmailId() : "");
-                row.createCell(8).setCellValue(pc.getCreatedDate() != null ? pc.getCreatedDate() : "");
-                row.createCell(9).setCellValue(pc.getModifiedDate() != null ? pc.getModifiedDate() : "");
+               row.createCell(8).setCellValue(pc.getCreated_on() != null ? pc.getCreated_on() : "");
+                row.createCell(9).setCellValue(pc.getModified_on() != null ? pc.getModified_on() : "");
                 row.createCell(10).setCellValue(pc.getStatus() != null ? pc.getStatus() : "");
             }
 
@@ -266,7 +263,7 @@ public class PcController {
 
             return new ResponseEntity<>(bytes, headersResponse, HttpStatus.OK);
         } catch (Exception e) {
-            logger.error("exportPc : User Id - " + session.getAttribute("USER_ID") + " - " + e.getMessage());
+            logger.error("exportpc : User Id - " + session.getAttribute("USER_ID") + " - " + e.getMessage());
             return new ResponseEntity<>(dataExportError.getBytes(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

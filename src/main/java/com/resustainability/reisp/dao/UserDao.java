@@ -56,6 +56,8 @@ public class UserDao {
 					+ "      ,[created_on]\r\n"
 					+ "      ,[modified_on]\r\n"
 					+ "      ,[status]\r\n"
+					+ "      ,[user_name]\r\n"
+					
 					+ "  FROM [FIDB].[dbo].[fi_user]\r\n"
 					+ " ";
 			
@@ -77,9 +79,9 @@ public class UserDao {
 		try {
 			NamedParameterJdbcTemplate namedParamJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 			String insertQry = "INSERT INTO [FIDB].[dbo].[fi_user] "
-					+ "(user_id,email_id,role,profit_center_code,created_on,status,created_by)"
+					+ "(user_id,user_name,email_id,role,profit_center_code,created_on,status,created_by)"
 					+ " VALUES "
-					+ "(:user_id,:email_id,:role,:profit_center_code,getdate(),:status,:created_by)";
+					+ "(:user_id,:user_name,:email_id,:role,:profit_center_code,getdate(),:status,:created_by)";
 			BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(obj);		 
 		    count = namedParamJdbcTemplate.update(insertQry, paramSource);
 		    if(count > 0) {
@@ -109,6 +111,7 @@ public class UserDao {
 					+ "role=:role,\r\n"
 					+ "modified_on= getdate(),\r\n"
 					+ "status=:status,\r\n"
+					+ "user_name=:user_name,\r\n"
 					+ "modified_by=:modified_by "
 
 					+ "where id = :id ";
@@ -159,7 +162,7 @@ public class UserDao {
 		User userDetails = null;
 		try{  
 			con = dataSource.getConnection();
-			String qry = "  select USER_ID,email_id,u.entity_code as sbu, u.profit_center_code,p.profit_center_name,u.role,u.status   from [fi_user] u\r\n"
+			String qry = "  select USER_ID,user_name,email_id,u.entity_code as sbu, u.profit_center_code,p.profit_center_name,u.role,u.status   from [fi_user] u\r\n"
 					+ "  left join profit_center p on u.profit_center_code = p.profit_center_code   "
 					+ "where  u.status = 'Active' ";
 			if(!StringUtils.isEmpty(user.getEmail_id())){
@@ -173,6 +176,7 @@ public class UserDao {
 			if(rs.next()) {
 				userDetails = new User();
 				userDetails.setUser_id(rs.getString("user_id"));
+				userDetails.setUser_id(rs.getString("user_name"));
 				userDetails.setEmail_id(rs.getString("email_id"));
 				userDetails.setRole(rs.getString("role"));
 				userDetails.setEntity_code(rs.getString("sbu"));

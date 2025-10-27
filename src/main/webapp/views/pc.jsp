@@ -1,11 +1,10 @@
-
 <!DOCTYPE html>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <html lang="en">
 <head>
-    <title>pc Management</title>
+    <title>Profit Center Management</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -108,6 +107,58 @@
             transform: scale(1.05);
         }
 
+        /* Select2 Customization */
+        .select2-container--bootstrap-5 .select2-selection {
+            border-radius: .375rem;
+            padding: .375rem .75rem;
+            min-height: calc(1.5em + .75rem + 2px);
+        }
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+            line-height: 1.5;
+        }
+        .select2-container--bootstrap-5 .select2-dropdown {
+            border-radius: .375rem;
+        }
+
+        /* Modal animations */
+        .modal.fade .modal-dialog {
+            transform: translate(0, -50px);
+            transition: transform 0.3s ease-out;
+        }
+
+        .modal.show .modal-dialog {
+            transform: translate(0, 0);
+        }
+
+        /* Button animations */
+        .btn {
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Table row animations */
+        tr {
+            transition: all 0.3s ease;
+        }
+
+        tr:hover {
+            background-color: rgba(79, 124, 130, 0.05) !important;
+        }
+
+        /* Custom animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        /* Toast notification */
         .toast-notification {
             position: fixed;
             top: 20px;
@@ -122,77 +173,6 @@
         .toast-notification.show {
             opacity: 1;
             transform: translateY(0);
-        }
-
-        .select2-container--bootstrap-5 .select2-selection {
-            border-radius: .375rem;
-            padding: .375rem .75rem;
-            min-height: calc(1.5em + .75rem + 2px);
-        }
-
-        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
-            line-height: 1.5;
-        }
-
-        .select2-container--bootstrap-5 .select2-dropdown {
-            border-radius: .375rem;
-        }
-
-        .modal.fade .modal-dialog {
-            transform: translate(0, -50px);
-            transition: transform 0.3s ease-out;
-        }
-
-        .modal.show .modal-dialog {
-            transform: translate(0, 0);
-        }
-
-        .btn {
-            transition: all 0.3s ease;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-        }
-
-        tr {
-            transition: all 0.3s ease;
-        }
-
-        tr:hover {
-            background-color: rgba(79, 124, 130, 0.05) !important;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .animate-fade-in {
-            animation: fadeIn 0.6s ease forwards;
-        }
-
-        .email-validation {
-            margin-top: 5px;
-            font-size: 0.875rem;
-            display: none;
-        }
-
-        .email-valid {
-            color: var(--success);
-        }
-
-        .email-invalid {
-            color: var(--danger);
-        }
-
-        .submit-buttons {
-            transition: opacity 0.3s ease;
-        }
-
-        .buttons-disabled {
-            opacity: 0.5;
-            pointer-events: none;
         }
     </style>
 </head>
@@ -222,60 +202,45 @@
         <div class="header-bar animate-fade-in">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <h2 class="mb-1"><i class="fas fa-building me-2"></i>pc Management</h2>
+                    <h2 class="mb-1"><i class="fas fa-chart-pie me-2"></i>Profit Center Management</h2>
                     <p class="mb-0">Manage profit centers and their details</p>
                 </div>
-                <div>
-                    <button class="btn btn-light btn-add-pc me-2" data-bs-toggle="modal" data-bs-target="#addPcModal">
-                        <i class="fas fa-plus me-2"></i>Add Profit Center
-                    </button>
-                    <form action="<%=request.getContextPath()%>/export-pc" method="post" style="display: inline;">
-                        <button type="submit" class="btn btn-success btn-export-pc">
-                            <i class="fas fa-file-excel me-2"></i>Export to Excel
-                        </button>
-                    </form>
-                </div>
+                <button class="btn btn-light btn-add-pc" data-bs-toggle="modal" data-bs-target="#addProfitCenterModal">
+                    <i class="fas fa-plus me-2"></i>Add Profit Center
+                </button>
             </div>
         </div>
 
         <div class="card animate-fade-in">
             <div class="card-header">
-                <i class="fas fa-list me-2"></i>pc List
+                <i class="fas fa-list me-2"></i>Profit Center List
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table id="pcTable" class="table table-hover table-striped">
+                    <table id="profitcentersTable" class="table table-hover table-striped">
                         <thead class="table-dark">
                             <tr>
-                                <th>#</th>
-                                <th>Entity Code</th>
-                                <th>Entity Name</th>
+                                <th>ID</th>
+                                <th>Entity Code</th>                              
                                 <th>Profit Center Code</th>
                                 <th>Profit Center Name</th>
-                                <th>sbu</th>
-                                <th>Employee ID</th>
-                                <th>Employee Name</th>
-                                <th>Email</th>
-                                <th>Created Date</th>
-                                <th>Modified Date</th>
+                                <th>SBU</th>
+                                <th>Created On</th>
+                                <th>Modified On</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <c:forEach items="${PcList}" var="pc" varStatus="row">
+                            <c:forEach items="${pcList}" var="pc" varStatus="row">
                                 <tr>
                                     <td>${fn:length(pcList) - row.index}</td>
-                                    <td>${pc.entityCode}</td>
-                                    <td>${pc.entityName}</td>
-                                    <td>${pc.profitCenterCode}</td>
-                                    <td>${pc.profitCenterName}</td>
+                                    <td>${pc.entity_code}</td>                                      
+                                    <td>${pc.profit_center_code}</td>
+                                    <td>${pc.profit_center_name}</td>
                                     <td>${pc.sbu}</td>
-                                    <td>${pc.empId}</td>
-                                    <td>${pc.empName}</td>
-                                    <td><span class="badge bg-info">${pc.emailId}</span></td>
-                                    <td>${pc.createdDate}</td>
-                                    <td>${pc.modifiedDate}</td>
+                                    <td>${pc.created_on}</td>
+                                    <td>${pc.modified_on}</td>
                                     <td>
                                         <span class="status-badge ${pc.status == 'Active' ? 'status-active' : 'status-inactive'}">
                                             ${pc.status}
@@ -283,17 +248,10 @@
                                     </td>
                                     <td>
                                         <button class="btn btn-sm btn-primary action-btn me-1"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#editPcModal${pc.id}">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <form action="<%=request.getContextPath()%>/deletePc" method="post" style="display: inline;">
-                                            <input type="hidden" name="id" value="${pc.id}">
-                                            <button type="submit" class="btn btn-sm btn-danger action-btn"
-                                                    onclick="return confirm('Are you sure you want to delete this profit center?');">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form>
+        data-bs-toggle="modal"
+        data-bs-target="#editProfitCenterModal${pc.id}">
+    <i class="fas fa-edit"></i>
+</button>
                                     </td>
                                 </tr>
                             </c:forEach>
@@ -305,87 +263,48 @@
     </div>
 
     <!-- Add Profit Center Modal -->
-    <div class="modal fade" id="addPcModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="addProfitCenterModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <form action="<%=request.getContextPath()%>/addPc" method="post" id="addPcForm">
+                <form action="<%=request.getContextPath()%>/addpc" method="post" id="addProfitCenterForm">
                     <div class="modal-header bg-primary text-white">
-                        <h5 class="modal-title"><i class="fas fa-building-plus me-2"></i>Add New pc</h5>
+                        <h5 class="modal-title"><i class="fas fa-plus me-2"></i>Add New Profit Center</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Entity Code <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="entityCode" required>
-                                </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Entity Code <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="entity_code" required>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Entity Name <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="entityName" required>
-                                </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Profit Center Code <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="profit_center_code" required>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Profit Center Code <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="profitCenterCode" required>
-                                </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Profit Center Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="profit_center_name" required>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Profit Center Name <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="profitCenterName" required>
-                                </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">SBU <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="sbu" required>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">pc <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="pc" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Employee ID</label>
-                                    <input type="text" class="form-control" name="empId">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Employee Name</label>
-                                    <input type="text" class="form-control" name="empName">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Email <span class="text-danger">*</span></label>
-                                    <input type="email" class="form-control" name="emailId" id="addEmail" required>
-                                    <div class="email-validation" id="addEmailValidation"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Status <span class="text-danger">*</span></label>
-                                    <select class="form-select" name="status" required>
-                                        <option value="Active">Active</option>
-                                        <option value="Inactive">Inactive</option>
-                                    </select>
-                                </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Status <span class="text-danger">*</span></label>
+                                <select class="form-select" name="status" required>
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                </select>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer submit-buttons">
+                    <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" id="addPcBtn">Add pc</button>
+                        <button type="submit" class="btn btn-primary">Add Profit Center</button>
                     </div>
                 </form>
             </div>
@@ -394,88 +313,52 @@
 
     <!-- Edit Profit Center Modals -->
     <c:forEach items="${pcList}" var="pc">
-        <div class="modal fade" id="editPcModal${pc.id}" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
+        <div class="modal fade" id="editProfitCenterModal${pc.id}" tabindex="-1" aria-labelledby="editProfitCenterModalLabel${pc.id}" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
-                    <form action="<%=request.getContextPath()%>/updatePc" method="post" class="editPcForm" data-original-email="${pc.emailId}">
+                    <form action="<%=request.getContextPath()%>/updatepc" method="post">
                         <div class="modal-header bg-primary text-white">
-                            <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Edit pc</h5>
+                            <h5 class="modal-title" id="editProfitCenterModalLabel${pc.id}">
+                                <i class="fas fa-edit me-2"></i>Edit Profit Center
+                            </h5>
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
+                        
                             <input type="hidden" name="id" value="${pc.id}">
                             <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Entity Code <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="entityCode" value="${pc.entityCode}" required>
-                                    </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Entity Code <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="entity_code" value="${pc.entity_code}" required>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Entity Name <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="entityName" value="${pc.entityName}" required>
-                                    </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Profit Center Code <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="profit_center_code" value="${pc.profit_center_code}" required>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Profit Center Code <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="profitCenterCode" value="${pc.profitCenterCode}" required>
-                                    </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Profit Center Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="profit_center_name" value="${pc.profit_center_name}" required>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Profit Center Name <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="profitCenterName" value="${pc.profitCenterName}" required>
-                                    </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">SBU <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="sbu" value="${pc.sbu}" required>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">pc <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="pc" value="${pc.pc}" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Employee ID</label>
-                                        <input type="text" class="form-control" name="empId" value="${pc.empId}">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Employee Name</label>
-                                        <input type="text" class="form-control" name="empName" value="${pc.empName}">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Email <span class="text-danger">*</span></label>
-                                        <input type="email" class="form-control email-input" name="emailId" value="${pc.emailId}" required>
-                                        <div class="email-validation email-validation-${pc.id}"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Status <span class="text-danger">*</span></label>
-                                        <select class="form-select" name="status" required>
-                                            <option value="Active" ${pc.status == 'Active' ? 'selected' : ''}>Active</option>
-                                            <option value="Inactive" ${pc.status == 'Inactive' ? 'selected' : ''}>Inactive</option>
-                                        </select>
-                                    </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Status <span class="text-danger">*</span></label>
+                                    <select class="form-select" name="status" required>
+                                        <option value="Active" ${pc.status == 'Active' ? 'selected' : ''}>Active</option>
+                                        <option value="Inactive" ${pc.status == 'Inactive' ? 'selected' : ''}>Inactive</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-footer submit-buttons">
+                        <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary update-pc-btn" data-pc-id="${pc.id}">Save Changes</button>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
                         </div>
                     </form>
                 </div>
@@ -491,100 +374,65 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script>
-$(document).ready(function() {
-    // Collect all existing emails and their status from the server
-    let existingProfitCenters = [];
-    $.ajax({
-        url: '<%=request.getContextPath()%>/ajax/getpcList',
-        type: 'POST',
-        data: { iDisplayStart: 0, iDisplayLength: 1000 },
-        success: function(response) {
-            if (response.aaData) {
-                existingProfitCenters = response.aaData.map(pc => ({
-                    email: pc.emailId,
-                    status: pc.status
-                }));
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error("Error fetching initial data: ", error);
-        }
-    });
-
-    // Initialize DataTable with AJAX
-    $('#pcTable').DataTable({
-        responsive: true,
-        order: [[0, 'desc']],
-        pageLength: 25,
-        serverSide: true,
-        processing: true, // Show loading indicator
-        ajax: {
-            url: '<%=request.getContextPath()%>/ajax/getpcList',
-            type: 'POST',
-            dataSrc: 'aaData',
-            data: function(d) {
-                d.iDisplayStart = d.start;
-                d.iDisplayLength = d.length;
-                d.sSearch = d.search.value;
-                d.iSortCol_0 = d.order[0]?.column || 0;
-                d.sSortDir_0 = d.order[0]?.dir || 'asc';
+    <script>
+    $(document).ready(function() {
+        // Initialize DataTable
+        $('#profitcentersTable').DataTable({
+            responsive: true,
+            order: [[0, 'desc']],
+            pageLength: 25,
+            language: {
+                search: "",
+                searchPlaceholder: "Search profit centers...",
+                lengthMenu: "Show _MENU_ entries",
+                info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                paginate: {
+                    previous: "<i class='fas fa-chevron-left'></i>",
+                    next: "<i class='fas fa-chevron-right'></i>"
+                }
             },
-            error: function(xhr, status, error) {
-                console.error("AJAX Error: ", status, error);
+            dom: '<"row"<"col-md-6"l><"col-md-6"f>>rt<"row"<"col-md-6"i><"col-md-6"p>>',
+            initComplete: function() {
+                $('.dataTables_filter input').addClass('form-control');
+                $('.dataTables_length select').addClass('form-select');
             }
-        },
-        columns: [
-            { data: null, render: function(data, type, row, meta) {
-                return meta.row + meta.settings._iDisplayStart + 1; // Serial number
-            }},
-            { data: 'entityCode' },
-            { data: 'entityName' },
-            { data: 'profitCenterCode' },
-            { data: 'profitCenterName' },
-            { data: 'pc' },
-            { data: 'empId' },
-            { data: 'empName' },
-            { data: 'emailId', render: function(data) {
-                return '<span class="badge bg-info">' + data + '</span>';
-            }},
-            { data: 'createdDate' },
-            { data: 'modifiedDate' },
-            { data: 'status', render: function(data) {
-                return '<span class="status-badge ' + (data === 'Active' ? 'status-active' : 'status-inactive') + '">' + data + '</span>';
-            }},
-            { data: null, render: function(data, type, row) {
-                return `
-                    <button class="btn btn-sm btn-primary action-btn me-1" data-bs-toggle="modal" data-bs-target="#editPcModal${row.id}">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <form action="<%=request.getContextPath()%>/deletePc" method="post" style="display: inline;">
-                        <input type="hidden" name="id" value="${row.id}">
-                        <button type="submit" class="btn btn-sm btn-danger action-btn" onclick="return confirm('Are you sure you want to delete this profit center?');">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </form>`;
-            }}
-        ],
-        language: {
-            search: "",
-            searchPlaceholder: "Search profit centers...",
-            lengthMenu: "Show _MENU_ entries",
-            info: "Showing _START_ to _END_ of _TOTAL_ entries",
-            paginate: {
-                previous: "<i class='fas fa-chevron-left'></i>",
-                next: "<i class='fas fa-chevron-right'></i>"
-            }
-        },
-        dom: '<"row"<"col-md-6"l><"col-md-6"f>>rt<"row"<"col-md-6"i><"col-md-6"p>>',
-        initComplete: function() {
-            $('.dataTables_filter input').addClass('form-control');
-            $('.dataTables_length select').addClass('form-select');
-        }
+        });
+
+        // Show success/error messages from backend (assuming you set these in request attributes)
+        <c:if test="${not empty successMessage}">
+            showToast('${successMessage}', 'success');
+        </c:if>
+        
+        <c:if test="${not empty errorMessage}">
+            showToast('${errorMessage}', 'danger');
+        </c:if>
+        
+        // Modal animations
+        $('.modal').on('show.bs.modal', function() {
+            $(this).find('.modal-content').addClass('animate__animated animate__fadeInDown');
+        });
+        
+        $('.modal').on('hidden.bs.modal', function() {
+            $(this).find('.modal-content').removeClass('animate__animated animate__fadeInDown');
+        });
+
+        // Form submissions can be handled here if needed, but basic form post should work
     });
 
-    // Rest of your JavaScript (initSelect2, email validation, form submission, toast) remains unchanged
-});
-</script>
+    // Toast notification function
+    function showToast(message, type) {
+        const toast = $('#toastNotification');
+        const alert = toast.find('.alert');
+        
+        alert.removeClass('alert-success alert-danger alert-warning alert-info');
+        alert.addClass('alert-' + type);
+        $('#toastMessage').text(message);
+        toast.addClass('show');
+        
+        setTimeout(function() {
+            toast.removeClass('show');
+        }, 5000);
+    }
+    </script>
 </body>
 </html>

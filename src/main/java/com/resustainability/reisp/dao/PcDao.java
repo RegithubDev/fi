@@ -32,13 +32,13 @@ public class PcDao {
     @Autowired
     DataSourceTransactionManager transactionManager;
 
-    public List<Pc> getPcList(Pc obj, int startIndex, int offset, String searchParameter) throws Exception {
+    public List<Pc> getpcList(Pc obj, int startIndex, int offset, String searchParameter) throws Exception {
         List<Pc> objsList = new ArrayList<>();
         try {
             StringBuilder qry = new StringBuilder(
-                "SELECT [id], [entity_code], [entity_name], [profit_center_code], [profit_center_name], "
-                + "[sbu], [emp_id], [emp_name], [email_id], [created_date], [modified_date], [status] "
-                + "FROM [FIDB].[dbo].[pc] WHERE 1=1 "
+                "SELECT [id], [entity_code], [profit_center_code], [profit_center_name], "
+                + "[sbu], [created_on], [modified_on], [status] "
+                + "FROM [FIDB].[dbo].[profit_center] WHERE 1=1 "
             );
 
             MapSqlParameterSource params = new MapSqlParameterSource();
@@ -47,35 +47,31 @@ public class PcDao {
                 qry.append(" AND (");
                 qry.append("[id] LIKE :search OR ");
                 qry.append("[entity_code] LIKE :search OR ");
-                qry.append("[entity_name] LIKE :search OR ");
                 qry.append("[profit_center_code] LIKE :search OR ");
                 qry.append("[profit_center_name] LIKE :search OR ");
                 qry.append("[sbu] LIKE :search OR ");
-                qry.append("[emp_id] LIKE :search OR ");
-                qry.append("[emp_name] LIKE :search OR ");
-                qry.append("[email_id] LIKE :search OR ");
                 qry.append("[status] LIKE :search)");
                 params.addValue("search", "%" + searchParameter + "%");
             }
 
-            // Additional filters from Pc object
-            if (!StringUtils.isEmpty(obj) && !StringUtils.isEmpty(obj.getId())) {
+            // Additional filters from pc object
+            if (obj != null && !StringUtils.isEmpty(obj.getId())) {
                 qry.append(" AND [id] = :id");
                 params.addValue("id", obj.getId());
             }
-            if (!StringUtils.isEmpty(obj) && !StringUtils.isEmpty(obj.getEntityCode())) {
-                qry.append(" AND [entity_code] = :entityCode");
-                params.addValue("entityCode", obj.getEntityCode());
+            if (obj != null && !StringUtils.isEmpty(obj.getEntity_code())) {
+                qry.append(" AND [entity_code] = :entity_code");
+                params.addValue("entity_code", obj.getEntity_code());
             }
-            if (!StringUtils.isEmpty(obj) && !StringUtils.isEmpty(obj.getProfitCenterCode())) {
-                qry.append(" AND [profit_center_code] = :profitCenterCode");
-                params.addValue("profitCenterCode", obj.getProfitCenterCode());
+            if (obj != null && !StringUtils.isEmpty(obj.getProfit_center_code())) {
+                qry.append(" AND [profit_center_code] = :profit_center_code");
+                params.addValue("profit_center_code", obj.getProfit_center_code());
             }
-            if (!StringUtils.isEmpty(obj) && !StringUtils.isEmpty(obj.getSbu())) {
+            if (obj != null && !StringUtils.isEmpty(obj.getSbu())) {
                 qry.append(" AND [sbu] = :sbu");
                 params.addValue("sbu", obj.getSbu());
             }
-            if (!StringUtils.isEmpty(obj) && !StringUtils.isEmpty(obj.getStatus())) {
+            if (obj != null && !StringUtils.isEmpty(obj.getStatus())) {
                 qry.append(" AND [status] = :status");
                 params.addValue("status", obj.getStatus());
             }
@@ -99,7 +95,7 @@ public class PcDao {
         int totalRecords = 0;
         try {
             StringBuilder qry = new StringBuilder(
-                "SELECT COUNT(*) FROM [FIDB].[dbo].[pc] WHERE 1=1 "
+                "SELECT COUNT(*) FROM [FIDB].[dbo].[profit_center] WHERE 1=1 "
             );
 
             MapSqlParameterSource params = new MapSqlParameterSource();
@@ -108,34 +104,30 @@ public class PcDao {
                 qry.append(" AND (");
                 qry.append("[id] LIKE :search OR ");
                 qry.append("[entity_code] LIKE :search OR ");
-                qry.append("[entity_name] LIKE :search OR ");
                 qry.append("[profit_center_code] LIKE :search OR ");
                 qry.append("[profit_center_name] LIKE :search OR ");
                 qry.append("[sbu] LIKE :search OR ");
-                qry.append("[emp_id] LIKE :search OR ");
-                qry.append("[emp_name] LIKE :search OR ");
-                qry.append("[email_id] LIKE :search OR ");
                 qry.append("[status] LIKE :search)");
                 params.addValue("search", "%" + searchParameter + "%");
             }
 
-            if (!StringUtils.isEmpty(obj) && !StringUtils.isEmpty(obj.getId())) {
+            if (obj != null && !StringUtils.isEmpty(obj.getId())) {
                 qry.append(" AND [id] = :id");
                 params.addValue("id", obj.getId());
             }
-            if (!StringUtils.isEmpty(obj) && !StringUtils.isEmpty(obj.getEntityCode())) {
-                qry.append(" AND [entity_code] = :entityCode");
-                params.addValue("entityCode", obj.getEntityCode());
+            if (obj != null && !StringUtils.isEmpty(obj.getEntity_code())) {
+                qry.append(" AND [entity_code] = :entity_code");
+                params.addValue("entity_code", obj.getEntity_code());
             }
-            if (!StringUtils.isEmpty(obj) && !StringUtils.isEmpty(obj.getProfitCenterCode())) {
-                qry.append(" AND [profit_center_code] = :profitCenterCode");
-                params.addValue("profitCenterCode", obj.getProfitCenterCode());
+            if (obj != null && !StringUtils.isEmpty(obj.getProfit_center_code())) {
+                qry.append(" AND [profit_center_code] = :profit_center_code");
+                params.addValue("profit_center_code", obj.getProfit_center_code());
             }
-            if (!StringUtils.isEmpty(obj) && !StringUtils.isEmpty(obj.getSbu())) {
+            if (obj != null && !StringUtils.isEmpty(obj.getSbu())) {
                 qry.append(" AND [sbu] = :sbu");
                 params.addValue("sbu", obj.getSbu());
             }
-            if (!StringUtils.isEmpty(obj) && !StringUtils.isEmpty(obj.getStatus())) {
+            if (obj != null && !StringUtils.isEmpty(obj.getStatus())) {
                 qry.append(" AND [status] = :status");
                 params.addValue("status", obj.getStatus());
             }
@@ -155,14 +147,9 @@ public class PcDao {
         TransactionStatus status = transactionManager.getTransaction(def);
         try {
             NamedParameterJdbcTemplate namedParamJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-            String insertQry = "INSERT INTO [FIDB].[dbo].[pc] "
-                    + "(id, entity_code, entity_name, profit_center_code, profit_center_name, sbu, emp_id, emp_name, email_id, created_date, status) "
-                    + "VALUES (:id, :entityCode, :entityName, :profitCenterCode, :profitCenterName, :sbu, :empId, :empName, :emailId, GETDATE(), :status)";
-            
-            // Generate ID if not provided
-            if (StringUtils.isEmpty(obj.getId())) {
-                obj.setId(java.util.UUID.randomUUID().toString());
-            }
+            String insertQry = "INSERT INTO [FIDB].[dbo].[profit_center] "
+                    + "(entity_code, profit_center_code, profit_center_name, sbu, created_on, status) "
+                    + "VALUES (:entity_code, :profit_center_code, :profit_center_name, :sbu, GETDATE(), :status)";
 
             BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(obj);
             int count = namedParamJdbcTemplate.update(insertQry, paramSource);
@@ -184,16 +171,12 @@ public class PcDao {
         TransactionStatus status = transactionManager.getTransaction(def);
         try {
             NamedParameterJdbcTemplate namedParamJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-            String updateQry = "UPDATE [FIDB].[dbo].[pc] SET "
-                    + "entity_code = :entityCode, "
-                    + "entity_name = :entityName, "
-                    + "profit_center_code = :profitCenterCode, "
-                    + "profit_center_name = :profitCenterName, "
+            String updateQry = "UPDATE [FIDB].[dbo].[profit_center] SET "
+                    + "entity_code = :entity_code, "
+                    + "profit_center_code = :profit_center_code, "
+                    + "profit_center_name = :profit_center_name, "
                     + "sbu = :sbu, "
-                    + "emp_id = :empId, "
-                    + "emp_name = :empName, "
-                    + "email_id = :emailId, "
-                    + "modified_date = GETDATE(), "
+                    + "modified_on = GETDATE(), "
                     + "status = :status "
                     + "WHERE id = :id";
             
@@ -214,7 +197,7 @@ public class PcDao {
     public boolean deletePc(Pc obj) throws Exception {
         boolean flag = false;
         try {
-            String deleteQry = "DELETE FROM [FIDB].[dbo].[pc] WHERE id = ?";
+            String deleteQry = "DELETE FROM [FIDB].[dbo].[profit_center] WHERE id = ?";
             Object[] args = new Object[]{obj.getId()};
             int count = jdbcTemplate.update(deleteQry, args);
             if (count > 0) {
@@ -229,7 +212,7 @@ public class PcDao {
 
     public Pc findByEmailIdAndStatus(String emailId, String status) throws Exception {
         try {
-            String qry = "SELECT * FROM [FIDB].[dbo].[pc] WHERE email_id = ? AND status = ?";
+            String qry = "SELECT * FROM [FIDB].[dbo].[profit_center] WHERE email_id = ? AND status = ?";
             return jdbcTemplate.queryForObject(qry, new Object[]{emailId, status}, new BeanPropertyRowMapper<>(Pc.class));
         } catch (Exception e) {
             return null; // Return null if no record is found

@@ -18,7 +18,7 @@ public class PcService {
 
     public List<Pc> getPcList(Pc pc, int startIndex, int offset, String searchParameter) throws Exception {
         try {
-            return pcDao.getPcList(pc, startIndex, offset, searchParameter);
+            return pcDao.getpcList(pc, startIndex, offset, searchParameter);
         } catch (Exception e) {
             logger.error("Error fetching profit center list: " + e.getMessage());
             throw e;
@@ -37,7 +37,7 @@ public class PcService {
     public boolean addPc(Pc pc) throws Exception {
         try {
             // Check for existing email with Active status
-            Pc existingPc = pcDao.findByEmailIdAndStatus(pc.getEmailId(), "Active");
+            Pc existingPc = pcDao.findByEmailIdAndStatus(pc.getId(), "Active");
             if (existingPc != null) {
                 throw new Exception("Email already exists with Active status.");
             }
@@ -51,7 +51,7 @@ public class PcService {
     public boolean updatePc(Pc pc) throws Exception {
         try {
             // Check for existing email with Active status (excluding current record)
-            Pc existingPc = pcDao.findByEmailIdAndStatus(pc.getEmailId(), "Active");
+            Pc existingPc = pcDao.findByEmailIdAndStatus(pc.getId(), "Active");
             if (existingPc != null && !existingPc.getId().equals(pc.getId())) {
                 throw new Exception("Email already exists with Active status.");
             }
@@ -71,8 +71,4 @@ public class PcService {
         }
     }
 
-	public List<Pc> getpcList(Pc obj, int startIndex, int offset, String searchParameter) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
