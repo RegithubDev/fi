@@ -309,13 +309,16 @@
                             <th><i class="fas fa-check-circle me-2"></i>Paid Date</th>
                             <th><i class="fas fa-hourglass-half me-2"></i>Days Diff</th>
                             <th><i class="fas fa-file-invoice me-2"></i>Challan No</th>
+                            <th><i class="fas fa-file-invoice me-2"></i>Remarks</th>
                             <c:choose>
                                 <c:when test="${sessionScope.ROLE eq 'Admin' or sessionScope.ROLE eq 'SA'}">
+                                  <th><i class="fas fa-file-invoice me-2"></i>Attachment</th>
                                     <th><i class="fas fa-toggle-on me-2"></i>Status</th>
                                     <th class="text-center"><i class="fas fa-cogs me-2"></i>Actions</th>
                                 </c:when>
                                 <c:otherwise>
-                                <th><i class="fas fa-file-invoice me-2"></i>Attachment</th>
+                                  <th><i class="fas fa-file-invoice me-2"></i>Attachment</th>
+                                 	 <th><i class="fas fa-file-invoice me-2"></i>Status</th>
                                     <th><i class="fas fa-gavel me-2"></i>Action</th>
                                 </c:otherwise>
                             </c:choose>
@@ -347,9 +350,29 @@
                                     </c:choose>
                                 </td>
                                 <td data-label="Challan No">${pt.challan_no}</td>
-                                  
+                                <td>${pt.remarks}</td>
                                 <c:choose>
                                     <c:when test="${sessionScope.ROLE eq 'Admin' or sessionScope.ROLE eq 'SA'}">
+                                    
+                                    <td data-label=upload_file>
+                                       <c:choose>
+                                       <c:when test="${not empty pt.upload_file}">
+											    <c:forEach var="file" items="${fn:split(pt.upload_file, ',')}">
+											      <span class="badge badge-light-dark"> 
+
+                                           <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>pt/${file}"
+               target="_blank" class="text-primary">
+                <i class="fas fa-file-download me-1"></i>${file}
+            </a></span>
+											</c:forEach>
+                                        </c:when>
+                                       
+                                        <c:otherwise>
+                                        <i data-feather='slash'>No File</i>
+                                        </c:otherwise>
+                                    </c:choose>
+                                    
+									</td>
                                         <td data-label="Status">
                                             <span class="status-badge ${pt.status == 'Active' ? 'active' : 'inactive'}">
                                                 <span class="status-text">${pt.status}</span>
@@ -364,25 +387,32 @@
                                         </td>
                                     </c:when>
                                     <c:otherwise>
-                                    <td data-label="Due Date">
+                                    
+                                      <td data-label="upload_file">
 								  
 								   <c:choose>
                                        <c:when test="${not empty pt.upload_file}">
-
-                                           <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>pt/${pt.upload_file }" 
-											   class="filevalue" 
-											   target="_blank">
-											   ${pt.upload_file}
-											</a>
+											    <c:forEach var="file" items="${fn:split(pt.upload_file, ',')}">
+											        <span class="badge badge-light-dark"> 
+											    <i class="fa-solid fa-download"></i> <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>pt/${file}" 
+											           class="filevalue" 
+											           target="_blank">
+											           ${file}
+											        </a></span><br/>
+											    </c:forEach>
 											
-                                        </c:when>
-                                       
+                                        </c:when>                                      
                                         <c:otherwise>
                                         <i data-feather='slash'>No File</i>
                                         </c:otherwise>
                                     </c:choose>
-                                    
 									</td>
+									<td>
+                                            <span class="status-badge ${pt.status == 'Active' ? 'active' : 'inactive'}">
+                                                <span class="status-text">${pt.status}</span>
+                                            </span>
+                                        </td>
+                               
                                         <td data-label="Action">
                                             <button class="btn btn-sm appeal-btn" 
                                             data-record-id="${pt.month_year}" 
@@ -519,11 +549,11 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label">Remarks</label>
-                                <textarea class="form-control" name="remarks" rows="3" placeholder="Enter remarks here...">${pt.remarks}</textarea>
+                                <textarea class="form-control" name="remarks" rows="" placeholder="Enter remarks here...">${pt.remarks}</textarea>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Upload File</label>
-                                <input type="file" class="form-control" name="mediaList">
+                                <input type="file" class="form-control" id="uploadFile" name="mediaList" multiple> 
                                  <c:choose>
                                        <c:when test="${not empty pt.upload_file}">
 
@@ -568,43 +598,51 @@
                 <div class="modal-body">
                     <!-- Core Info -->
                     <h5><i class="fas fa-info-circle me-2"></i>Core Information</h5>
-                    <div class="row mb-3 g-3">
-                        <c:choose>
-                            <c:when test="${sessionScope.ROLE eq 'Admin' or sessionScope.ROLE eq 'SA'}">
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold">Profit Center</label>
-                                    <select class="form-select select2" name="profit_center_code" id="profitCenterSelect" required>
+                         <div class="row mb-3 g-3">
+                    <div class="col-md-6">
+                    <label class="form-label fw-bold">Profit Center</label>
+                      <c:choose>
+                                <c:when test="${sessionScope.ROLE eq 'Admin' or sessionScope.ROLE eq 'SA' }">
+                                    <select class="form-select select2" id="profitCenterSelect" name="profit_center_code" required>
                                         <option value="">-- Search Profit Center --</option>
                                         <c:forEach items="${profitCenterList}" var="pc">
-                                            <option value="${pc.profit_center_code}">${pc.profit_center_code} - ${pc.profit_center_name}</option>
+                                            <option value="${pc.profit_center_code}" sbu="${pc.sbu}">${pc.sbu} - ${pc.profit_center_code} - ${pc.profit_center_name}</option>
                                         </c:forEach>
                                     </select>
-                                </div>
-                            </c:when>
-                            <c:when test="${sessionScope.ROLE eq 'Management'}">
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold">Profit Center</label>
-                                    <select class="form-select select2" name="profit_center_code" id="profitCenterSelect" required>
+                                    <p id="sbuDisplay" style="margin-top:10px; font-weight:bold; color:#333;"></p>
+									<input type="hidden" id="sbuInput" name="sbu">
+                                </c:when>
+                                <c:when test="${sessionScope.ROLE eq 'Management' or sessionScope.ROLE eq 'User'}">
+                                    <select class="form-select select2" id="profitCenterSelect" name="profit_center_code" required>
                                         <option value="">-- Search Profit Center --</option>
                                         <c:set var="pcList" value="${fn:split(sessionScope.PC, ',')}" />
                                         <c:forEach items="${profitCenterList}" var="pc">
                                             <c:forEach var="allowedPC" items="${pcList}">
                                                 <c:if test="${pc.profit_center_code == fn:trim(allowedPC)}">
-                                                    <option value="${pc.profit_center_code}">${pc.profit_center_code} - ${pc.profit_center_name}</option>
+                                                    <option value="${pc.profit_center_code}" sbu="${pc.sbu}">${pc.sbu} - ${pc.profit_center_code} - ${pc.profit_center_name}</option>
                                                 </c:if>
                                             </c:forEach>
                                         </c:forEach>
                                     </select>
-                                </div>
-                            </c:when>
-                            <c:otherwise>
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold">Profit Center</label>
-                                    <p class="form-control-plaintext bg-light p-2 rounded">${sessionScope.PCN}</p>
-                                    <input type="hidden" class="form-control" id="profitCenterSelect" name="profit_center_code" value="${sessionScope.PC}"/>
-                                </div>
-                            </c:otherwise>
-                        </c:choose>
+                                                                        <p id="sbuDisplay" style="margin-top:10px; font-weight:bold; color:#333;"></p>
+									<input type="hidden" id="sbuInput" name="sbu" />
+                                
+                                </c:when>
+                                <c:otherwise>
+                                    <select class="form-select select2" id="profitCenterSelect" name="profit_center_code" required>
+                                        <option value="">-- Search Profit Center --</option>
+                                        <c:forEach items="${profitCenterList}" var="pc">
+                                            <c:if test="${pc.profit_center_code eq sessionScope.PC}">
+                                                <option value="${pc.profit_center_code}" sbu="${pc.sbu}" selected>${pc.sbu} - ${pc.profit_center_code} - ${pc.profit_center_name}</option>
+                                            </c:if>
+                                        </c:forEach>
+                                    </select>
+                                   <p id="sbuDisplay" style="margin-top:10px; font-weight:bold; color:#333;"></p>
+									<input type="hidden" id="sbuInput" name="sbu" />
+                                
+                                </c:otherwise>
+                            </c:choose>
+                            </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Month-Year</label>
                             <input type="month" class="form-control" name="month_year" id="monthYear" required>
@@ -661,11 +699,11 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label">Remarks</label>
-                                <textarea class="form-control" name="remarks" rows="3" placeholder="Enter remarks here...">${pt.remarks}</textarea>
+                                <textarea class="form-control" name="remarks" rows="" placeholder="Enter remarks here...">${pt.remarks}</textarea>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Upload File</label>
-                                <input type="file" class="form-control" name="mediaList">
+                                <input type="file" class="form-control" id="uploadFile" name="mediaList" multiple> 
                                   <c:if test="${pt.upload_file ne 'null'}"> <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>pt/${pt.upload_file }" 
 								   class="filevalue" 
 								   target="_blank">

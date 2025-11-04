@@ -8,8 +8,7 @@ private String id,Entity_code,pt,pts,profit_center_code,email_id,profit_center_n
 difference,due_date,actual_payment_date,delay_days,challan_no,no_of_emp,status,employee_contributions,employer_contributions,total_amounts,amount_paids,differences,due_dates,actual_payment_dates,delay_dayss,challan_nos,no_of_emps
 ,created_date,modified_date,created_by,modified_by,user_name,user_id,result,atatchment,remarks,atatchments,remarkss,entity_name,upload_file,sbu;
 
-private MultipartFile mediaList;
-
+private MultipartFile[] mediaList;
 
 public String getUser_name() {
 	return user_name;
@@ -59,11 +58,12 @@ public void setUpload_file(String upload_file) {
 	this.upload_file = upload_file;
 }
 
-public MultipartFile getMediaList() {
+public MultipartFile[] getMediaList() {
 	return mediaList;
 }
 
-public void setMediaList(MultipartFile mediaList) {
+
+public void setMediaList(MultipartFile[] mediaList) {
 	this.mediaList = mediaList;
 }
 

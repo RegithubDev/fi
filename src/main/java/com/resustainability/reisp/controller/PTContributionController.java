@@ -84,18 +84,21 @@ public class PTContributionController {
 				String endDate = DateForUser.date();
 				esiContribution.setCreated_by(userId);
 				
+				String file_name = "";
 				if(!StringUtils.isEmpty(esiContribution.getMediaList())) {
-					MultipartFile multipartFile = esiContribution.getMediaList();
-					if (null != multipartFile && !multipartFile.isEmpty()) {
-						String saveDirectory = CommonConstants.SAFETY_FILE_SAVING_PATH + "pt" + File.separator;
-						String fileName = multipartFile.getOriginalFilename();
-						esiContribution.setUpload_file(fileName);
-						//obj.setCreated_date(DateParser.parse(date));
+					for (int i = 0; i < (esiContribution.getMediaList().length); i++) {
+						MultipartFile multipartFile = esiContribution.getMediaList()[i];
 						if (null != multipartFile && !multipartFile.isEmpty()) {
-							FileUploads.singleFileSaving(multipartFile, saveDirectory, fileName);
+							String saveDirectory = CommonConstants.SAFETY_FILE_SAVING_PATH + "pt" + File.separator;
+							String fileName = multipartFile.getOriginalFilename();
+							esiContribution.setUpload_file(fileName);
+							if (null != multipartFile && !multipartFile.isEmpty()) {
+								FileUploads.singleFileSaving(multipartFile, saveDirectory, fileName);
+							}
+							file_name = file_name+ fileName+",";
+							esiContribution.setUpload_file(file_name);
 						}
 					}
-				
 				}
 				
 				
@@ -126,21 +129,22 @@ public class PTContributionController {
 			    String dt = formatter.format(new Date());
 				String endDate = DateForUser.date();
 				esiContribution.setModified_by(userId);
-				
+				String file_name = "";
 				if(!StringUtils.isEmpty(esiContribution.getMediaList())) {
-					MultipartFile multipartFile = esiContribution.getMediaList();
-					if (null != multipartFile && !multipartFile.isEmpty()) {
-						String saveDirectory = CommonConstants.SAFETY_FILE_SAVING_PATH + "pt" + File.separator;
-						String fileName = multipartFile.getOriginalFilename();
-						esiContribution.setUpload_file(fileName);
-						//obj.setCreated_date(DateParser.parse(date));
+					for (int i = 0; i < (esiContribution.getMediaList().length); i++) {
+						MultipartFile multipartFile = esiContribution.getMediaList()[i];
 						if (null != multipartFile && !multipartFile.isEmpty()) {
-							FileUploads.singleFileSaving(multipartFile, saveDirectory, fileName);
+							String saveDirectory = CommonConstants.SAFETY_FILE_SAVING_PATH + "pt" + File.separator;
+							String fileName = multipartFile.getOriginalFilename();
+							esiContribution.setUpload_file(fileName);
+							if (null != multipartFile && !multipartFile.isEmpty()) {
+								FileUploads.singleFileSaving(multipartFile, saveDirectory, fileName);
+							}
+							file_name = file_name+ fileName+",";
+							esiContribution.setUpload_file(file_name);
 						}
 					}
-				
 				}
-				
 				
 				flag = contributionService.updatePtContribution(esiContribution);
 				if(flag == true) {

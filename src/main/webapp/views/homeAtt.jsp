@@ -303,31 +303,31 @@
     <div class="container">
         <div class="card-container">
             <!-- PF Card -->
-         <!--     <a href="<%=request.getContextPath()%>/pf" class="compliance-card pf animate__animated animate__fadeInUp animate__delay-0_2s">
+          <a href="<%=request.getContextPath()%>/pf" class="compliance-card pf animate__animated animate__fadeInUp animate__delay-0_2s">
                 <div class="card-header">
                     <div class="card-icon"><i class="fas fa-piggy-bank"></i></div>
                     <h2 class="card-title">Provident Fund</h2>
                 </div>
                 <div class="card-subtitle">Access services for PF contributions, view statements, and manage employee accounts.</div>
-            </a> -->
+            </a> 
             
             <!-- ESI Card -->
-         <!--     <a href="<%=request.getContextPath()%>/esi" class="compliance-card esi animate__animated animate__fadeInUp animate__delay-0_4s">
+           <a href="<%=request.getContextPath()%>/esi" class="compliance-card esi animate__animated animate__fadeInUp animate__delay-0_4s">
                 <div class="card-header">
                     <div class="card-icon"><i class="fas fa-hospital-user"></i></div>
                     <h2 class="card-title">Employees State Insurance</h2>
                 </div>
                 <div class="card-subtitle">Complete ESI filings, manage employee benefits, and access related insurance services.</div>
             </a>
-            -->
+           
             <!-- PT Card -->
-          <!--   <a href="<%=request.getContextPath()%>/pt" class="compliance-card pt animate__animated animate__fadeInUp animate__delay-0_6s">
+            <a href="<%=request.getContextPath()%>/pt" class="compliance-card pt animate__animated animate__fadeInUp animate__delay-0_6s">
                 <div class="card-header">
                     <div class="card-icon"><i class="fas fa-file-invoice-dollar"></i></div>
                     <h2 class="card-title">Professional Tax</h2>
                 </div>
                 <div class="card-subtitle">Handle all aspects of Professional Tax, including calculations, payments, and filings.</div>
-            </a>       -->      
+            </a>           
  <a href="<%=request.getContextPath()%>/inventory" class="compliance-card pt animate__animated animate__fadeInUp animate__delay-0_6s">
     <div class="card-header">
         <div class="card-icon"><i class="fas fa-file-invoice-dollar"></i></div>

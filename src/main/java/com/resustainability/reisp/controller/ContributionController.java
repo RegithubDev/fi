@@ -123,18 +123,21 @@ public class ContributionController {
 			    String dt = formatter.format(new Date());
 				String endDate = DateForUser.date();
 				pfContribution.setCreated_by(userId);
+				String file_name = "";
 				if(!StringUtils.isEmpty(pfContribution.getMediaList())) {
-					MultipartFile multipartFile = pfContribution.getMediaList();
-					if (null != multipartFile && !multipartFile.isEmpty()) {
-						String saveDirectory = CommonConstants.SAFETY_FILE_SAVING_PATH + "pf" + File.separator;
-						String fileName = multipartFile.getOriginalFilename();
-						pfContribution.setUpload_file(fileName);
-						//obj.setCreated_date(DateParser.parse(date));
+					for (int i = 0; i < (pfContribution.getMediaList().length); i++) {
+						MultipartFile multipartFile = pfContribution.getMediaList()[i];
 						if (null != multipartFile && !multipartFile.isEmpty()) {
-							FileUploads.singleFileSaving(multipartFile, saveDirectory, fileName);
+							String saveDirectory = CommonConstants.SAFETY_FILE_SAVING_PATH + "pf" + File.separator;
+							String fileName = multipartFile.getOriginalFilename();
+							pfContribution.setUpload_file(fileName);
+							if (null != multipartFile && !multipartFile.isEmpty()) {
+								FileUploads.singleFileSaving(multipartFile, saveDirectory, fileName);
+							}
+							file_name = file_name+ fileName+",";
+							pfContribution.setUpload_file(file_name);
 						}
 					}
-				
 				}
 				
 				
@@ -165,21 +168,22 @@ public class ContributionController {
 				DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd"); 
 			    String dt = formatter.format(new Date());
 				String endDate = DateForUser.date();
+				String file_name = "";
 				if(!StringUtils.isEmpty(pfContribution.getMediaList())) {
-					MultipartFile multipartFile = pfContribution.getMediaList();
-					if (null != multipartFile && !multipartFile.isEmpty()) {
-						String saveDirectory = CommonConstants.SAFETY_FILE_SAVING_PATH + "pf" + File.separator;
-						String fileName = multipartFile.getOriginalFilename();
-						pfContribution.setUpload_file(fileName);
-						//obj.setCreated_date(DateParser.parse(date));
+					for (int i = 0; i < (pfContribution.getMediaList().length); i++) {
+						MultipartFile multipartFile = pfContribution.getMediaList()[i];
 						if (null != multipartFile && !multipartFile.isEmpty()) {
-							FileUploads.singleFileSaving(multipartFile, saveDirectory, fileName);
+							String saveDirectory = CommonConstants.SAFETY_FILE_SAVING_PATH + "pf" + File.separator;
+							String fileName = multipartFile.getOriginalFilename();
+							pfContribution.setUpload_file(fileName);
+							if (null != multipartFile && !multipartFile.isEmpty()) {
+								FileUploads.singleFileSaving(multipartFile, saveDirectory, fileName);
+							}
+							file_name = file_name+ fileName+",";
+							pfContribution.setUpload_file(file_name);
 						}
 					}
-				
 				}
-				
-				
 				
 				
 				flag = contributionService.updatePfContribution(pfContribution);

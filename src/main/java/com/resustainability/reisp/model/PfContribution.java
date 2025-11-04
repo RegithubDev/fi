@@ -9,7 +9,7 @@ total_amount,amount_paid,difference,due_date,actual_payment_date,delay_days,chal
 ids,entity_codes,entity_names,profit_center_codes,profit_center_names,month_years,employee_contributions,vpfs,employer_contributions,pf_admins,pf_edlis,total_amounts,amount_paids,differences,due_dates,actual_payment_dates,delay_dayss,challan_nos,statuss,no_of_emps
 ,atatchment,remarks,atatchments,remarkss,upload_file,sbu;
 
-private MultipartFile mediaList;
+private MultipartFile[] mediaList;
 
 
 
@@ -33,14 +33,6 @@ public void setUpload_file(String upload_file) {
 }
 
 
-public void setMediaList(MultipartFile mediaList) {
-	this.mediaList = mediaList;
-}
-
-
-public MultipartFile getMediaList() {
-	return mediaList;
-}
 
 
 public String getAtatchment() {
@@ -50,6 +42,16 @@ public String getAtatchment() {
 public void setAtatchment(String atatchment) {
 	this.atatchment = atatchment;
 }
+
+public MultipartFile[] getMediaList() {
+	return mediaList;
+}
+
+
+public void setMediaList(MultipartFile[] mediaList) {
+	this.mediaList = mediaList;
+}
+
 
 public String getRemarks() {
 	return remarks;

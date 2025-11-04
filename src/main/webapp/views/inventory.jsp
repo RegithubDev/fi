@@ -448,7 +448,7 @@
                                 <td>${inventory.remarks}</td>
                                 <c:choose>
                                     <c:when test="${sessionScope.ROLE eq 'Admin' or sessionScope.ROLE eq 'SA'}">
-                                    <td data-label="Due Date">
+                                    <td data-label="upload_file">
 								  
 								   <c:choose>
                                        <c:when test="${not empty inventory.upload_file}">
@@ -637,7 +637,7 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label">Remarks</label>
-                                <textarea class="form-control" name="remarks" rows="3" placeholder="Enter remarks here...">${inventory.remarks}</textarea>
+                                <textarea class="form-control" name="remarks" rows="" placeholder="Enter remarks here...">${inventory.remarks}</textarea>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Upload File</label>
@@ -725,7 +725,7 @@
                                         </c:forEach>
                                     </select>
                                     <p id="sbuDisplay" style="margin-top:10px; font-weight:bold; color:#333;"></p>
-									<input type="hidden" id="sbuInput" name="sbu" />
+									<input type="hidden" id="sbuInput" name="sbu">
                                 </c:when>
                                 <c:when test="${sessionScope.ROLE eq 'Management' or sessionScope.ROLE eq 'User'}">
                                     <select class="form-select select2" id="profitCenterSelect" name="profit_center_code" required>
@@ -808,7 +808,7 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label for="remarks" class="form-label">Remarks</label>
-                            <textarea class="form-control" id="remarks" name="remarks" rows="3" placeholder="Enter remarks here..."></textarea>
+                            <textarea class="form-control" id="remarks" name="remarks" rows="" placeholder="Enter remarks here..."></textarea>
                         </div>
                         <div class="col-md-6">
                             <label for="uploadFile" class="form-label">Upload File</label>
