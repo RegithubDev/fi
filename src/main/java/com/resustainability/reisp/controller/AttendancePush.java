@@ -40,7 +40,7 @@ public class AttendancePush {
                     "           MIN(ct.punch_time) AS inDateTime, MAX(ct.punch_time) AS outDateTime " +
                     "    FROM iclock_transaction ct " +
                     "    LEFT JOIN personnel_employee pe ON ct.emp_code = pe.emp_code " +
-                    "    WHERE CAST(ct.punch_time AS DATE) = CAST(GETDATE() AS DATE) and ct.area_alias = 'MSW-CTN-IPMSWL-DL-Narela Bawana' " +
+                    "    WHERE CAST(ct.punch_time AS DATE) = CAST(GETDATE()  AS DATE) and ct.area_alias = 'MSW-CTN-IPMSWL-DL-Narela Bawana' " +
                     "    GROUP BY ct.emp_code, pe.first_name, ct.area_alias, ct.terminal_sn, CAST(ct.punch_time AS DATE) " +
                     ") " +
                     "SELECT employeeId, employeeName, area_alias, deviceId, inDateTime, outDateTime " +
