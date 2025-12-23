@@ -59,7 +59,7 @@ public class Schedular {
 	    private EsiContributionService contributionService1;
 	 
 	 
-	 @Scheduled(cron = "0 30 7 * * *")
+	// @Scheduled(cron = "0 30 7 * * *")
 	public void userLoginTimeout(){ if(is_cron_jobs_enabled || is_cron_jobs_enabled_in_qa) {
 	  try { System.out.println("cronJob Called!!!!"); 
 	  

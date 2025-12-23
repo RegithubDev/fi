@@ -74,8 +74,8 @@ public class FarController {
             // FAR data list based on filters
             List<FarContribution> farList = contributionService.getFarContributions(
                     filter.getMonth_year(),
-                    filter.getEntity_Code(),
-                    filter.getProfit_Center_Code(),
+                    filter.getEntity_code(),
+                    filter.getProfit_center_code(),
                     usr
             );
             model.addObject("farList", farList);
@@ -113,7 +113,7 @@ public class FarController {
             String body = "Dear User,<br><br>" +
                     "This is a kind reminder from <b>Re Sustainability Finance Team</b>.<br><br>" +
                     "Our records indicate that the <b>FAR data for " + in.getMonth_year() + "</b> " +
-                    "has not been submitted for your Profit Center <b>" + in.getProfit_Center_Name() + "</b>.<br><br>" +
+                    "has not been submitted for your Profit Center <b>" + in.getProfit_center_name() + "</b>.<br><br>" +
                     "As per the reporting guidelines, it is mandatory to complete the FAR update by the due date.<br>" +
                     "Please update the records at the earliest to avoid any compliance issues.<br><br>" +
                     "You can update your FAR using the <a href='https://appmint.resustainability.com/fi/far' target='_blank'>Finance App</a>.<br><br>" +

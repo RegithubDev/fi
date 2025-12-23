@@ -143,6 +143,22 @@
             color: #dc3545;
             cursor: pointer;
         }
+        
+        #deleteFixedAssetBtn {
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
+    color: white;
+}
+
+#deleteFixedAssetBtn:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+        
+        
+        
     </style>
 </head>
 <body>
@@ -187,12 +203,12 @@
                                 <option value=""></option>
                             </select>
                         </div>
-                        <div class="col-md-3">
+                      <!--    <div class="col-md-3">
                             <label for="monthYearFilter" class="form-label fw-bold">Period (Month-Year)</label>
                             <select class="form-select select2" id="monthYearFilter" data-placeholder="Select Period">
                                 <option value=""></option>
                             </select>
-                        </div>
+                        </div> -->
                         <div class="col-md-3 d-flex align-items-end">
                             <button class="btn btn-outline-secondary me-2" type="button" id="clearFilters">
                                 <i class="fas fa-times me-2"></i>Clear
@@ -235,7 +251,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <c:forEach items="${fixedAssetList}" var="asset" varStatus="index">
+                        <c:forEach items="${farList}" var="asset" varStatus="index">
                             <tr>
                                 <td>${asset.entity_code}</td>
                                 <td>${asset.entity_name}</td>
@@ -244,39 +260,39 @@
                                     <div class="small text-muted">${asset.profit_center_name}</div>
                                 </td>
                                 <td>${asset.profit_center_name}</td>
-                                <td>${asset.sbu_code}</td>
+                                <td>${asset.sbu}</td>
                                 <td>${asset.plant_code}</td>
                                 <td>${asset.plant_name}</td>
                                 <td class="text-end">₹<fmt:formatNumber value="${asset.gross_book_value}" pattern="#,##0.00"/></td>
                                 <td class="text-end">
                                     <c:choose>
-                                        <c:when test="${not empty asset.far_sent_by_ho}">
-                                            <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>far/${asset.far_sent_by_ho}" target="_blank" class="text-primary">
+                                        <c:when test="${not empty asset.entity_code}">
+                                            <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>far/${asset.entity_code}" target="_blank" class="text-primary">
                                                 <i class="fas fa-file-download me-1"></i>View FAR
                                             </a>
                                         </c:when>
                                         <c:otherwise><span class="text-muted">-</span></c:otherwise>
                                     </c:choose>
                                 </td>
-                                <td class="text-end">${asset.asset_verification}</td>
-                                <td class="text-end">${asset.quantity_far_ho}</td>
-                                <td class="text-end">₹<fmt:formatNumber value="${asset.reported_value_pv}" pattern="#,##0.00"/></td>
-                                <td class="text-end">${asset.quantity_pv}</td>
+                                <td class="text-end">${asset.entity_code}</td>
+                                <td class="text-end">${asset.quantity}</td>
+                                <td class="text-end">₹<fmt:formatNumber value="${asset.entity_code}" pattern="#,##0.00"/></td>
+                                <td class="text-end">${asset.entity_code}</td>
                                 <td class="text-end text-danger">
                                     <c:if test="${asset.value_variance != 0}">
                                         ₹<fmt:formatNumber value="${asset.value_variance}" pattern="#,##0.00"/>
                                     </c:if>
                                 </td>
                                 <td class="text-end text-danger">
-                                    <c:if test="${asset.qty_variance != 0}">
-                                        ${asset.qty_variance}
+                                    <c:if test="${asset.entity_code != 0}">
+                                        ${asset.entity_code}
                                     </c:if>
                                 </td>
                                 <td>${asset.remarks}</td>
                                 <td>
                                     <c:choose>
-                                        <c:when test="${not empty asset.document_upload}">
-                                            <c:forEach var="file" items="${fn:split(asset.document_upload, ',')}">
+                                        <c:when test="${not empty asset.entity_code}">
+                                            <c:forEach var="file" items="${fn:split(asset.entity_code, ',')}">
                                                 <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>far/${file}" target="_blank" class="badge bg-primary text-white d-block mb-1">
                                                     <i class="fas fa-download me-1"></i>${file}
                                                 </a>
@@ -319,19 +335,19 @@
 
                         <div class="col-md-6">
                             <label for="entity_code" class="form-label fw-bold">Entity Code <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="entity_code" name="entity_Code" required>
+                            <input type="text" class="form-control" id="entity_code" name="entity_code" required>
                         </div>
                         <div class="col-md-6">
                             <label for="entity_name" class="form-label fw-bold">Entity Name <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="entity_name" name="entity_Name" required>
+                            <input type="text" class="form-control" id="entity_name" name="entity_name" required>
                         </div>
                         <div class="col-md-6">
                             <label for="profit_center_code" class="form-label fw-bold">Profit Center Code <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="profit_center_code" name="profit_Center_Code" required>
+                            <input type="text" class="form-control" id="profit_center_code" name="profit_center_code" required>
                         </div>
                         <div class="col-md-6">
                             <label for="profit_center_name" class="form-label fw-bold">Profit Center Name <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="profit_center_name" name="profit_Center_Name" required>
+                            <input type="text" class="form-control" id="profit_center_name" name="profit_center_name" required>
                         </div>
                         <div class="col-md-6">
                             <label for="sbu_code" class="form-label fw-bold">SBU Code</label>
@@ -339,15 +355,15 @@
                         </div>
                         <div class="col-md-6">
                             <label for="plant_code" class="form-label fw-bold">Plant Code <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="plant_code" name="plant_Code" required>
+                            <input type="text" class="form-control" id="plant_code" name="plant_code" required>
                         </div>
                         <div class="col-md-6">
                             <label for="plant_name" class="form-label fw-bold">Plant Name <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="plant_name" name="plant_Name" required>
+                            <input type="text" class="form-control" id="plant_name" name="plant_name" required>
                         </div>
                         <div class="col-md-6">
                             <label for="gross_book_value" class="form-label fw-bold">Gross Book Value (Current period) <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" id="gross_book_value" name="gross_Book_Value" step="0.01" min="0" required>
+                            <input type="number" class="form-control" id="gross_book_value" name="gross_book_value" step="0.01" min="0" required>
                         </div>
                         <div class="col-md-6">
                             <label for="asset_verification" class="form-label fw-bold">Asset Verification <span class="text-danger">*</span></label>
@@ -364,11 +380,11 @@
                         </div>
                         <div class="col-md-6">
                             <label for="reported_value_pv" class="form-label fw-bold">Reported Value (As per plant verification) <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" id="reported_value_pv" name="reported_Value" step="0.01" min="0" required>
+                            <input type="number" class="form-control" id="reported_value_pv" name="reported_value" step="0.01" min="0" required>
                         </div>
                         <div class="col-md-6">
                             <label for="quantity_pv" class="form-label fw-bold">Quantity (As per PV) <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" id="quantity_pv" name="quantity_PV" min="0" required>
+                            <input type="number" class="form-control" id="quantity_pv" name="quantity_pv" min="0" required>
                         </div>
                         <div class="col-12">
                             <label for="remarks" class="form-label fw-bold">Remarks</label>
@@ -405,6 +421,153 @@
                     <button type="submit" class="btn btn-primary" id="saveFixedAssetBtn">
                         <span id="saveBtnText">Save Record</span>
                         <div id="saveBtnSpinner" class="spinner-border spinner-border-sm d-none ms-2" role="status"></div>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Edit Fixed Asset Modal -->
+<div class="modal fade" id="editFixedAssetModal" tabindex="-1" aria-labelledby="editFixedAssetModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editFixedAssetModalLabel">
+                    <i class="fas fa-edit me-2"></i>Edit Fixed Asset Record
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="editFixedAssetForm" action="<%=request.getContextPath() %>/far/update" method="post" enctype="multipart/form-data">
+                <input type="hidden" id="edit_id" name="id">
+                <input type="hidden" id="edit_created_by" name="created_by" value="${sessionScope.USER_NAME != null ? sessionScope.USER_NAME : sessionScope.USER_ID}">
+                
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="edit_entity_code" class="form-label fw-bold">Entity Code <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="edit_entity_code" name="entity_code" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_entity_name" class="form-label fw-bold">Entity Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="edit_entity_name" name="entity_name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_profit_center_code" class="form-label fw-bold">Profit Center Code <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="edit_profit_center_code" name="profit_center_code" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_profit_center_name" class="form-label fw-bold">Profit Center Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="edit_profit_center_name" name="profit_center_name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_sbu_code" class="form-label fw-bold">SBU Code</label>
+                            <input type="text" class="form-control" id="edit_sbu_code" name="sbu">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_plant_code" class="form-label fw-bold">Plant Code <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="edit_plant_code" name="plant_code" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_plant_name" class="form-label fw-bold">Plant Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="edit_plant_name" name="plant_name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_gross_book_value" class="form-label fw-bold">Gross Book Value (Current period) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="edit_gross_book_value" name="gross_book_value" step="0.01" min="0" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_asset_verification" class="form-label fw-bold">Asset Verification <span class="text-danger">*</span></label>
+                            <select class="form-select" id="edit_asset_verification" name="asset_verification" required>
+                                <option value="">Select Status</option>
+                                <option value="Verified">Verified</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Not Verified">Not Verified</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_quantity_far_ho" class="form-label fw-bold">Quantity (FAR sent by HO) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="edit_quantity_far_ho" name="quantity" min="0" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_reported_value_pv" class="form-label fw-bold">Reported Value (As per plant verification) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="edit_reported_value_pv" name="reported_value" step="0.01" min="0" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_quantity_pv" class="form-label fw-bold">Quantity (As per PV) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="edit_quantity_pv" name="quantity_pv" min="0" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_value_variance" class="form-label fw-bold">Value Variance</label>
+                            <input type="text" class="form-control" id="edit_value_variance" name="value_variance" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_qty_variance" class="form-label fw-bold">Quantity Variance</label>
+                            <input type="text" class="form-control" id="edit_qty_variance" name="qty_variance" readonly>
+                        </div>
+                        <div class="col-12">
+                            <label for="edit_remarks" class="form-label fw-bold">Remarks</label>
+                            <textarea class="form-control" id="edit_remarks" name="remarks" rows="3"></textarea>
+                        </div>
+
+                        <!-- Current Files Display -->
+                        <div class="col-12" id="currentFilesSection">
+                            <label class="form-label fw-bold">Current FAR Document</label>
+                            <div id="currentFarFile" class="mb-2"></div>
+                            
+                            <label class="form-label fw-bold">Current Additional Documents</label>
+                            <div id="currentAdditionalFiles" class="mb-2"></div>
+                        </div>
+
+                        <!-- FAR Document Upload (Single File) -->
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Update FAR Document (Optional)</label>
+                            <div class="file-upload-area" id="editFarUploadArea">
+                                <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                <p class="mb-2">Drag & drop new FAR file or click to browse</p>
+                                <p class="text-muted small">Leave empty to keep current file</p>
+                                <input type="file" class="d-none" id="edit_far_file" name="far_file" accept=".pdf,.doc,.docx,.xls,.xlsx">
+                            </div>
+                            <div class="file-list" id="editFarFileList"></div>
+                        </div>
+
+                        <!-- Additional Documents (Multiple Files) -->
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Update Additional Documents (Optional)</label>
+                            <div class="file-upload-area" id="editDocUploadArea">
+                                <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                <p class="mb-2">Drag & drop additional documents or click to browse</p>
+                                <p class="text-muted small">Leave empty to keep current files. New files will be added to existing ones.</p>
+                                <input type="file" class="d-none" id="edit_documents" name="documents" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png">
+                            </div>
+                            <div class="file-list" id="editDocFileList"></div>
+                        </div>
+
+                        <!-- Delete existing files options -->
+                        <div class="col-12" id="deleteFilesSection">
+                            <label class="form-label fw-bold text-danger">Delete Existing Files</label>
+                            <div class="form-check mb-2" id="deleteFarCheckbox">
+                                <input class="form-check-input" type="checkbox" id="delete_far_file" name="delete_far_file">
+                                <label class="form-check-label" for="delete_far_file">
+                                    Delete current FAR document
+                                </label>
+                            </div>
+                            <div class="form-check" id="deleteAdditionalCheckbox">
+                                <input class="form-check-input" type="checkbox" id="delete_additional_files" name="delete_additional_files">
+                                <label class="form-check-label" for="delete_additional_files">
+                                    Delete all additional documents
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="deleteFixedAssetBtn">Delete Record</button>
+                    <button type="submit" class="btn btn-primary" id="updateFixedAssetBtn">
+                        <span id="updateBtnText">Update Record</span>
+                        <div id="updateBtnSpinner" class="spinner-border spinner-border-sm d-none ms-2" role="status"></div>
                     </button>
                 </div>
             </form>
@@ -520,11 +683,15 @@ $(document).ready(function () {
 
     function addFileItem(file, fileList, inputName) {
         const fileItem = $('<div>').addClass('file-item');
-        const fileInfo = $('<div>').html(`
-            <i class="fas fa-file me-2"></i>
-            <span>${file.name}</span>
-            <small class="text-muted ms-2">(${(file.size / 1024 / 1024).toFixed(2)} MB)</small>
-        `);
+        
+        const fileInfo = $('<div>');
+        $('<i>').addClass('fas fa-file me-2').appendTo(fileInfo);
+        $('<span>').text(file.name).appendTo(fileInfo);
+        
+        // Calculate size in MB and format with 2 decimal places
+        const sizeInMB = file.size / 1024 / 1024;
+        $('<small>').addClass('text-muted ms-2').text('(' + sizeInMB.toFixed(2) + ' MB)').appendTo(fileInfo);
+        
         const removeBtn = $('<i>').addClass('fas fa-times remove-file');
 
         removeBtn.on('click', function() {
@@ -688,6 +855,289 @@ $(document).ready(function () {
         $(this).removeClass('is-invalid');
     });
 });
+
+//Edit button click handler
+$(document).on('click', '.btn-edit', function() {
+    const assetId = $(this).data('id');
+    loadFixedAssetData(assetId);
+});
+
+// Function to load asset data for editing
+function loadFixedAssetData(assetId) {
+    // Show loading
+    $('#updateBtnText').text('Loading...');
+    $('#updateFixedAssetBtn').prop('disabled', true);
+    
+    $.ajax({
+        url: '<%=request.getContextPath()%>/far/get/' + assetId,
+        type: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                const asset = response.data;
+                
+                // Populate form fields
+                $('#edit_id').val(asset.id);
+                $('#edit_entity_code').val(asset.entity_code || '');
+                $('#edit_entity_name').val(asset.entity_name || '');
+                $('#edit_profit_center_code').val(asset.profit_center_code || '');
+                $('#edit_profit_center_name').val(asset.profit_center_name || '');
+                $('#edit_sbu_code').val(asset.sbu || '');
+                $('#edit_plant_code').val(asset.plant_code || '');
+                $('#edit_plant_name').val(asset.plant_name || '');
+                $('#edit_gross_book_value').val(asset.gross_book_value || 0);
+                $('#edit_asset_verification').val(asset.asset_verification || '');
+                $('#edit_quantity_far_ho').val(asset.quantity || 0);
+                $('#edit_reported_value_pv').val(asset.reported_value || 0);
+                $('#edit_quantity_pv').val(asset.quantity_pv || 0);
+                $('#edit_value_variance').val(asset.value_variance || 0);
+                $('#edit_qty_variance').val(asset.qty_variance || 0);
+                $('#edit_remarks').val(asset.remarks || '');
+                
+                // Display current files
+                displayCurrentFiles(asset);
+                
+                // Reset file inputs
+                $('#editFarFileList, #editDocFileList').empty();
+                $('#edit_far_file').val('');
+                $('#edit_documents').val('');
+                $('#delete_far_file').prop('checked', false);
+                $('#delete_additional_files').prop('checked', false);
+                
+                // Calculate and update variances when values change
+                $('#edit_gross_book_value, #edit_reported_value_pv, #edit_quantity_far_ho, #edit_quantity_pv').on('input', calculateVariances);
+                
+                // Show modal
+                $('#editFixedAssetModal').modal('show');
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: response.message || 'Failed to load asset data'
+                });
+            }
+            $('#updateBtnText').text('Update Record');
+            $('#updateFixedAssetBtn').prop('disabled', false);
+        },
+        error: function() {
+            Swal.fire({
+                icon: 'error',
+                title: 'Server Error',
+                text: 'Failed to load asset data from server'
+            });
+            $('#updateBtnText').text('Update Record');
+            $('#updateFixedAssetBtn').prop('disabled', false);
+        }
+    });
+}
+
+// Function to display current files
+function displayCurrentFiles(asset) {
+    const currentFarFile = $('#currentFarFile');
+    const currentAdditionalFiles = $('#currentAdditionalFiles');
+    const deleteFarCheckbox = $('#deleteFarCheckbox');
+    const deleteAdditionalCheckbox = $('#deleteAdditionalCheckbox');
+    
+    // Clear previous content
+    currentFarFile.empty();
+    currentAdditionalFiles.empty();
+    
+    // Display FAR file if exists
+    if (asset.far_file_url && asset.far_file_url !== '-') {
+        currentFarFile.html(`
+            <a href="${asset.far_file_url}" target="_blank" class="badge bg-primary text-white mb-1">
+                <i class="fas fa-download me-1"></i>${asset.far_file_name || 'Download FAR'}
+            </a>
+        `);
+        deleteFarCheckbox.show();
+    } else {
+        currentFarFile.html('<span class="text-muted">No FAR file uploaded</span>');
+        deleteFarCheckbox.hide();
+    }
+    
+    // Display additional files if exist
+    if (asset.additional_files && asset.additional_files.length > 0) {
+        asset.additional_files.forEach((file, index) => {
+            currentAdditionalFiles.append(`
+                <a href="${file.url}" target="_blank" class="badge bg-secondary text-white me-1 mb-1">
+                    <i class="fas fa-download me-1"></i>${file.name}
+                </a>
+            `);
+        });
+        deleteAdditionalCheckbox.show();
+    } else {
+        currentAdditionalFiles.html('<span class="text-muted">No additional files uploaded</span>');
+        deleteAdditionalCheckbox.hide();
+    }
+}
+
+// Calculate variances for edit form
+function calculateVariances() {
+    const grossBookValue = parseFloat($('#edit_gross_book_value').val()) || 0;
+    const reportedValue = parseFloat($('#edit_reported_value_pv').val()) || 0;
+    const quantityFarHO = parseInt($('#edit_quantity_far_ho').val()) || 0;
+    const quantityPV = parseInt($('#edit_quantity_pv').val()) || 0;
+    
+    const valueVariance = grossBookValue - reportedValue;
+    const qtyVariance = quantityFarHO - quantityPV;
+    
+    $('#edit_value_variance').val(valueVariance.toFixed(2));
+    $('#edit_qty_variance').val(qtyVariance);
+}
+
+// Initialize edit file upload areas
+setupFileUpload('editFarUploadArea', 'edit_far_file', 'editFarFileList');
+setupFileUpload('editDocUploadArea', 'edit_documents', 'editDocFileList');
+
+// Edit form submission
+$('#editFixedAssetForm').on('submit', function(e) {
+    e.preventDefault();
+    
+    const requiredFields = ['edit_entity_code', 'edit_entity_name', 'edit_profit_center_code', 
+                           'edit_profit_center_name', 'edit_plant_code', 'edit_plant_name', 
+                           'edit_gross_book_value', 'edit_asset_verification', 'edit_quantity_far_ho', 
+                           'edit_reported_value_pv', 'edit_quantity_pv'];
+    
+    let isValid = true;
+    requiredFields.forEach(field => {
+        const value = $(`#${field}`).val();
+        if (!value || value.trim() === '') {
+            $(`#${field}`).addClass('is-invalid');
+            isValid = false;
+        } else {
+            $(`#${field}`).removeClass('is-invalid');
+        }
+    });
+    
+    if (!isValid) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: 'Please fill in all required fields marked with *'
+        });
+        return;
+    }
+    
+    // Calculate variances
+    calculateVariances();
+    
+    $('#updateBtnText').text('Updating...');
+    $('#updateBtnSpinner').removeClass('d-none');
+    $('#updateFixedAssetBtn').prop('disabled', true);
+    
+    const formData = new FormData(this);
+    
+    // Add variance values to form data
+    formData.append('value_variance', $('#edit_value_variance').val());
+    formData.append('qty_variance', $('#edit_qty_variance').val());
+    
+    $.ajax({
+        url: '<%=request.getContextPath()%>/far/update',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            $('#updateBtnText').text('Update Record');
+            $('#updateBtnSpinner').addClass('d-none');
+            $('#updateFixedAssetBtn').prop('disabled', false);
+            
+            if (response.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Fixed Asset record updated successfully',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    $('#editFixedAssetModal').modal('hide');
+                    location.reload();
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: response.message || 'Failed to update record'
+                });
+            }
+        },
+        error: function() {
+            $('#updateBtnText').text('Update Record');
+            $('#updateBtnSpinner').addClass('d-none');
+            $('#updateFixedAssetBtn').prop('disabled', false);
+            Swal.fire({
+                icon: 'error',
+                title: 'Server Error',
+                text: 'An error occurred while updating the record.'
+            });
+        }
+    });
+});
+
+// Delete record button
+$('#deleteFixedAssetBtn').on('click', function() {
+    const assetId = $('#edit_id').val();
+    
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "This will permanently delete the fixed asset record!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '<%=request.getContextPath()%>/far/delete/' + assetId,
+                type: 'DELETE',
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted!',
+                            text: 'Fixed Asset record has been deleted.',
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            $('#editFixedAssetModal').modal('hide');
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: response.message || 'Failed to delete record'
+                        });
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Server Error',
+                        text: 'An error occurred while deleting the record.'
+                    });
+                }
+            });
+        }
+    });
+});
+
+// Reset edit form when modal is closed
+$('#editFixedAssetModal').on('hidden.bs.modal', function () {
+    $('#editFixedAssetForm')[0].reset();
+    $('#editFarFileList, #editDocFileList').empty();
+    $('#currentFarFile, #currentAdditionalFiles').empty();
+    $('.is-invalid').removeClass('is-invalid');
+    $('#updateBtnText').text('Update Record');
+    $('#updateBtnSpinner').addClass('d-none');
+    $('#updateFixedAssetBtn').prop('disabled', false);
+});
+
+
+
+
 </script>
 </body>
 </html>
