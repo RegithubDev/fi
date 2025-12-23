@@ -1,13 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@page import="com.resustainability.reisp.constants.CommonConstants"%>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>far Contributions Dashboard</title>
+    <title>Fixed Asset Summary Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <!-- CSS Libraries -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
@@ -16,7 +16,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -42,7 +41,6 @@
             min-height: 100vh;
         }
 
-        /* Card & Layout */
         .card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -55,7 +53,6 @@
             transform: translateY(-3px);
         }
 
-        /* Header */
         .header-bar {
             background: var(--primary-gov-blue);
             color: #ffffff;
@@ -75,12 +72,6 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        /* Buttons */
-        .btn {
-            border-radius: 6px;
-            font-weight: 500;
-            transition: all 0.2s ease-in-out;
-        }
         .btn-primary {
             background-color: var(--secondary-gov-blue);
             border-color: var(--secondary-gov-blue);
@@ -91,52 +82,16 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
-        .appeal-btn {
-            background-color: var(--danger-color);
-            border-color: var(--danger-color);
-            color: white;
-        }
-        .appeal-btn:hover {
-            background-color: #b02a37;
-            border-color: #b02a37;
-        }
-        .back-btn {
-            background-color: transparent;
-            border: 1px solid var(--text-muted-color);
-            color: var(--text-muted-color);
-        }
-        .back-btn:hover {
-            background-color: var(--text-muted-color);
-            color: white;
-        }
-        .logout-btn {
-            background-color: transparent;
-            border: 1px solid var(--danger-color);
-            color: var(--danger-color);
-        }
-        .logout-btn:hover {
-            background-color: var(--danger-color);
-            color: white;
-        }
-        
-        /* DataTable Styling */
-        #farTable thead th {
+
+        #fixedAssetTable thead th {
             background-color: var(--primary-gov-blue) !important;
             color: #ffffff !important;
             font-weight: 500;
         }
-        #farTable tbody tr:hover {
-            background-color: #e3f2fd !important; /* Light blue hover */
-        }
-        .dataTables_wrapper .form-control, .dataTables_wrapper .form-select {
-            border-radius: 6px;
-        }
-        .dataTables_paginate .page-item.active .page-link {
-            background-color: var(--primary-gov-blue);
-            border-color: var(--primary-gov-blue);
+        #fixedAssetTable tbody tr:hover {
+            background-color: #e3f2fd !important;
         }
 
-        /* Status Badge */
         .status-badge {
             display: inline-flex;
             align-items: center;
@@ -148,139 +103,97 @@
             letter-spacing: 0.5px;
             color: white;
         }
-        .status-badge.active {
-            background-color: var(--success-color);
-        }
-        .status-badge.inactive {
-            background-color: var(--text-muted-color);
-        }
-        .status-badge .status-text::before {
-            content: "";
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-right: 6px;
-            background: white;
-        }
+        .status-badge.active { background-color: var(--success-color); }
+        .status-badge.inactive { background-color: var(--text-muted-color); }
 
-        /* Strict Alert Box */
-        .strict-alert {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #fff3f3;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-            border-left: 5px solid var(--danger-color);
-            border-radius: 8px;
-            padding: 1rem;
-            z-index: 1060; /* Higher than modals */
-            max-width: 400px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-            animation: slideInRight 0.3s ease-out;
-        }
-        .strict-alert-header h5 {
-            margin: 0;
-            color: #721c24;
-            font-weight: 700;
-        }
-        .strict-alert-close {
-            background: none; border: none; font-size: 24px;
-            color: #721c24; cursor: pointer; opacity: 0.7;
-        }
-        .strict-alert-close:hover { opacity: 1; }
-        @keyframes slideInRight {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        /* Select2 & Modals */
-        .select2-container--bootstrap-5 .select2-selection {
-            border-radius: 6px;
-        }
-        .select2-container--bootstrap-5 .select2-dropdown {
-            border-radius: 6px;
-        }
-        .select2-results__option--highlighted {
-            background-color: var(--primary-gov-blue) !important;
-        }
-        .modal-content {
-            border-radius: 8px;
-            border: none;
-        }
         .modal-header {
             background-color: var(--primary-gov-blue);
             color: white;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
         }
-        .modal-body h5 {
-            color: var(--primary-gov-blue);
-            font-weight: 700;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 0.5rem;
-            margin-bottom: 1rem;
+
+        .file-upload-area {
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
-        .swal2-popup {
-            border-radius: 8px !important;
+        .file-upload-area:hover {
+            border-color: var(--primary-gov-blue);
+            background-color: #f8f9fa;
         }
-        .swal2-confirm {
-            background-color: var(--primary-gov-blue) !important;
+        .file-upload-area.dragover {
+            border-color: var(--primary-gov-blue);
+            background-color: #e3f2fd;
+        }
+        .file-list {
+            margin-top: 10px;
+        }
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            margin-bottom: 5px;
+        }
+        .file-item .remove-file {
+            color: #dc3545;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
 
 <div class="container-fluid py-4">
-<div class="d-flex justify-content-between align-items-center m-2">
-  <div>
-    <a href="<%=request.getContextPath()%>/fi-d26827851841284wjvwunfuqwhfbwqr7212hfu" 
-       class="btn back-btn">
-        <i class="fas fa-arrow-left me-2"></i>Back
-    </a>
-  </div>
-  <div>
-    <a href="<%=request.getContextPath()%>/logout" 
-       class="btn logout-btn">
-        <i class="fas fa-sign-out-alt me-2"></i>Logout
-    </a>
-  </div>
-</div>
+    <div class="d-flex justify-content-between align-items-center m-2">
+        <div>
+            <a href="<%=request.getContextPath()%>/fi-d26827851841284wjvwunfuqwhfbwqr7212hfu" class="btn back-btn">
+                <i class="fas fa-arrow-left me-2"></i>Back
+            </a>
+        </div>
+        <div>
+            <a href="<%=request.getContextPath()%>/logout" class="btn logout-btn">
+                <i class="fas fa-sign-out-alt me-2"></i>Logout
+            </a>
+        </div>
+    </div>
 
     <!-- Header -->
     <div class="row mb-4">
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center p-3 header-bar">
-                <h2 class="mb-0"><i class="fas fa-umbrella-beach me-3"></i>far Contributions Dashboard</h2>
-                <button class="btn" data-bs-toggle="modal" data-bs-target="#farModal">
-                    <i class="fas fa-plus me-2"></i>Add Contribution
+                <h2 class="mb-0"><i class="fas fa-building me-3"></i>Fixed Asset Summary Dashboard</h2>
+                <!-- Fixed: Uses Bootstrap native modal trigger -->
+                <button class="btn" data-bs-toggle="modal" data-bs-target="#addFixedAssetModal">
+                    <i class="fas fa-plus me-2"></i>Add Fixed Asset Record
                 </button>
             </div>
         </div>
     </div>
 
-		
     <!-- Filter Section -->
     <div class="row mb-4">
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title mb-3 fw-bold" style="color: var(--primary-gov-blue);"><i class="fas fa-filter me-2"></i>Filter Contributions</h5>
+                    <h5 class="card-title mb-3 fw-bold" style="color: var(--primary-gov-blue);"><i class="fas fa-filter me-2"></i>Filter Records</h5>
                     <div class="row g-3 align-items-end">
                         <div class="col-md-4">
                             <label for="profitCenterFilter" class="form-label fw-bold">Profit Center</label>
-                            <select class="form-select select2" id="profitCenterFilter" data-placeholder="Select a Profit Center">
+                            <select class="form-select select2" id="profitCenterFilter" data-placeholder="Select Profit Center">
                                 <option value=""></option>
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <label for="monthYearFilter" class="form-label fw-bold">Month-Year</label>
-                            <select class="form-select select2" id="monthYearFilter" data-placeholder="Select a Period">
+                            <label for="monthYearFilter" class="form-label fw-bold">Period (Month-Year)</label>
+                            <select class="form-select select2" id="monthYearFilter" data-placeholder="Select Period">
                                 <option value=""></option>
                             </select>
                         </div>
-                        <div class="col-md-3 d-flex align-items-end"> 
+                        <div class="col-md-3 d-flex align-items-end">
                             <button class="btn btn-outline-secondary me-2" type="button" id="clearFilters">
                                 <i class="fas fa-times me-2"></i>Clear
                             </button>
@@ -296,145 +209,89 @@
     <div class="row">
         <div class="col-12">
             <div class="table-responsive card p-3">
-                <table id="farTable" class="table table-hover align-middle" style="width:100%;">
+                <table id="fixedAssetTable" class="table table-hover align-middle" style="width:100%;">
                     <thead>
                         <tr>
-                            <th><i class="fas fa-briefcase me-2"></i>Profit Center</th>
-                            <th><i class="fas fa-calendar-alt me-2"></i>Period</th>
-                            <th class="text-end"><i class="fas fa-user-tie me-2"></i>Employee</th>
-                            <th class="text-end"><i class="fas fa-hand-holding-usd me-2"></i>Vfar</th>
-                            <th class="text-end"><i class="fas fa-building me-2"></i>Employer</th>
-                            <th class="text-end"><i class="fas fa-cog me-2"></i>far Admin</th>
-                            <th class="text-end"><i class="fas fa-shield-alt me-2"></i>EDLI</th>
-                            <th class="text-end"><i class="fas fa-calculator me-2"></i>Total</th>
-                            <th class="text-end"><i class="fas fa-money-bill-wave me-2"></i>Paid</th>
-                            <th class="text-end"><i class="fas fa-balance-scale me-2"></i>Balance</th>
-                            <th><i class="fas fa-clock me-2"></i>Due Date</th>
-                            <th><i class="fas fa-check-circle me-2"></i>Paid Date</th>
-                            <th><i class="fas fa-hourglass-half me-2"></i>Days Diff</th>
-                            <th><i class="fas fa-file-invoice me-2"></i>Challan No</th>
-                               <th><i class="fas fa-file-invoice me-2"></i>Remarks</th>
-                             <c:choose>
-                              <c:when test="${sessionScope.ROLE eq 'Admin' or sessionScope.ROLE eq 'SA'}">
-                               <th><i class="fas fa-paperclip me-2"></i>Attachment</th>
-                               <th><i class="fas fa-file-invoice me-2"></i>Status</th>
- 							   <th class="text-center"><i class="fas fa-cogs me-2"></i>Action</th>
-                              </c:when>
-                              <c:otherwise>
-                               <th><i class="fas fa-file-invoice me-2"></i>Attachment</th>
-                                 	 <th><i class="fas fa-file-invoice me-2"></i>Status</th>
-                                    <th><i class="fas fa-gavel me-2"></i>Action</th>
-                              </c:otherwise>
-                             </c:choose>
-                           
+                            <th>Entity Code</th>
+                            <th>Entity Name</th>
+                            <th>Profit Center Code</th>
+                            <th>Profit Center Name</th>
+                            <th>SBU Code</th>
+                            <th>Plant Code</th>
+                            <th>Plant Name</th>
+                            <th class="text-end">Gross Book Value (Current period)</th>
+                            <th class="text-end">FAR sent by HO</th>
+                            <th class="text-end">Asset Verification</th>
+                            <th class="text-end">Quantity as mentioned in FAR sent by HO for PV</th>
+                            <th class="text-end">Reported Value/As per plant verification</th>
+                            <th class="text-end">Quantity as per PV</th>
+                            <th class="text-end">Value Variance (If Any)</th>
+                            <th class="text-end">Qty Variance (If Any)</th>
+                            <th>Remarks</th>
+                            <th>Document upload Option</th>
+                            <c:if test="${sessionScope.ROLE eq 'Admin' or sessionScope.ROLE eq 'SA'}">
+                                <th class="text-center">Actions</th>
+                            </c:if>
                         </tr>
                     </thead>
                     <tbody>
-                        <c:forEach items="${farList}" var="far" varStatus="index">
-                            <tr class="table-row">
-                                <td data-label="Profit Center">
-                                    <div class="fw-bold">${far.profit_center_code}</div>
-                                    <div class="small" style="color: var(--text-muted-color) !important;">${far.profit_center_name}</div>
+                        <c:forEach items="${fixedAssetList}" var="asset" varStatus="index">
+                            <tr>
+                                <td>${asset.entity_code}</td>
+                                <td>${asset.entity_name}</td>
+                                <td>
+                                    <div class="fw-bold">${asset.profit_center_code}</div>
+                                    <div class="small text-muted">${asset.profit_center_name}</div>
                                 </td>
-                                <td data-label="Period" class="fw-bold">${far.month_year}</td>
-                                <td data-label="Employee" class="text-end">₹${far.employee_contribution}</td>
-                                <td data-label="Vfar" class="text-end">₹${far.vfar}</td>
-                                <td data-label="Employer" class="text-end">₹${far.employer_contribution}</td>
-                                <td data-label="far Admin" class="text-end">₹${far.far_admin}</td>
-                                <td data-label="EDLI" class="text-end">₹${far.far_edli}</td>
-                                <td data-label="Total" class="text-end fw-bold">₹${far.employee_contribution + far.vfar + far.employer_contribution + far.far_admin + far.far_edli}</td>
-                                <td data-label="Paid" class="text-end text-success">₹${far.amount_paid}</td>
-                                <td data-label="Balance" class="text-end text-danger">₹${(far.employee_contribution + far.vfar + far.employer_contribution + far.far_admin + far.far_edli) - far.amount_paid}</td>
-                                <td data-label="Due Date">${far.due_date}</td>
-                                <td data-label="Paid Date">${not empty far.actual_payment_date ? far.actual_payment_date : '-'}</td>
-                                <td data-label="Days Diff">
+                                <td>${asset.profit_center_name}</td>
+                                <td>${asset.sbu_code}</td>
+                                <td>${asset.plant_code}</td>
+                                <td>${asset.plant_name}</td>
+                                <td class="text-end">₹<fmt:formatNumber value="${asset.gross_book_value}" pattern="#,##0.00"/></td>
+                                <td class="text-end">
                                     <c:choose>
-                                        <c:when test="${not empty far.actual_payment_date && far.delay_days > 0}">
-                                            <span class="badge bg-danger">${far.delay_days} days</span>
+                                        <c:when test="${not empty asset.far_sent_by_ho}">
+                                            <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>far/${asset.far_sent_by_ho}" target="_blank" class="text-primary">
+                                                <i class="fas fa-file-download me-1"></i>View FAR
+                                            </a>
                                         </c:when>
-                                        <c:when test="${not empty far.actual_payment_date}">
-                                            <span class="badge bg-success">${far.delay_days} days</span>
-                                        </c:when>
-                                        <c:otherwise>
-                                        
-                                        </c:otherwise>
+                                        <c:otherwise><span class="text-muted">-</span></c:otherwise>
                                     </c:choose>
                                 </td>
-                                <td data-label="Challan No">${far.challan_no}</td>
-                                  <td>${far.remarks}</td>
-                                 <c:choose>
-                                  <c:when test="${sessionScope.ROLE eq 'Admin' or sessionScope.ROLE eq 'SA'}">
-                                    
-                                      
-                                      <td data-label=upload_file>
-                                       <c:choose>
-                                       <c:when test="${not empty far.upload_file}">
-											    <c:forEach var="file" items="${fn:split(far.upload_file, ',')}">
-											      <span class="badge badge-light-dark"> 
-            <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>far/${file}"
-               target="_blank" class="text-primary">
-                <i class="fas fa-file-download me-1"></i>${file}
-            </a></span>
-            </c:forEach>
-        </c:when>
-        <c:otherwise>
-            <span class="text-muted"><i class="fas fa-ban me-1"></i>No File</span>
-        </c:otherwise>
-    </c:choose>
-</td>
-
-  <td data-label="Status">
-                                          <span class="status-badge ${far.status == 'Active' ? 'active' : 'inactive'}">
-                                            <span class="status-text">${far.status}</span>
-                                          </span>
-                                      </td>
-                                      
-                                      <td class="text-center" data-label="Actions">
-                                        <div class="d-flex justify-content-center">
-                                            <button class="btn btn-sm btn-outline-primary me-1 btn-action" data-bs-toggle="modal" data-bs-target="#farModal_${index.count }">
-                                                 <i class="fas fa-edit"></i>
-                                            </button>
-                                        </div>
-                                      </td>
-                                  </c:when>
-                                  
-								  <c:otherwise>
-								      <td data-label="Due Date">
-								  
-								   <c:choose>
-                                       <c:when test="${not empty far.upload_file}">
-											    <c:forEach var="file" items="${fn:split(far.upload_file, ',')}">
-											        <span class="badge badge-light-dark"> 
-											    <i class="fa-solid fa-download"></i> <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>far/${file}" 
-											           class="filevalue" 
-											           target="_blank">
-											           ${file}
-											        </a></span><br/>
-											    </c:forEach>
-											
+                                <td class="text-end">${asset.asset_verification}</td>
+                                <td class="text-end">${asset.quantity_far_ho}</td>
+                                <td class="text-end">₹<fmt:formatNumber value="${asset.reported_value_pv}" pattern="#,##0.00"/></td>
+                                <td class="text-end">${asset.quantity_pv}</td>
+                                <td class="text-end text-danger">
+                                    <c:if test="${asset.value_variance != 0}">
+                                        ₹<fmt:formatNumber value="${asset.value_variance}" pattern="#,##0.00"/>
+                                    </c:if>
+                                </td>
+                                <td class="text-end text-danger">
+                                    <c:if test="${asset.qty_variance != 0}">
+                                        ${asset.qty_variance}
+                                    </c:if>
+                                </td>
+                                <td>${asset.remarks}</td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${not empty asset.document_upload}">
+                                            <c:forEach var="file" items="${fn:split(asset.document_upload, ',')}">
+                                                <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>far/${file}" target="_blank" class="badge bg-primary text-white d-block mb-1">
+                                                    <i class="fas fa-download me-1"></i>${file}
+                                                </a>
+                                            </c:forEach>
                                         </c:when>
-                                       
-                                        <c:otherwise>
-                                        <i data-feather='slash'>No File</i>
-                                        </c:otherwise>
+                                        <c:otherwise><span class="text-muted">No file</span></c:otherwise>
                                     </c:choose>
-                                    
-									</td>
-									<td>
-                                            <span class="status-badge ${far.status == 'Active' ? 'active' : 'inactive'}">
-                                                <span class="status-text">${far.status}</span>
-                                            </span>
-                                        </td>
-								
-								   <td data-label="Days Diff">
-								    <button class="btn btn-sm appeal-btn" 
-								            data-record-id="${far.month_year}" 
-								             data-record-id1="${far.profit_center_name}" 
-								            data-url="<%=request.getContextPath()%>/appealRecord">
-								        <i class="fas fa-gavel me-1"></i> Appeal for change
-								    </button>
-								</td></c:otherwise>
-                                 </c:choose>
+                                </td>
+                                <c:if test="${sessionScope.ROLE eq 'Admin' or sessionScope.ROLE eq 'SA'}">
+                                    <td class="text-center">
+                                        <button class="btn btn-sm btn-outline-primary me-1 btn-edit" data-id="${asset.id}">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </td>
+                                </c:if>
                             </tr>
                         </c:forEach>
                     </tbody>
@@ -444,275 +301,111 @@
     </div>
 </div>
 
-<!-- Edit Modals -->
-<c:forEach items="${farList}" var="far" varStatus="index">
-  <div class="modal fade" id="farModal_${index.count}" tabindex="-1" aria-labelledby="farModalLabel_${index.count}" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-      <div class="modal-content">
-            <form id="farForm_${index.count }" action="<%=request.getContextPath() %>/update-far" method="post" enctype="multipart/form-data">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="farModalLabel_${index.count}">Update Contribution</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <input type="hidden" name="id" value="${far.id}" />
-                  
-                  <!-- Non-Editable Info -->
-                  <div class="row mb-4"> 
-                      <c:choose>
-                          <c:when test="${sessionScope.ROLE eq 'Admin' or sessionScope.ROLE eq 'SA'}">
-                              <div class="col-md-6">
-                                  <label class="form-label fw-bold">Profit Center</label>
-                                  <select class="form-select select2" name="profit_center_code" id="profitCenterSelect_${index.count}" required>
-                                      <option value="">-- Search Profit Center --</option>
-                                      <c:forEach items="${profitCenterList}" var="pc">
-                                          <option value="${pc.profit_center_code}" ${pc.profit_center_code == far.profit_center_code ? 'selected' : ''}>${pc.profit_center_code} - ${pc.profit_center_name}</option>
-                                      </c:forEach>
-                                  </select>
-                              </div>
-                          </c:when>
-                          <c:when test="${sessionScope.ROLE eq 'Management'}">
-                              <div class="col-md-6">
-                                  <label class="form-label fw-bold">Profit Center</label>
-                                  <select class="form-select select2" name="profit_center_code" id="profitCenterSelect_${index.count}" required>
-                                      <option value="">-- Search Profit Center --</option>
-                                      <c:set var="pcList" value="${fn:split(sessionScope.PC, ',')}" />
-                                      <c:forEach items="${profitCenterList}" var="pc">
-                                          <c:forEach var="allowedPC" items="${pcList}">
-                                              <c:if test="${pc.profit_center_code == fn:trim(allowedPC)}">
-                                                  <option value="${pc.profit_center_code}" ${pc.profit_center_code == far.profit_center_code ? 'selected' : ''}>${pc.profit_center_code} - ${pc.profit_center_name}</option>
-                                              </c:if>
-                                          </c:forEach>
-                                      </c:forEach>
-                                  </select>
-                              </div>
-                          </c:when>
-                          <c:otherwise>
-                              <div class="col-md-6">
-                                  <label class="form-label fw-bold">Profit Center</label>
-                                  <p class="form-control-plaintext bg-light p-2 rounded">${far.profit_center_code} - ${far.profit_center_name}</p>
-                                  <input type="hidden" name="profit_center_code" value="${far.profit_center_code}" />
-                              </div>
-                          </c:otherwise>
-                      </c:choose>
-                      <div class="col-md-6">
-                          <label class="form-label fw-bold">Month-Year</label>
-                          <p class="form-control-plaintext bg-light p-2 rounded">${far.month_year}</p>
-                          <input type="hidden" name="month_year" value="${far.month_year}" />
-                      </div>
-                  </div>
-
-                  <!-- Contribution Details -->
-                  <h5><i class="fas fa-calculator me-2"></i>Contribution Details</h5>
-                  <div class="row mb-3 g-3">
-                      <div class="col-md-4 col-lg-2">
-                          <label class="form-label">Employee (₹)</label>
-                          <input type="number" step="0.01" min="0" id="employee_contribution_edit_${index.count}" name="employee_contributions" class="form-control" value="${far.employee_contribution}" oninput="calculateTotal_edit_far(${index.count})" required />
-                      </div>
-                      <div class="col-md-4 col-lg-2">
-                          <label class="form-label">Vfar (₹)</label>
-                          <input type="number" step="0.01" min="0" id="vfar_edit_${index.count}" name="vfars" class="form-control" value="${far.vfar}" oninput="calculateTotal_edit_far(${index.count})" required />
-                      </div>
-                      <div class="col-md-4 col-lg-2">
-                          <label class="form-label">Employer (₹)</label>
-                          <input type="number" step="0.01" min="0" id="employer_contribution_edit_${index.count}" name="employer_contributions" class="form-control" value="${far.employer_contribution}" oninput="calculateTotal_edit_far(${index.count})" required />
-                      </div>
-                      <div class="col-md-4 col-lg-2">
-                          <label class="form-label">far Admin (₹)</label>
-                          <input type="number" step="0.01" min="0" id="far_admin_edit_${index.count}" name="far_admins" class="form-control" value="${far.far_admin}" oninput="calculateTotal_edit_far(${index.count})" required />
-                      </div>
-                      <div class="col-md-4 col-lg-2">
-                          <label class="form-label">far EDLI (₹)</label>
-                          <input type="number" step="0.01" min="0" id="far_edli_edit_${index.count}" name="far_edlis" class="form-control" value="${far.far_edli}" oninput="calculateTotal_edit_far(${index.count})" required />
-                      </div>
-                      <div class="col-md-4 col-lg-2">
-                          <label class="form-label fw-bold">Total (₹)</label>
-                          <input type="number" id="total_amount_edit_${index.count}" name="total_amounts" value="${far.total_amount}" class="form-control bg-light" readonly required />
-                      </div>
-                  </div>
-
-                  <!-- Payment Details -->
-                  <h5 class="mt-4"><i class="fas fa-money-check-alt me-2"></i>Payment Details</h5>
-                  <div class="row mb-3 g-3">
-                      <div class="col-md-4">
-                          <label class="form-label">Amount Paid (₹)</label>
-                          <input type="number" step="0.01" min="0" id="amount_paid_edit_${index.count}" name="amount_paids" class="form-control" value="${far.amount_paid}" oninput="calculateDifference_edit_far(${index.count})" required />
-                      </div>
-                      <div class="col-md-4">
-                          <label class="form-label fw-bold">Balance (₹)</label>
-                          <input type="number" id="difference_edit_${index.count}" name="differences" value="${far.difference}" class="form-control bg-light" readonly required />
-                      </div>
-                      <div class="col-md-4">
-                          <label class="form-label">Challan Number</label>
-                          <input type="text" id="challan_no_edit_${index.count}" name="challan_nos" class="form-control" value="${far.challan_no}" placeholder="Enter challan number" />
-                      </div>
-                      <div class="col-md-3">
-                          <label class="form-label">Due Date</label>
-                          <input type="date" id="due_date_edit_${index.count}" name="due_dates" class="form-control" value="${far.due_date}" required />
-                      </div>
-                      <div class="col-md-3">
-                          <label class="form-label">Actual Payment Date</label>
-                          <input type="date" id="actual_payment_date_edit_${index.count}" name="actual_payment_dates" class="form-control actual-payment-date-input" value="${far.actual_payment_date}" onchange="calculateDelayDays_edit_far(${index.count})" required />
-                      </div>
-                      <div class="col-md-3">
-                          <label class="form-label">Delay in Days</label>
-                          <input type="number" id="delay_days_edit_${index.count}" name="delay_days" class="form-control bg-light" value="${far.delay_days}" readonly required />
-                      </div>
-                      <div class="col-md-3">
-                          <label class="form-label">Employee Count</label>
-                          <input type="number" min="0" id="no_of_emp_edit_${index.count}" name="no_of_emps" class="form-control" value="${far.no_of_emp}" placeholder="e.g., 17" />
-                      </div>
-                      <div class="col-md-3">
-                          <label class="form-label fw-bold">Status</label>
-                          <select name="status" class="form-select">
-                              <option value="Active" ${far.status == 'Active' ? 'selected' : ''}>Active</option>
-                              <option value="Inactive" ${far.status == 'Inactive' ? 'selected' : ''}>Inactive</option>
-                          </select>
-                      </div>
-                  </div>
-                  <h5 class="mt-4"><i class="fas fa-file-alt me-2"></i>Additional Details</h5>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Remarks</label>
-                                <textarea class="form-control" name="remarks" rows="" placeholder="Enter remarks here...">${far.remarks}</textarea>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Upload File</label>
-                                <input type="file" class="form-control" id="uploadFile" name="mediaList" multiple> 
-                                   <c:choose>
-                                       <c:when test="${not empty far.upload_file}">
-
-                                           <a href="<%=CommonConstants.SAFETY_FILE_SAVING_PATH_LOC%>far/${far.upload_file }" 
-											   class="filevalue" 
-											   target="_blank">
-											   ${far.upload_file}
-											</a>
-											
-                                        </c:when>
-                                       
-                                        <c:otherwise>
-                                        </c:otherwise>
-                                    </c:choose>
-                         <input type="hidden" id="challan_no_edit1_${index.count}" name="upload_file" class="form-control" value="${far.upload_file}" />
-                            </div>
-                          
-                        </div>
-                  
-                  
-                  
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" id="submitBtn${index.count}">Update Contribution</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-</c:forEach>
-
-<!-- Add Modal -->
-<div class="modal fade" id="farModal" tabindex="-1" aria-labelledby="farModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
+<!-- Add Fixed Asset Modal -->
+<div class="modal fade" id="addFixedAssetModal" tabindex="-1" aria-labelledby="addFixedAssetModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
-            <form id="farForm" action="<%=request.getContextPath() %>/add-far" method="post" enctype="multipart/form-data">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="farModalLabel">Add New Contribution</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Core Info -->
-                    <h5><i class="fas fa-info-circle me-2"></i>Core Information</h5>
-                    <div class="row mb-3 g-3">
-                    <div class="col-md-6">
-                    <label class="form-label fw-bold">Profit Center</label>
-                      <c:choose>
-                                <c:when test="${sessionScope.ROLE eq 'Admin' or sessionScope.ROLE eq 'SA' }">
-                                    <select class="form-select select2" id="profitCenterSelect" name="profit_center_code" required>
-                                        <option value="">-- Search Profit Center --</option>
-                                        <c:forEach items="${profitCenterList}" var="pc">
-                                            <option value="${pc.profit_center_code}" sbu="${pc.sbu}">${pc.sbu} - ${pc.profit_center_code} - ${pc.profit_center_name}</option>
-                                        </c:forEach>
-                                    </select>
-                                    <p id="sbuDisplay" style="margin-top:10px; font-weight:bold; color:#333;"></p>
-									<input type="hidden" id="sbuInput" name="sbu">
-                                </c:when>
-                                <c:when test="${sessionScope.ROLE eq 'Management' }">
-                                    <select class="form-select select2" id="profitCenterSelect" name="profit_center_code" required>
-                                        <option value="">-- Search Profit Center --</option>
-                                        <c:set var="pcList" value="${fn:split(sessionScope.PC, ',')}" />
-                                        <c:forEach items="${profitCenterList}" var="pc">
-                                            <c:forEach var="allowedPC" items="${pcList}">
-                                                <c:if test="${pc.profit_center_code == fn:trim(allowedPC)}">
-                                                    <option value="${pc.profit_center_code}" sbu="${pc.sbu}">${pc.sbu} - ${pc.profit_center_code} - ${pc.profit_center_name}</option>
-                                                </c:if>
-                                            </c:forEach>
-                                        </c:forEach>
-                                    </select>
-                                                                        <p id="sbuDisplay" style="margin-top:10px; font-weight:bold; color:#333;"></p>
-									<input type="hidden" id="sbuInput" name="sbu" />
-                                
-                                </c:when>
-                                <c:otherwise>
-                                    <select class="form-select select2" id="profitCenterSelect" name="profit_center_code" required>
-                                        <option value="">-- Search Profit Center --</option>
-                                        <c:forEach items="${profitCenterList}" var="pc">
-                                            <c:if test="${pc.profit_center_code eq sessionScope.PC}">
-                                                <option value="${pc.profit_center_code}" sbu="${pc.sbu}" selected>${pc.sbu} - ${pc.profit_center_code} - ${pc.profit_center_name}</option>
-                                            </c:if>
-                                        </c:forEach>
-                                    </select>
-                                   <p id="sbuDisplay" style="margin-top:10px; font-weight:bold; color:#333;"></p>
-									<input type="hidden" id="sbuInput" name="sbu" />
-                                
-                                </c:otherwise>
-                            </c:choose>
-                            </div>
+            <div class="modal-header">
+                <h5 class="modal-title" id="addFixedAssetModalLabel">
+                    <i class="fas fa-plus me-2"></i>Add Fixed Asset Record
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+             <form id="addFixedAssetForm" action="<%=request.getContextPath() %>/far/add" method="post" enctype="multipart/form-data">
+               <div class="modal-body">
+                    <div class="row g-3">
+                        <!-- Hidden field for created_by (from session) -->
+                        <input type="hidden" name="created_by" value="${sessionScope.USER_NAME != null ? sessionScope.USER_NAME : sessionScope.USER_ID}" />
+
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Month-Year</label>
-                            <input type="month" class="form-control" name="month_year" id="monthYear" required>
+                            <label for="entity_code" class="form-label fw-bold">Entity Code <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="entity_code" name="entity_Code" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="entity_name" class="form-label fw-bold">Entity Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="entity_name" name="entity_Name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="profit_center_code" class="form-label fw-bold">Profit Center Code <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="profit_center_code" name="profit_Center_Code" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="profit_center_name" class="form-label fw-bold">Profit Center Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="profit_center_name" name="profit_Center_Name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="sbu_code" class="form-label fw-bold">SBU Code</label>
+                            <input type="text" class="form-control" id="sbu_code" name="sbu">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="plant_code" class="form-label fw-bold">Plant Code <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="plant_code" name="plant_Code" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="plant_name" class="form-label fw-bold">Plant Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="plant_name" name="plant_Name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="gross_book_value" class="form-label fw-bold">Gross Book Value (Current period) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="gross_book_value" name="gross_Book_Value" step="0.01" min="0" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="asset_verification" class="form-label fw-bold">Asset Verification <span class="text-danger">*</span></label>
+                            <select class="form-select" id="asset_verification" name="asset_verification" required>
+                                <option value="">Select Status</option>
+                                <option value="Verified">Verified</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Not Verified">Not Verified</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="quantity_far_ho" class="form-label fw-bold">Quantity (FAR sent by HO) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="quantity_far_ho" name="quantity" min="0" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="reported_value_pv" class="form-label fw-bold">Reported Value (As per plant verification) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="reported_value_pv" name="reported_Value" step="0.01" min="0" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="quantity_pv" class="form-label fw-bold">Quantity (As per PV) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="quantity_pv" name="quantity_PV" min="0" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="remarks" class="form-label fw-bold">Remarks</label>
+                            <textarea class="form-control" id="remarks" name="remarks" rows="3"></textarea>
+                        </div>
+
+                        <!-- FAR Document Upload (Single File) -->
+                        <div class="col-12">
+                            <label class="form-label fw-bold">FAR Document Upload</label>
+                            <div class="file-upload-area" id="farUploadArea">
+                                <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                <p class="mb-2">Drag & drop your FAR file here or click to browse</p>
+                                <p class="text-muted small">Supported formats: PDF, DOC, DOCX, XLS, XLSX (Max: 10MB)</p>
+                                <input type="file" class="d-none" id="far_file" name="far_file" accept=".pdf,.doc,.docx,.xls,.xlsx">
+                            </div>
+                            <div class="file-list" id="farFileList"></div>
+                        </div>
+
+                        <!-- Additional Documents (Multiple Files) -->
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Additional Documents (Optional)</label>
+                            <div class="file-upload-area" id="docUploadArea">
+                                <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                <p class="mb-2">Drag & drop additional documents or click to browse</p>
+                                <p class="text-muted small">You can upload multiple files (Max: 10MB each)</p>
+                                <input type="file" class="d-none" id="documents" name="documents" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png">
+                            </div>
+                            <div class="file-list" id="docFileList"></div>
                         </div>
                     </div>
-
-                    <!-- Contribution Details -->
-                    <h5 class="mt-4"><i class="fas fa-calculator me-2"></i>Contribution Details</h5>
-                    <div class="row mb-3 g-3">
-                         <div class="col-md-4 col-lg-2"><label class="form-label">Employee (₹)</label><input type="number" step="0.01" min="0" class="form-control" id="employee_contribution" name="employee_contribution" oninput="calculateTotal()" required></div>
-                         <div class="col-md-4 col-lg-2"><label class="form-label">Vfar (₹)</label><input type="number" step="0.01" min="0" class="form-control" id="vfar" name="vfar"  oninput="calculateTotal()" required></div>
-                         <div class="col-md-4 col-lg-2"><label class="form-label">Employer (₹)</label><input type="number" step="0.01" min="0" class="form-control" id="employer_contribution" name="employer_contribution" oninput="calculateTotal()" required></div>
-                         <div class="col-md-4 col-lg-2"><label class="form-label">far Admin (₹)</label><input type="number" step="0.01" min="0" class="form-control" id="far_admin" name="far_admin" oninput="calculateTotal()" required></div>
-                         <div class="col-md-4 col-lg-2"><label class="form-label">far EDLI (₹)</label><input type="number" step="0.01" min="0" class="form-control" id="far_edli" name="far_edli" oninput="calculateTotal()" required></div>
-                         <div class="col-md-4 col-lg-2"><label class="form-label fw-bold">Total (₹)</label><input type="number" class="form-control bg-light" id="total_amount" name="total_amount" readonly required></div>
-                    </div>
-
-                    <!-- Payment Details -->
-                    <h5 class="mt-4"><i class="fas fa-money-check-alt me-2"></i>Payment Details</h5>
-                    <div class="row mb-3 g-3">
-                         <div class="col-md-4 col-lg-3"><label class="form-label">Amount Paid (₹)</label><input type="number" step="0.01" min="0" class="form-control" id="amount_paid" name="amount_paid" oninput="calculateDifference()" required></div>
-                         <div class="col-md-4 col-lg-3"><label class="form-label fw-bold">Balance (₹)</label><input type="number" class="form-control bg-light" id="difference" name="difference" readonly required></div>
-                         <div class="col-md-4 col-lg-3"><label class="form-label">Due Date</label><input type="date" class="form-control" id="due_date" name="due_date" required></div>
-                         <div class="col-md-4 col-lg-3"><label class="form-label">Actual Payment Date</label><input type="date" class="form-control actual-payment-date-input" name="actual_payment_date" id="actual_payment_date" onchange="calculateDelayDays()" required></div>
-                         <div class="col-md-4 col-lg-3"><label class="form-label">Delay in Days</label><input type="number" class="form-control bg-light" name="delay_days" id="delay_days" readonly value="0" required></div>
-                         <div class="col-md-4 col-lg-3"><label class="form-label">Challan Number</label><input type="text" class="form-control" name="challan_no" id="challan_no" placeholder="Enter challan number" required></div>
-                         <div class="col-md-4 col-lg-3"><label class="form-label">Employee Count</label><input type="number" min="0" class="form-control" name="no_of_emp" id="no_of_emp" placeholder="e.g., 17" required></div>
-                    </div>
-                    <h5 class="mt-4"><i class="fas fa-file-alt me-2"></i>Additional Details</h5>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Remarks</label>
-                                <textarea class="form-control" name="remarks" rows="" placeholder="Enter remarks here...">${inventory.remarks}</textarea>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Upload File</label>
-                                <input type="file" class="form-control" id="uploadFile" name="mediaList" multiple> 
-                            </div>
-                          
-                        </div>
-                    
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" id="submitBtn">Save Contribution</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveFixedAssetBtn">
+                        <span id="saveBtnText">Save Record</span>
+                        <div id="saveBtnSpinner" class="spinner-border spinner-border-sm d-none ms-2" role="status"></div>
+                    </button>
                 </div>
             </form>
         </div>
@@ -728,101 +421,46 @@
 <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap5.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
 $(document).ready(function () {
-    // Set max date for actual payment date inputs to today
-    const today = new Date().toISOString().split('T')[0];
-    $('.actual-payment-date-input').attr('max', today);
-
     // Initialize Select2
     function initSelect2() {
-        $('#profitCenterFilter, #monthYearFilter, #statusFilter').select2({ 
+        $('.select2').select2({
             theme: 'bootstrap-5',
             allowClear: true,
             placeholder: $(this).data('placeholder')
         });
-        $('#farModal .select2').select2({
-            theme: 'bootstrap-5',
-            dropdownParent: $('#farModal')
-        });
     }
-    $('.appeal-btn').on('click', function () {
-        const period = $(this).data('record-id');
-        const pcn = $(this).data('record-id1');
-        const appealUrl = $(this).data('url');
-        const admin = "ashok.patra@resustainability.com";
-
-        Swal.fire({
-            title: 'Appeal Request',
-            html: `
-                <p>Please enter your appeal message:</p>
-                <textarea id="appealMessage" class="swal2-textarea" placeholder="Type your message here..."></textarea>
-            `,
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Submit Appeal',
-            cancelButtonText: 'Cancel',
-            preConfirm: () => {
-                const msg = Swal.getPopup().querySelector('#appealMessage').value.trim();
-                if (!msg) {
-                    Swal.showValidationMessage('Message is required!');
-                }
-                return msg;
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                const msg = encodeURIComponent(result.value);
-                window.location.href = appealUrl + '?period=' + period + '&pcn=' + pcn + '&admin=' + admin+ '&msg=' + msg;
-            }
-        });
-    });
 
     // Initialize DataTable
-    var table = $('#farTable').DataTable({
+    var table = $('#fixedAssetTable').DataTable({
         "responsive": true,
         "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-        "language": { "search": "", "searchPlaceholder": "Search..." },
+        "language": {
+            "search": "",
+            "searchPlaceholder": "Search...",
+            "lengthMenu": "Show _MENU_ entries",
+            "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+            "paginate": {
+                "first": "First",
+                "last": "Last",
+                "next": "Next",
+                "previous": "Previous"
+            }
+        },
         "dom": "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
                "<'row'<'col-sm-12'tr>>" +
                "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
         "buttons": [
-            { 
-                extend: 'excelHtml5', 
-                text: '<i class="fas fa-file-excel me-1"></i>Export', 
+            {
+                extend: 'excelHtml5',
+                text: '<i class="fas fa-file-excel me-1"></i>Export to Excel',
                 className: 'btn btn-success btn-sm',
                 exportOptions: {
-                    columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
-                    format: {
-                        body: function ( data, row, column, node ) {
-                            if (column === 0) {
-                                return $(node).find('.fw-bold').text() + ' ' + $(node).find('.small').text();
-                            }
-                            if (column === 12) {
-                                return $(data).text().trim();
-                            }
-                            return data;
-                        }
-                    }
-                },
-                customizeData: function(d) {
-                    d.header[0] = 'Profit Center Code';
-                    d.header.splice(1, 0, 'Profit Center Name');
-                    for (var i = 0; i < d.body.length; i++) {
-                        var profitCenterCell = d.body[i][0];
-                        if (profitCenterCell) {
-                            var parts = profitCenterCell.trim().split(/\s+/);
-                            var code = parts.shift() || '';
-                            var name = parts.join(' ') || '';
-                            d.body[i][0] = code;
-                            d.body[i].splice(1, 0, name);
-                        }
-                    }
+                    columns: ':visible'
                 }
             }
         ],
@@ -833,243 +471,223 @@ $(document).ready(function () {
         }
     });
 
-    // --- CASCADING FILTER LOGIC ---
-    $('#profitCenterFilter, #monthYearFilter, #statusFilter').on('change', function () {
-        var pcVal = $('#profitCenterFilter').val();
-        var myVal = $('#monthYearFilter').val();
-        var statusVal = $('#statusFilter').val();
-        
-        table.column(0).search(pcVal ? '^' + $.fn.dataTable.util.escapeRegex(pcVal) : '', true, false);
-        table.column(1).search(myVal ? '^' + $.fn.dataTable.util.escapeRegex(myVal) + '$' : '', true, false);
-        table.column(14).search(statusVal ? '^' + $.fn.dataTable.util.escapeRegex(statusVal) + '$' : '', true, false);
-        
-        table.draw();
-    });
+    // File upload functionality
+    function setupFileUpload(uploadAreaId, fileInputId, fileListId) {
+        const uploadArea = $(`#${uploadAreaId}`);
+        const fileInput = $(`#${fileInputId}`);
+        const fileList = $(`#${fileListId}`);
 
-    table.on('draw.dt', function() {
-        populateFilters(table);
-    });
+        uploadArea.on('click', function() {
+            fileInput.click();
+        });
 
-    $('#clearFilters').on('click', function () {
-        $('#profitCenterFilter, #monthYearFilter, #statusFilter').val(null).trigger('change');
-    });
-});
+        uploadArea.on('dragover', function(e) {
+            e.preventDefault();
+            uploadArea.addClass('dragover');
+        });
 
-function populateFilters(api) {
-    var currentPC = $('#profitCenterFilter').val();
-    var currentMY = $('#monthYearFilter').val();
-    var currentStatus = $('#statusFilter').val();
-    var statusColumnIndex = 14;
+        uploadArea.on('dragleave', function() {
+            uploadArea.removeClass('dragover');
+        });
 
-    populateSelect(api, 0, '#profitCenterFilter', currentPC, function(cell) {
-        var code = $(cell).find('.fw-bold').text().trim();
-        var name = $(cell).find('.small').text().trim();
-        if (code) return { code: code, text: code + ' ' + name };
-        return null;
-    });
+        uploadArea.on('drop', function(e) {
+            e.preventDefault();
+            uploadArea.removeClass('dragover');
+            const files = e.originalEvent.dataTransfer.files;
+            handleFiles(files, fileList, fileInputId);
+        });
 
-    populateSelect(api, 1, '#monthYearFilter', currentMY, function(cell) {
-        var data = $(cell).text().trim();
-        if(data) return { code: data, text: data };
-        return null;
-    }, (a, b) => b.text.localeCompare(a.text));
-
-    if (api.columns().nodes().length > statusColumnIndex) {
-        populateSelect(api, statusColumnIndex, '#statusFilter', currentStatus, function(cell) {
-            var data = $(cell).text().trim();
-            if (data) return { code: data, text: data };
-            return null;
+        fileInput.on('change', function(e) {
+            handleFiles(e.target.files, fileList, fileInputId);
         });
     }
-}
 
-function populateSelect(api, columnIndex, selectId, currentValue, dataExtractor, sortFn) {
-    var select = $(selectId);
-    var uniqueItems = new Map();
-
-    api.column(columnIndex, { search: 'applied' }).nodes().each(function (cell) {
-        var item = dataExtractor(cell);
-        if (item && item.code && !uniqueItems.has(item.code)) {
-            uniqueItems.set(item.code, item.text);
+    function handleFiles(files, fileList, inputName) {
+        fileList.empty();
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            if (file.size > 10 * 1024 * 1024) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'File too large',
+                    text: `${file.name} exceeds 10MB limit`
+                });
+                continue;
+            }
+            addFileItem(file, fileList, inputName);
         }
+    }
+
+    function addFileItem(file, fileList, inputName) {
+        const fileItem = $('<div>').addClass('file-item');
+        const fileInfo = $('<div>').html(`
+            <i class="fas fa-file me-2"></i>
+            <span>${file.name}</span>
+            <small class="text-muted ms-2">(${(file.size / 1024 / 1024).toFixed(2)} MB)</small>
+        `);
+        const removeBtn = $('<i>').addClass('fas fa-times remove-file');
+
+        removeBtn.on('click', function() {
+            fileItem.remove();
+        });
+
+        fileItem.append(fileInfo).append(removeBtn);
+        fileList.append(fileItem);
+    }
+
+    // Initialize file upload areas
+    setupFileUpload('farUploadArea', 'far_file', 'farFileList');
+    setupFileUpload('docUploadArea', 'documents', 'docFileList');
+
+    // Reset form when modal is closed
+    $('#addFixedAssetModal').on('hidden.bs.modal', function () {
+        $('#addFixedAssetForm')[0].reset();
+        $('#farFileList, #docFileList').empty();
+        $('.is-invalid').removeClass('is-invalid');
     });
 
-    select.find('option:not([value=""])').remove();
-    
-    var itemsArray = Array.from(uniqueItems, ([code, text]) => ({ code, text }));
-    
-    if (sortFn) {
-        itemsArray.sort(sortFn);
-    } else {
-        itemsArray.sort((a, b) => a.text.localeCompare(b.text));
-    }
+    // Form submission
+    $('#addFixedAssetForm').on('submit', function(e) {
+        e.preventDefault();
 
-    itemsArray.forEach(item => {
-        select.append($('<option>', { value: item.code, text: item.text }));
-    });
+        const requiredFields = ['entity_code', 'entity_name', 'profit_center_code', 'profit_center_name',
+                               'plant_code', 'plant_name', 'gross_book_value', 'asset_verification',
+                               'quantity_far_ho', 'reported_value_pv', 'quantity_pv'];
 
-    select.val(currentValue);
-}
-
-// --- MODAL AND CALCULATION LOGIC ---
-$('#farModal').on('show.bs.modal', function (e) {
-    if (!$(e.relatedTarget).hasClass('edit-trigger')) {
-        $('#farForm')[0].reset();
-        $('#farModalLabel').text('Add New Contribution');
-        if('${sessionScope.ROLE}' !== 'User'){
-            $('#profitCenterSelect').val(null).trigger('change');
-        }
-        const currentDate = new Date();
-        const currentMonth = currentDate.toISOString().slice(0, 7);
-        $('#monthYear').val(currentMonth);
-        
-        const nextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 15);
-        const dueDate = nextMonth.toISOString().slice(0, 10);
-        $('#due_date').val(dueDate);
-    }
-});
-
-// --- EDIT MODAL CALCULATIONS ---
-function calculateTotal_edit_far(index) {
-    var employee = parseNumericInput($('#employee_contribution_edit_' + index));
-    var vfar = parseNumericInput($('#vfar_edit_' + index));
-    var employer = parseNumericInput($('#employer_contribution_edit_' + index));
-    var admin = parseNumericInput($('#far_admin_edit_' + index));
-    var edli = parseNumericInput($('#far_edli_edit_' + index));
-    
-    var total = employee + vfar + employer + admin + edli;
-    $('#total_amount_edit_' + index).val(total.toFixed(2));
-    calculateDifference_edit_far(index);
-}
-
-function calculateDifference_edit_far(index) {
-    var total = parseNumericInput($('#total_amount_edit_' + index));
-    var paidInput = $('#amount_paid_edit_' + index);
-    var paid = parseNumericInput(paidInput);
-    
-    if (paid > total) {
-        paidInput.val(total.toFixed(2));
-        paid = total;
-    }
-
-    var difference = total - paid;
-    $('#difference_edit_' + index).val(difference.toFixed(2));
-}
-
-function calculateDelayDays_edit_far(index) {
-    var dueDateStr = $('#due_date_edit_' + index).val();
-    var actualDateStr = $('#actual_payment_date_edit_' + index).val();
-    if (dueDateStr && actualDateStr) {
-        var diffDays = (new Date(actualDateStr) - new Date(dueDateStr)) / (1000 * 3600 * 24);
-        $('#delay_days_edit_' + index).val(Math.max(0, Math.ceil(diffDays)));
-    } else {
-        $('#delay_days_edit_' + index).val(0);
-    }
-}
-
-// --- ADD MODAL CALCULATIONS ---
-function parseNumericInput(selector) { 
-    return Math.max(0, parseFloat($(selector).val()) || 0); 
-}
-function calculateTotal() { 
-    var total = parseNumericInput('#employee_contribution') + parseNumericInput('#vfar') + parseNumericInput('#employer_contribution') + parseNumericInput('#far_admin') + parseNumericInput('#far_edli'); 
-    $('#total_amount').val(total.toFixed(2)); 
-    calculateDifference(); 
-}
-function calculateDifference() { 
-    var total = parseNumericInput('#total_amount');
-    var paidInput = $('#amount_paid');
-    var paid = parseNumericInput(paidInput);
-
-    if (paid > total) {
-        paidInput.val(total.toFixed(2));
-        paid = total;
-    }
-    var difference = total - paid;
-    $('#difference').val(difference.toFixed(2)); 
-}
-function calculateDelayDays() { 
-    var dueDateStr = $('#due_date').val(); 
-    var actualDateStr = $('#actual_payment_date').val(); 
-    if (dueDateStr && actualDateStr) { 
-        var diffDays = (new Date(actualDateStr) - new Date(dueDateStr)) / (1000 * 3600 * 24); 
-        $('#delay_days').val(Math.max(0, Math.ceil(diffDays))); 
-    } else { 
-        $('#delay_days').val(0); 
-    } 
-}
-
-function checkDuplicatePCMY() {
-    var pcVal = $('#profitCenterSelect').val() ? $('#profitCenterSelect').val().trim() : '';
-    var myVal = $('#monthYear').val() ? $('#monthYear').val().trim() : '';
-
-    if (pcVal && myVal) {
-        var isDuplicate = false;
-        var rowPcName = '';
-
-        $('#farTable').DataTable().rows().data().each(function (rowData) {
-            var htmlContent = $('<div>' + rowData[0] + '</div>');
-            var rowPc = htmlContent.find('.fw-bold').text().trim();
-            rowPcName = htmlContent.find('.small').text().trim();
-            var rowMy = rowData[1] ? rowData[1].trim() : '';
-            var statusHtml = rowData[14] ? rowData[14].trim() : '';
-            var status = $(statusHtml).text().trim();
-
-            if (rowPc === pcVal && rowMy === myVal && status === 'Active') {
-                isDuplicate = true;
-                return false; // Stop loop
+        let isValid = true;
+        requiredFields.forEach(field => {
+            const value = $(`#${field}`).val();
+            if (!value || value.trim() === '') {
+                $(`#${field}`).addClass('is-invalid');
+                isValid = false;
+            } else {
+                $(`#${field}`).removeClass('is-invalid');
             }
         });
 
-        if (isDuplicate) {
-            $('#monthYear').val('');
-            showStrictAlertBox(
-                "Duplicate Entry Detected",
-                `Data for <strong>${rowPcName}</strong> in <strong>${myVal}</strong> with "Active" status already exists. Duplicate entries are not allowed.`
-            );
+        if (!isValid) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                text: 'Please fill in all required fields marked with *'
+            });
+            return;
         }
-    }
-}
 
-function showStrictAlertBox(title, message) {
-    $('#strictAlertBox').remove();
-    var secondsLeft = 10;
+        const grossBookValue = parseFloat($('#gross_book_value').val()) || 0;
+        const reportedValue = parseFloat($('#reported_value_pv').val()) || 0;
+        const quantityFarHO = parseInt($('#quantity_far_ho').val()) || 0;
+        const quantityPV = parseInt($('#quantity_pv').val()) || 0;
 
-    var alertBoxHtml =
-        '<div id="strictAlertBox" class="strict-alert">' +
-            '<div class="strict-alert-header">' +
-                '<h5>' + title + '</h5>' +
-                '<button type="button" class="strict-alert-close">&times;</button>' +
-            '</div>' +
-            '<div class="strict-alert-body">' +
-                '<p>' + message + '</p>' +
-                '<div class="strict-alert-footer text-muted small">' +
-                    'Auto-closing in <span id="strictAlertCountdown">' + secondsLeft + '</span>s' +
-                '</div>' +
-            '</div>' +
-        '</div>';
+        $('#saveBtnText').text('Saving...');
+        $('#saveBtnSpinner').removeClass('d-none');
+        $('#saveFixedAssetBtn').prop('disabled', true);
 
-    var $alertBox = $(alertBoxHtml);
+        const formData = new FormData(this);
+        formData.append('value_variance', (grossBookValue - reportedValue).toFixed(2));
+        formData.append('qty_variance', quantityFarHO - quantityPV);
 
-    $('body').append($alertBox);
+        $.ajax({
+            url: '<%=request.getContextPath()%>/addFixedAsset',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                $('#saveBtnText').text('Save Record');
+                $('#saveBtnSpinner').addClass('d-none');
+                $('#saveFixedAssetBtn').prop('disabled', false);
 
-    var countdownInterval = setInterval(function() {
-        secondsLeft--;
-        $('#strictAlertCountdown').text(secondsLeft);
-        if (secondsLeft <= 0) {
-            clearInterval(countdownInterval);
-            $alertBox.fadeOut(500, function() { $(this).remove(); });
-        }
-    }, 1000);
-
-    $alertBox.find('.strict-alert-close').on('click', function() {
-        clearInterval(countdownInterval);
-        $alertBox.fadeOut(500, function() { $(this).remove(); });
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Fixed Asset record added successfully',
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        $('#addFixedAssetForm')[0].reset();
+                        $('#farFileList').empty();
+                        $('#docFileList').empty();
+                        $('#addFixedAssetModal').modal('hide');
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: response.message || 'Failed to add record'
+                    });
+                }
+            },
+            error: function() {
+                $('#saveBtnText').text('Save Record');
+                $('#saveBtnSpinner').addClass('d-none');
+                $('#saveFixedAssetBtn').prop('disabled', false);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Server Error',
+                    text: 'An error occurred while saving the record.'
+                });
+            }
+        });
     });
-}
 
-$('#profitCenterSelect, #monthYear').on('change', checkDuplicatePCMY);
+    // Filters
+    $('#profitCenterFilter, #monthYearFilter').on('change', function () {
+        var pcVal = $('#profitCenterFilter').val();
+        table.column(2).search(pcVal ? '^' + $.fn.dataTable.util.escapeRegex(pcVal) + '$' : '', true, false).draw();
+    });
 
+    $('#clearFilters').on('click', function () {
+        $('#profitCenterFilter, #monthYearFilter').val(null).trigger('change');
+    });
+
+    function populateFilters(api) {
+        var currentPC = $('#profitCenterFilter').val();
+
+        populateSelect(api, 2, '#profitCenterFilter', currentPC, function(cell) {
+            var code = $(cell).find('.fw-bold').text().trim();
+            var name = $(cell).find('.small').text().trim();
+            if (code) return { code: code, text: code + ' - ' + name };
+            return null;
+        });
+    }
+
+    function populateSelect(api, columnIndex, selectId, currentValue, dataExtractor) {
+        var select = $(selectId);
+        var uniqueItems = new Map();
+
+        api.column(columnIndex, { search: 'applied' }).nodes().each(function (cell) {
+            var item = dataExtractor(cell);
+            if (item && item.code && !uniqueItems.has(item.code)) {
+                uniqueItems.set(item.code, item.text);
+            }
+        });
+
+        select.find('option:not([value=""])').remove();
+
+        var itemsArray = Array.from(uniqueItems, ([code, text]) => ({ code, text }));
+        itemsArray.sort((a, b) => a.text.localeCompare(b.text));
+
+        itemsArray.forEach(item => {
+            select.append($('<option>', { value: item.code, text: item.text }));
+        });
+
+        select.val(currentValue);
+    }
+
+    // Edit button (placeholder)
+    $('.btn-edit').on('click', function() {
+        const assetId = $(this).data('id');
+        alert('Edit functionality for ID: ' + assetId + ' (to be implemented)');
+    });
+
+    // Remove validation on input
+    $('input, select, textarea').on('input change', function() {
+        $(this).removeClass('is-invalid');
+    });
+});
 </script>
 </body>
 </html>
