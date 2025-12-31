@@ -3,6 +3,7 @@ package com.resustainability.reisp.dao;
 import com.resustainability.reisp.model.User;
 import com.resustainability.reisp.model.FarContribution;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -15,6 +16,8 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,16 +42,15 @@ public class FarContributionDAO {
         try {
             NamedParameterJdbcTemplate namedTemplate = new NamedParameterJdbcTemplate(dataSource);
             String sql = "INSERT INTO [FIDB].[dbo].[far] " +
-                         "(entity_code, entity_name, profit_center_code, profit_center_name, sbu, " +
+                         "( profit_center_code, " +
                          "plant_code, plant_name, gross_book_value, quantity, reported_value, " +
                          "quantity_pv, value_variance, quantity_variance, remarks, " +
                          "created_by, created_date, uploads) " +
                          "VALUES " +
-                         "(:entity_code, :entity_name, :profit_center_code, :profit_center_name, :sbu, " +
+                         "( :profit_center_code, " +
                          ":plant_code, :plant_name, :gross_book_value, :quantity, :reported_value, " +
                          ":quantity_pv, :value_variance, :quantity_variance, :remarks, " +
-                         ":created_by, GETDATE(), :uploads)"; 
-
+                         ":created_by, GETDATE(), :uploads)";
             BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(far);
             int rows = namedTemplate.update(sql, paramSource);
             transactionManager.commit(status);
@@ -79,12 +81,10 @@ public class FarContributionDAO {
                          "modified_by = :modified_by, " +
                          "modified_date = GETDATE(), " +
                          "uploads = CASE " +
-                         "    WHEN :uploads IS NULL OR LTRIM(RTRIM(:uploads)) = '' THEN uploads " +
-                         "    ELSE ISNULL(uploads + ',', '') + :uploads " +
+                         " WHEN :uploads IS NULL OR LTRIM(RTRIM(:uploads)) = '' THEN uploads " +
+                         " ELSE ISNULL(uploads + ',', '') + :uploads " +
                          "END " +
-                         "WHERE entity_code = :entity_code " +
-                         "  AND profit_center_code = :profit_center_code";
-
+                         "WHERE far_id = :far_id";
             BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(far);
             int rows = namedTemplate.update(sql, paramSource);
             transactionManager.commit(status);
@@ -112,6 +112,22 @@ public class FarContributionDAO {
         }
     }
 
+    public FarContribution getFarById(Long id) {
+        String sql = "SELECT far_id, entity_code, entity_name, profit_center_code, profit_center_name, "
+                   + "sbu, plant_code, plant_name, gross_book_value, quantity, reported_value, "
+                   + "quantity_pv, value_variance, quantity_variance, remarks, "
+                   + "modified_date, modified_by, created_date, created_by, uploads "
+                   + "FROM [FIDB].[dbo].[far] WHERE far_id = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, new Object[]{id},
+                    new BeanPropertyRowMapper<>(FarContribution.class));
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        } catch (Exception e) {
+            throw new RuntimeException("Error fetching FAR record: " + e.getMessage(), e);
+        }
+    }
+
     /**
      * Get list of distinct Profit Centers for dropdown
      */
@@ -133,11 +149,14 @@ public class FarContributionDAO {
      */
     public List<FarContribution> getFarContributions(String monthYear, String entityCode, String profitCenterCode, User user) {
         StringBuilder sql = new StringBuilder(
-                "SELECT entity_code, entity_name, profit_center_code, profit_center_name, " +
-                "sbu, plant_code, plant_name, gross_book_value, quantity, reported_value, " +
-                "quantity_pv, value_variance, quantity_variance, remarks, " +
-                "modified_date, modified_by, created_date, created_by, uploads " +
-                "FROM [FIDB].[dbo].[far] WHERE 1=1 "
+                "SELECT far_id, p.entity_code, e.entity_name, f.profit_center_code, p.profit_center_name, " +
+                "p.sbu, plant_code, plant_name, gross_book_value, quantity, reported_value, " +
+                "quantity_pv, value_variance, quantity_variance, f.remarks, " +
+                "f.modified_date, f.modified_by, f.created_date, f.created_by, uploads " +
+                "FROM [FIDB].[dbo].[far] f " +
+                "LEFT JOIN profit_center p ON f.profit_center_code = p.profit_center_code " +
+                "LEFT JOIN entity e ON p.entity_code = e.entity_code " +
+                "WHERE far_id IS NOT NULL "
         );
 
         List<Object> params = new ArrayList<>();
@@ -149,29 +168,29 @@ public class FarContributionDAO {
                 if (pcCodes.contains(",")) {
                     String[] codes = pcCodes.split(",");
                     String placeholders = String.join(",", java.util.Collections.nCopies(codes.length, "?"));
-                    sql.append(" AND profit_center_code IN (").append(placeholders).append(")");
+                    sql.append(" AND f.profit_center_code IN (").append(placeholders).append(")"); // Fixed: f.profit_center_code
                     for (String code : codes) {
-                        params.add(code.trim());
+                        params.add(code.trim()); // Trim each code
                     }
                 } else {
-                    sql.append(" AND profit_center_code = ?");
+                    sql.append(" AND f.profit_center_code = ?"); // Fixed: f.profit_center_code
                     params.add(pcCodes.trim());
                 }
             }
         }
 
-        // Apply filters
+        // Apply filters from UI
         if (StringUtils.hasText(monthYear)) {
-            sql.append(" AND CONVERT(varchar(7), created_date, 126) = ?"); // YYYY-MM
+            sql.append(" AND CONVERT(varchar(7), created_date, 126) = ?");
             params.add(monthYear);
         }
         if (StringUtils.hasText(entityCode)) {
-            sql.append(" AND entity_code = ?");
+            sql.append(" AND p.entity_code = ?"); // Safe: only p has entity_code in SELECT
             params.add(entityCode);
         }
         if (StringUtils.hasText(profitCenterCode)) {
-            sql.append(" AND profit_center_code = ?");
-            params.add(profitCenterCode);
+            sql.append(" AND f.profit_center_code = ?"); // Fixed: f.profit_center_code
+            params.add(profitCenterCode.trim());
         }
 
         sql.append(" ORDER BY created_date DESC");

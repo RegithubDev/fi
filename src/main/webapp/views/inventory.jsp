@@ -1048,6 +1048,7 @@ $(document).ready(function () {
         });
     });
     // Filter Logic
+    
     $('#profitCenterFilter, #monthYearFilter').on('change', function () {
         var pcVal = $('#profitCenterFilter').val();
         var myVal = $('#monthYearFilter').val();

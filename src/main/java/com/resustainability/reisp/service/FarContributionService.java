@@ -1,5 +1,6 @@
 package com.resustainability.reisp.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,10 @@ FarContributionDAO dao;
 			User usr) {
 		// TODO Auto-generated method stub
 		return dao.getFarContributions(month_year,entity_Code,profit_Center_Code,usr);
+	}
+
+	public FarContribution getFarById(Long id) {
+		return dao.getFarById(id);
 	}
 
   

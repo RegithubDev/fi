@@ -2,12 +2,13 @@ package com.resustainability.reisp.model;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
 public class FarContribution {
-
-    private String entity_code,id;
+	private Long far_id;
+    private String entity_code;
     private String entity_name;
     private String profit_center_code;
     private String profit_center_name;
@@ -29,12 +30,50 @@ public class FarContribution {
     private String created_by;
     private String uploads;               // Comma-separated file names or paths
 
-    public String getId() {
-		return id;
+
+
+	public FarContribution() {
+
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public FarContribution(Long far_id, String entity_code, String entity_name, String profit_center_code,
+			String profit_center_name, String sbu, String email_id, String message, String plant_code,
+			String plant_name, Double gross_book_value, Double quantity, Double reported_value, Double quantity_pv,
+			Double value_variance, Double quantity_variance, String remarks, Date modified_date, String modified_by,
+			Date created_date, String created_by, String uploads, String month_year, MultipartFile[] mediaList) {
+		super();
+		this.far_id = far_id;
+		this.entity_code = entity_code;
+		this.entity_name = entity_name;
+		this.profit_center_code = profit_center_code;
+		this.profit_center_name = profit_center_name;
+		this.sbu = sbu;
+		this.email_id = email_id;
+		this.message = message;
+		this.plant_code = plant_code;
+		this.plant_name = plant_name;
+		this.gross_book_value = gross_book_value;
+		this.quantity = quantity;
+		this.reported_value = reported_value;
+		this.quantity_pv = quantity_pv;
+		this.value_variance = value_variance;
+		this.quantity_variance = quantity_variance;
+		this.remarks = remarks;
+		this.modified_date = modified_date;
+		this.modified_by = modified_by;
+		this.created_date = created_date;
+		this.created_by = created_by;
+		this.uploads = uploads;
+		this.month_year = month_year;
+		this.mediaList = mediaList;
+	}
+
+	public Long getFar_id() {
+		return far_id;
+	}
+
+	public void setFar_id(Long far_id) {
+		this.far_id = far_id;
 	}
 
 	// Optional: for form binding (like month/year filter)
@@ -225,6 +264,11 @@ public class FarContribution {
 
 	public void setMediaList(MultipartFile[] mediaList) {
 		this.mediaList = mediaList;
+	}
+
+	public void setAdditional_files(List<Map<String, String>> additionalFiles) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	
